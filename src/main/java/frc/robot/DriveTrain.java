@@ -1,6 +1,8 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 //we may not need some of these import statements, just not sure which
 
@@ -10,7 +12,6 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.can.*;
 import frc.robot.LambdaJoystick.ThrottlePosition;
-
 public class DriveTrain {
 
     private final TalonSRX leftMotor1;
@@ -28,14 +29,19 @@ public class DriveTrain {
             leftMotor2 = new VictorSPX(leftPort2);
             rightMotor1 = new TalonSRX(rightPort1);
             rightMotor2 = new VictorSPX(rightPort2);
+            leftMotor1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+            rightMotor1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
             this.leftPort1 = leftPort1;
             this.leftPort2 = leftPort2;
             this.rightPort1 = rightPort1;
             this.rightPort2 = rightPort2;
+            rightMotor1.setNeutralMode(NeutralMode.Brake);
+            rightMotor2.setNeutralMode(NeutralMode.Brake);
+            leftMotor1.setNeutralMode(NeutralMode.Brake);
+            leftMotor2.setNeutralMode(NeutralMode.Brake);
             //enco = new Encoder(8,9);
             //enco.setDistancePerPulse(2.0943/4);
     }
-//hello
     public void updateSpeed(final ThrottlePosition throttlePosition) {
         final double right = (-throttlePosition.x - throttlePosition.y)*-1;
         final double left = (throttlePosition.y - throttlePosition.x)*-1;
