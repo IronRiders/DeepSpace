@@ -51,13 +51,19 @@ public class DriveTrain {
         rightMotor2.set(ControlMode.Follower, rightPort1);
 
     }
+    public void autoUpdateSpeed(doube left, double right) {
+        leftMotor1.set(ControlMode.PercentOutput, left);
+        leftMotor2.set(ControlMode.Follower, leftPort1);
+        rightMotor1.set(ControlMode.PercentOutput, right);
+        rightMotor2.set(ControlMode.Follower, rightPort1);
+    }
     public TalonSRX getLeftMotor() {
         return leftMotor1;
     }
     public TalonSRX getRightMotor() {
         return rightMotor1;
     }
-    public Gyro getGyro() {
-        
+    public AnalogGyro getGyro() {
+        return gyro;
     }
 }
