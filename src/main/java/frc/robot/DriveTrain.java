@@ -51,4 +51,13 @@ public class DriveTrain {
         rightMotor2.set(ControlMode.Follower, rightPort1);
 
     }
+    public TalonSRX getLeftMotor() {
+        return leftMotor1;
+    }
+    public TalonSRX getRightMotor() {
+        return rightMotor1;
+    }
+    public Gyro getGyro() {
+        
+    }
 }
