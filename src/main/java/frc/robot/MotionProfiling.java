@@ -38,7 +38,6 @@ public class MotionProfiling {
         double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
         double turn = 0.8 * (-1.0/80.0) * angleDifference;
 
-        setLeftMotors(l + turn);
-        setRightMotors(r - turn);
+        driveTrain.autoUpdateSpeed(l + turn, r - turn);
     }
 }
