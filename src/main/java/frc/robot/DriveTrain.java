@@ -4,27 +4,26 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-//we may not need some of these import statements, just not sure which
-
-//import com.analog.adis16448.frc.ADIS16448_IMU;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.can.*;
 import frc.robot.LambdaJoystick.ThrottlePosition;
+
 public class DriveTrain {
 
     private final TalonSRX leftMotor1;
     private final TalonSRX rightMotor1;
     private final VictorSPX leftMotor2;
     private final VictorSPX rightMotor2;
-    //private final Encoder enco;
     private final int leftPort1;
     private final int rightPort1;
     private final int leftPort2;
     private final int rightPort2;
+    private final Gyro gyro;
 
-    public DriveTrain(final int leftPort1, final int leftPort2, final int rightPort1, final int rightPort2) {
+
+    public DriveTrain(final int leftPort1, final int leftPort2, final int rightPort1, final int rightPort2, final int gyroPortNumber) {
             leftMotor1 = new TalonSRX(leftPort1);
             leftMotor2 = new VictorSPX(leftPort2);
             rightMotor1 = new TalonSRX(rightPort1);
@@ -39,8 +38,9 @@ public class DriveTrain {
             rightMotor2.setNeutralMode(NeutralMode.Brake);
             leftMotor1.setNeutralMode(NeutralMode.Brake);
             leftMotor2.setNeutralMode(NeutralMode.Brake);
-            //enco = new Encoder(8,9);
-            //enco.setDistancePerPulse(2.0943/4);
+            gyro = new AnalogGyro(gyroPortNumber);
+            //gyroPortNumber should be analong 0 or 1
+
     }
     public void updateSpeed(final ThrottlePosition throttlePosition) {
         final double right = (-throttlePosition.x - throttlePosition.y)*-1;
