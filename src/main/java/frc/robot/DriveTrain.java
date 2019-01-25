@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.can.*;
 import frc.robot.LambdaJoystick.ThrottlePosition;
+
 public class DriveTrain {
 
     private final TalonSRX leftMotor1;
