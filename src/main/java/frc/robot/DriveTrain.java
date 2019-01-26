@@ -20,7 +20,7 @@ public class DriveTrain {
     private final int rightPort1;
     private final int leftPort2;
     private final int rightPort2;
-    private final Gyro gyro;
+    private final AnalogGyro gyro;
 
 
     public DriveTrain(final int leftPort1, final int leftPort2, final int rightPort1, final int rightPort2, final int gyroPortNumber) {
