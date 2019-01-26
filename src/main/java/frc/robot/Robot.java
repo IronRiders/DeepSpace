@@ -7,9 +7,13 @@
 
 package frc.robot;
 
+import java.io.File;
+import static frc.robot.Ports.*;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -19,10 +23,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  private static final String kDefaultAuto = "Default";
+  private static final String defaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  public final DriveTrain driveTrain = new DriveTrain(LEFT_DRIVETRAIN_1, LEFT_DRIVETRAIN_2 , RIGHT_DRIVETAIN_1 , RIGHT_DRIVETAIN_2 , GYRO_PORT);
+  private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
 
   /**
    * This function is run when the robot is first started up and should be
@@ -30,9 +36,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
+    m_chooser.setDefaultOption("Default Auto", defaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+
   }
 
   /**
@@ -71,15 +78,18 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+    File file;
     switch (m_autoSelected) {
       case kCustomAuto:
         // Put custom auto code here
+        //file = new File(whatever the path is.....)
         break;
-      case kDefaultAuto:
+      case defaultAuto:
       default:
         // Put default auto code here
         break;
     }
+    MotionProfiling auto = new MotionProfiling(driveTrain, file);
   }
 
   /**
@@ -87,6 +97,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    joystick1.listen();
   }
 
   /**
