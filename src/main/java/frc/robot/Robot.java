@@ -80,7 +80,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    File file;
+    //File file;
     switch (m_autoSelected) {
       case kCustomAuto:
         // Put custom auto code here
@@ -91,7 +91,7 @@ public class Robot extends TimedRobot {
         // Put default auto code here
         break;
     }
-    MotionProfiling auto = new MotionProfiling(driveTrain, file);
+    //MotionProfiling auto = new MotionProfiling(driveTrain, file);
   }
 
   /**

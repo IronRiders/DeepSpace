@@ -1,7 +1,16 @@
+package frc.robot;
+
 import java.io.File;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import jaci.pathfinder.*;
+import jaci.pathfinder.followers.EncoderFollower;
+import jaci.pathfinder.modifiers.TankModifier;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 
 public class MotionProfiling {
     private DriveTrain driveTrain;
@@ -9,8 +18,10 @@ public class MotionProfiling {
     private final double wheelDiameter = .1524; //Meters
     private final TalonSRX leftMotor;
     private final TalonSRX rightMotor;
-    private final int encoerTicksPerRevolution = 1024;
+    private final int encoderTicksPerRevolution = 1024;
     private final double maxVelocity = 1.0;
+    private EncoderFollower left;
+    private EncoderFollower right;
 
     
     public MotionProfiling(DriveTrain driveTrain, File setup) {
@@ -18,21 +29,21 @@ public class MotionProfiling {
         leftMotor = driveTrain.getLeftMotor();
         rightMotor = driveTrain.getRightMotor();
 
-        Trajectory trajectory = Pathfinder.readfromCSV(setup);
+        Trajectory trajectory = Pathfinder.readFromCSV(setup);
         TankModifier modifier = new TankModifier(trajectory).modify(wheelBaseWidth);
 
-        EncoderFollower left = new EncoderFollower(modifier.getLeftTrajectory());
-        EncoderFollower right = new EncoderFollower(modifier.getRightTrajectory());
+        left = new EncoderFollower(modifier.getLeftTrajectory());
+        right = new EncoderFollower(modifier.getRightTrajectory());
 
-        left.configureEncoder(leftMotor.getEncPosition(), 1024, wheelDiameter); //1024 or 4096 - before or after quad?
-        right.configureEncoder(rightMotor.getEncPosition(), 1024, wheelDiameter);
+        //left.configureEncoder(leftMotor.getEncPosition(), 1024, wheelDiameter); //1024 or 4096 - before or after quad?
+        //right.configureEncoder(rightMotor.getEncPosition(), 1024, wheelDiameter);
 
         left.configurePIDVA(1.0, 0.0, 0.0, 1 / maxVelocity, 0); //Filler PID vals
         right.configurePIDVA(1.0, 0.0, 0.0, 1 / maxVelocity, 0);
     }
-    public double output() { //probably needs a new name
-        double l = left.calculate(leftMotor.getEncPosition());
-        double r = right.calculate(rightMotor.getEncPosition());
+    public void output() { //probably needs a new name
+        //double l = leftMotor.calculate(leftMotor.getEncPosition());
+        //double r = rightMotor.calculate(rightMotor.getEncPosition());
 
         double gyroHeading = driveTrain.getGyro().getAngle();   // Assuming the gyro is giving a value in degrees
         double desiredHeading = Pathfinder.r2d(left.getHeading());  // Should also be in degrees
@@ -40,6 +51,6 @@ public class MotionProfiling {
         double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
         double turn = 0.8 * (-1.0/80.0) * angleDifference;
 
-        driveTrain.autoUpdateSpeed(l + turn, r - turn);
+        //driveTrain.autoUpdateSpeed(l + turn, r - turn);
     }
 }

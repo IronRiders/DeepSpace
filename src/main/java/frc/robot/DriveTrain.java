@@ -51,7 +51,7 @@ public class DriveTrain {
         rightMotor2.set(ControlMode.Follower, rightPort1);
 
     }
-    public void autoUpdateSpeed(doube left, double right) {
+    public void autoUpdateSpeed(double left, double right) {
         leftMotor1.set(ControlMode.PercentOutput, left);
         leftMotor2.set(ControlMode.Follower, leftPort1);
         rightMotor1.set(ControlMode.PercentOutput, right);
