@@ -20,6 +20,7 @@ public class Elevator {
         talon.config_kF(0, fConstant);
     }
 
+    //@param distance is in inches
     public void move(double distance){
         double totalPulses = distance * (4096/(Math.PI*6));
         talon.set(ControlMode.Position, totalPulses);
