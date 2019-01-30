@@ -9,6 +9,8 @@ public class Ports{
     public static final int RIGHT_DRIVETAIN_2 = 3;
     public static final int GYRO_PORT = 0;
     public static final int ELEVATOR_PORT = 6; //needs to be set
+    public static final int LEFT_FLYWHEEL_PORT = 7; //needs to be set
+    public static final int RIGHT_FLYWHEEL_PORT = 8;
 
     
 
