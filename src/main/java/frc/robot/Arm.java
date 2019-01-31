@@ -9,7 +9,7 @@ public class Arm{
     private CANSparkMax spark;
     private CANEncoder encoder;
     private CANPIDController pid;
-    private int distance;
+    private int numRevolutions;
    // double pulsesPerInch = 4096/(Math.PI*diameter of wheel)
 
     public Arm(int portNumber){
