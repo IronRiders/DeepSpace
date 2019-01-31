@@ -12,6 +12,7 @@ public class Ports{
     public static final int LEFT_FLYWHEEL_PORT = 7; //needs to be set
     public static final int RIGHT_FLYWHEEL_PORT = 8;
     public static final int ELEVATOR_ZERO_PORT = 9; 
+    public static final int ARM_PORT = 10;
 
     
 
