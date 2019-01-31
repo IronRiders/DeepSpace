@@ -30,7 +30,7 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   public final DriveTrain driveTrain = new DriveTrain(LEFT_DRIVETRAIN_1, LEFT_DRIVETRAIN_2 , RIGHT_DRIVETAIN_1 , RIGHT_DRIVETAIN_2 , GYRO_PORT);
   private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
-  private final Elevator elevator = new Elevator(ELEVATOR_PORT);
+  private final Elevator elevator = new Elevator(ELEVATOR_PORT , ELEVATOR_ZERO_PORT);
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.

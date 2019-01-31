@@ -35,15 +35,15 @@ public class MotionProfiling {
         left = new EncoderFollower(modifier.getLeftTrajectory());
         right = new EncoderFollower(modifier.getRightTrajectory());
 
-        //left.configureEncoder(leftMotor.getEncPosition(), 1024, wheelDiameter); //1024 or 4096 - before or after quad?
-        //right.configureEncoder(rightMotor.getEncPosition(), 1024, wheelDiameter);
+        left.configureEncoder(leftMotor.getSelectedSensorPosition(), 1024, wheelDiameter); //1024 or 4096 - before or after quad?
+        right.configureEncoder(rightMotor.getSelectedSensorPosition(), 1024, wheelDiameter);
 
         left.configurePIDVA(1.0, 0.0, 0.0, 1 / maxVelocity, 0); //Filler PID vals
         right.configurePIDVA(1.0, 0.0, 0.0, 1 / maxVelocity, 0);
     }
     public void output() { //probably needs a new name
-        //double l = leftMotor.calculate(leftMotor.getEncPosition());
-        //double r = rightMotor.calculate(rightMotor.getEncPosition());
+        double l = left.calculate(leftMotor.getSelectedSensorPosition());
+        double r = right.calculate(rightMotor.getSelectedSensorPosition());
 
         double gyroHeading = driveTrain.getGyro().getAngle();   // Assuming the gyro is giving a value in degrees
         double desiredHeading = Pathfinder.r2d(left.getHeading());  // Should also be in degrees
@@ -51,6 +51,6 @@ public class MotionProfiling {
         double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
         double turn = 0.8 * (-1.0/80.0) * angleDifference;
 
-        //driveTrain.autoUpdateSpeed(l + turn, r - turn);
+        driveTrain.autoUpdateSpeed(l + turn, r - turn);        
     }
 }

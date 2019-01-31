@@ -24,5 +24,10 @@ public class Grabber {
         rightFlywheel.set(flywheelSpeed);
     }
 
+    public void stop(){
+        leftFlywheel.set(0);
+        rightFlywheel.set(0);
+    }
+
 
 }
