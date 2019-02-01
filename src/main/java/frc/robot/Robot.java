@@ -24,10 +24,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  private static final String defaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  private static final String autoOne = "Auto 1";
+  private static final String autoTwo = "Auto 2";
+  private static final String autoThree = "Auto 3";
+  private static final String autoFour = "Auto 4";
+  private static final String autoFive = "Auto 5";
+  private static final String autoSix = "Auto 6";
+  private static final String autoSeven = "Auto 7";
+  private String autoSelected;
+  private final SendableChooser<String> autoChooser = new SendableChooser<>();
   public final DriveTrain driveTrain = new DriveTrain(LEFT_DRIVETRAIN_1, LEFT_DRIVETRAIN_2 , RIGHT_DRIVETAIN_1 , RIGHT_DRIVETAIN_2 , GYRO_PORT);
   private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
 
@@ -38,9 +43,14 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     CameraServer.getInstance().startAutomaticCapture();
-    m_chooser.setDefaultOption("Default Auto", defaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
+    autoChooser.setDefaultOption("auto 1", autoOne);
+    autoChooser.addOption("Auto 2", autoTwo);
+    autoChooser.addOption("Auto 3", autoThree);
+    autoChooser.addOption("Auto 4", autoFour);
+    autoChooser.addOption("Auto 5", autoFive);
+    autoChooser.addOption("Auto 6", autoSix);
+    autoChooser.addOption("Auto 7", autoSeven);
+    SmartDashboard.putData("Auto choices", autoChooser);
 
   }
 
@@ -70,9 +80,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
+    autoSelected = autoChooser.getSelected();
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
+    System.out.println("Auto selected: " + autoSelected);
   }
 
   /**
@@ -80,18 +90,34 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    //File file;
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        //file = new File(whatever the path is.....)
+    File file;
+    switch (autoSelected) {
+      case autoOne:
+        file = new File(FileUtilities.getFilePath/autoOne);
         break;
-      case defaultAuto:
+      case autoTwo:
+        file = new File(FileUtilities.getFilePath/autoTwo);
+        break;
+      case autoThree:
+        file = new File(FileUtilities.getFilePath/autoThree);
+        break;
+      case autoFour:
+        file = new File(FileUtilities.getFilePath/autoFour);
+        break;
+      case autoFive:
+        file = new File(FileUtilities.getFilePath/autoFive);
+        break;
+      case autoSix:
+        file = new File(FileUtilities.getFilePath/autoSix);
+        break;
+      case autoSeven:
+        file = new File(FileUtilities.getFilePath/autoSeven);
+        break;
       default:
-        // Put default auto code here
+        file = new File(FileUtilities.getFilePath/autoOne);
         break;
     }
-    //MotionProfiling auto = new MotionProfiling(driveTrain, file);
+    MotionProfiling auto = new MotionProfiling(driveTrain, file);
   }
 
   /**
