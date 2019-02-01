@@ -47,3 +47,4 @@ public class Arm{
             spark.set(0);
         }
     }
+}
