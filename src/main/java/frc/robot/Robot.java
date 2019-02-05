@@ -31,6 +31,8 @@ public class Robot extends TimedRobot {
   public final DriveTrain driveTrain = new DriveTrain(LEFT_DRIVETRAIN_1, LEFT_DRIVETRAIN_2 , RIGHT_DRIVETAIN_1 , RIGHT_DRIVETAIN_2 , GYRO_PORT);
   private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
   private final Elevator elevator = new Elevator(ELEVATOR_PORT , ELEVATOR_ZERO_PORT);
+  private final MotionProfiling motionProfiling;
+  private final ImageRecognition imageRec = new ImageRecognition();
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -41,7 +43,6 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", defaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
-
   }
 
   /**
@@ -73,6 +74,8 @@ public class Robot extends TimedRobot {
     m_autoSelected = m_chooser.getSelected();
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
+    joystick1.addButton(1 , motionProfiling::changeDriverControl , motionProfiling::changeDriverControl);
+
   }
 
   /**
@@ -80,18 +83,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    //File file;
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        //file = new File(whatever the path is.....)
-        break;
-      case defaultAuto:
-      default:
-        // Put default auto code here
-        break;
-    }
-    //MotionProfiling auto = new MotionProfiling(driveTrain, file);
+      if(imageRec.isImageRecTriggered()){
+        //put image recognition alignment code here
+      }
+      else if(motionProfiling.isDriverControlling()){
+        joystick1.listen();
+      }
+      else{
+        //put motion profiling code here
+      }
   }
 
   /**
@@ -99,7 +99,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    joystick1.listen();
+    if(imageRec.isImageRecTriggered()){
+      //image recognition code here
+    }
+    else{
+      joystick1.listen();  
+    }
   }
 
   /**

@@ -39,10 +39,10 @@ public class Elevator {
         else {
             talon.set(ControlMode.PercentOutput, 0);
         }
-        
+    }
 
-
-
+    public void stop(){
+        talon.set(ControlMode.PercentOutput , 0);
     }
 
 
