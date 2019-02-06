@@ -35,12 +35,14 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> autoChooser = new SendableChooser<>();
   public final DriveTrain driveTrain = new DriveTrain(LEFT_DRIVETRAIN_1, LEFT_DRIVETRAIN_2 , RIGHT_DRIVETAIN_1 , RIGHT_DRIVETAIN_2 , GYRO_PORT);
   private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
+  
   private MotionProfiling auto;
-
+  private final Elevator elevator = new Elevator(ELEVATOR_PORT , ELEVATOR_ZERO_PORT);
+  private final ImageRecognition imageRec = new ImageRecognition();
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
-   */
+   */ 
   @Override
   public void robotInit() {
     CameraServer.getInstance().startAutomaticCapture();
@@ -52,7 +54,6 @@ public class Robot extends TimedRobot {
     autoChooser.addOption("Auto 6", autoSix);
     autoChooser.addOption("Auto 7", autoSeven);
     SmartDashboard.putData("Auto choices", autoChooser);
-
   }
 
   /**
@@ -83,10 +84,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     autoSelected = autoChooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + autoSelected);
-
-
     File file;
     switch (autoSelected) {
       case autoOne:
@@ -115,6 +113,7 @@ public class Robot extends TimedRobot {
         break;
     }
     auto = new MotionProfiling(driveTrain, file);
+    //add a button to the joystick that triggers auto.isDriverControlling();
   }
 
   /**
@@ -122,9 +121,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    if (auto.isFinished()) {
+   if (imageRec.isImageRecTriggered()){
+      //put image rec code here  
+   }  
+   else if (auto.isFinished() || auto.isDriverControlling()) {
       SmartDashboard.putString("DB/String 4", "Path complete");
-      driveTrain.autoUpdateSpeed(0,0);
+      joystick1.listen();
     } else {
       auto.update();
     }
@@ -135,7 +137,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    joystick1.listen();
+    if(imageRec.isImageRecTriggered()){
+      //image recognition code here
+    }
+    else{
+      joystick1.listen();  
+    }
   }
 
   /**

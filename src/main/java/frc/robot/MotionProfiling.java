@@ -22,10 +22,12 @@ public class MotionProfiling {
     private final double maxVelocity = 1.0;
     private EncoderFollower left;
     private EncoderFollower right;
+    private boolean isDriverControlling;
 
     
     public MotionProfiling(DriveTrain driveTrain, File setup) {
         this.driveTrain = driveTrain;
+        isDriverControlling = false;
         leftMotor = driveTrain.getLeftMotor();
         rightMotor = driveTrain.getRightMotor();
 
@@ -50,14 +52,21 @@ public class MotionProfiling {
 
         double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
         double turn = 0.8 * (-1.0/80.0) * angleDifference;
-
-        driveTrain.autoUpdateSpeed(l + turn, r - turn);
+      driveTrain.autoUpdateSpeed(l + turn, r - turn);
     }
     public boolean isFinished() {
         if (left.isFinished() && right.isFinished()) {
             return true;
         } else {
             return false;       
-        }
+        }      
+    }
+
+    public void changeDriverControl(){  
+        this.isDriverControlling = !isDriverControlling;
+    }
+
+    public boolean isDriverControlling(){
+        return isDriverControlling;
     }
 }
