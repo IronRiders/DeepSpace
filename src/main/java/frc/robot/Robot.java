@@ -35,6 +35,7 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> autoChooser = new SendableChooser<>();
   public final DriveTrain driveTrain = new DriveTrain(LEFT_DRIVETRAIN_1, LEFT_DRIVETRAIN_2 , RIGHT_DRIVETAIN_1 , RIGHT_DRIVETAIN_2 , GYRO_PORT);
   private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
+  private MotionProfiling auto;
 
   /**
    * This function is run when the robot is first started up and should be
@@ -43,7 +44,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     CameraServer.getInstance().startAutomaticCapture();
-    autoChooser.setDefaultOption("auto 1", autoOne);
+    autoChooser.setDefaultOption("Auto 1", autoOne);
     autoChooser.addOption("Auto 2", autoTwo);
     autoChooser.addOption("Auto 3", autoThree);
     autoChooser.addOption("Auto 4", autoFour);
@@ -65,6 +66,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     
+    
   }
 
   /**
@@ -83,6 +85,36 @@ public class Robot extends TimedRobot {
     autoSelected = autoChooser.getSelected();
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + autoSelected);
+
+
+    File file;
+    switch (autoSelected) {
+      case autoOne:
+        file = new File();
+        break;
+      case autoTwo:
+        file = new File();
+        break;
+      case autoThree:
+        file = new File();
+        break;
+      case autoFour:
+        file = new File();
+        break;
+      case autoFive:
+        file = new File();
+        break;
+      case autoSix:
+        file = new File();
+        break;
+      case autoSeven:
+        file = new File();
+        break;
+      default:
+        file = new File();
+        break;
+    }
+    auto = new MotionProfiling(driveTrain, file);
   }
 
   /**
@@ -90,34 +122,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    File file;
-    switch (autoSelected) {
-      case autoOne:
-        file = new File(FileUtilities.getFilePath/autoOne);
-        break;
-      case autoTwo:
-        file = new File(FileUtilities.getFilePath/autoTwo);
-        break;
-      case autoThree:
-        file = new File(FileUtilities.getFilePath/autoThree);
-        break;
-      case autoFour:
-        file = new File(FileUtilities.getFilePath/autoFour);
-        break;
-      case autoFive:
-        file = new File(FileUtilities.getFilePath/autoFive);
-        break;
-      case autoSix:
-        file = new File(FileUtilities.getFilePath/autoSix);
-        break;
-      case autoSeven:
-        file = new File(FileUtilities.getFilePath/autoSeven);
-        break;
-      default:
-        file = new File(FileUtilities.getFilePath/autoOne);
-        break;
+    if (auto.isFinished()) {
+      SmartDashboard.putString("DB/String 4", "Path complete");
+      driveTrain.autoUpdateSpeed(0,0);
+    } else {
+      auto.update();
     }
-    MotionProfiling auto = new MotionProfiling(driveTrain, file);
   }
 
   /**

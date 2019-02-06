@@ -41,16 +41,23 @@ public class MotionProfiling {
         left.configurePIDVA(1.0, 0.0, 0.0, 1 / maxVelocity, 0); //Filler PID vals
         right.configurePIDVA(1.0, 0.0, 0.0, 1 / maxVelocity, 0);
     }
-    public void output() { //probably needs a new name
+    public void update() { //probably needs a new name
         double l = left.calculate(leftMotor.getSelectedSensorPosition());
         double r = right.calculate(rightMotor.getSelectedSensorPosition());
-
+    
         double gyroHeading = driveTrain.getGyro().getAngle();   // Assuming the gyro is giving a value in degrees
         double desiredHeading = Pathfinder.r2d(left.getHeading());  // Should also be in degrees
 
         double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
         double turn = 0.8 * (-1.0/80.0) * angleDifference;
 
-        //driveTrain.autoUpdateSpeed(l + turn, r - turn);
+        driveTrain.autoUpdateSpeed(l + turn, r - turn);
+    }
+    public boolean isFinished() {
+        if (left.isFinished() && right.isFinished()) {
+            return true;
+        } else {
+            return false;       
+        }
     }
 }
