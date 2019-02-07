@@ -24,19 +24,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  private static final String autoOne = "Auto 1";
-  private static final String autoTwo = "Auto 2";
-  private static final String autoThree = "Auto 3";
-  private static final String autoFour = "Auto 4";
-  private static final String autoFive = "Auto 5";
-  private static final String autoSix = "Auto 6";
-  private static final String autoSeven = "Auto 7";
-  private String autoSelected;
-  private final SendableChooser<String> autoChooser = new SendableChooser<>();
+  private File pathFiles[] = new File[10]; //10 is a random number, needs to be how many paths
+  int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 1", "Path one?"));
+  int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 2", "Path two?"));
+  int thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 3", "Path three?"));
+  private int chosenPathNumbers[] = new int[]{firstPath, secondPath, thirdPath};
+  private MotionProfiling pathPartOne;
+  private MotionProfiling pathPartTwo;
+  private MotionProfiling pathPartThree;
+  private MotionProfiling selectedPaths[] = new MotionProfiling[]{pathPartOne, pathPartTwo, pathPartThree};
+
   public final DriveTrain driveTrain = new DriveTrain(LEFT_DRIVETRAIN_1, LEFT_DRIVETRAIN_2 , RIGHT_DRIVETAIN_1 , RIGHT_DRIVETAIN_2 , GYRO_PORT);
   private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
   
-  private MotionProfiling auto;
   private final Elevator elevator = new Elevator(ELEVATOR_PORT , ELEVATOR_ZERO_PORT);
   private final ImageRecognition imageRec = new ImageRecognition();
   /**
@@ -46,14 +46,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     CameraServer.getInstance().startAutomaticCapture();
-    autoChooser.setDefaultOption("Auto 1", autoOne);
-    autoChooser.addOption("Auto 2", autoTwo);
-    autoChooser.addOption("Auto 3", autoThree);
-    autoChooser.addOption("Auto 4", autoFour);
-    autoChooser.addOption("Auto 5", autoFive);
-    autoChooser.addOption("Auto 6", autoSix);
-    autoChooser.addOption("Auto 7", autoSeven);
-    SmartDashboard.putData("Auto choices", autoChooser);
   }
 
   /**
@@ -83,37 +75,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    autoSelected = autoChooser.getSelected();
-    System.out.println("Auto selected: " + autoSelected);
-    File file;
-    switch (autoSelected) {
-      case autoOne:
-        file = new File();
-        break;
-      case autoTwo:
-        file = new File();
-        break;
-      case autoThree:
-        file = new File();
-        break;
-      case autoFour:
-        file = new File();
-        break;
-      case autoFive:
-        file = new File();
-        break;
-      case autoSix:
-        file = new File();
-        break;
-      case autoSeven:
-        file = new File();
-        break;
-      default:
-        file = new File();
-        break;
+    for (int i = 0; i < pathFiles.length; i++) {
+      pathFiles[i] = new File(i+"");
     }
-    auto = new MotionProfiling(driveTrain, file);
-    //add a button to the joystick that triggers auto.isDriverControlling();
+    for (int i = 0; i < selectedPaths.length; i++) {
+      selectedPaths[i] = new MotionProfiling(driveTrain, pathFiles[chosenPathNumbers[i]]);
+    }
+
+    // //add a button to the joystick that triggers auto.isDriverControlling();
   }
 
   /**
@@ -121,14 +90,29 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-   if (imageRec.isImageRecTriggered()){
-      //put image rec code here  
-   }  
-   else if (auto.isFinished() || auto.isDriverControlling()) {
-      SmartDashboard.putString("DB/String 4", "Path complete");
-      joystick1.listen();
+    //below could use while loops instead, but not sure how that works when auto periodic is called repetedly. 
+    if (imageRec.isImageRecTriggered()){
+      //image rec code here
+    } else if (!selectedPaths[0].isFinished()) { //had to remove driver control now that its path dependant
+      selectedPaths[0].update();
     } else {
-      auto.update();
+      SmartDashboard.putString("DB/String 4", "Path part 1 complete");
+      driveTrain.autoUpdateSpeed(0,0);
+      //Something for manipulators?
+      if (!selectedPaths[1].isFinished()) {
+        selectedPaths[1].update();
+      } else {
+        SmartDashboard.putString("DB/String 4", "Path part 2 complete");
+        driveTrain.autoUpdateSpeed(0,0);
+        //Possibly something w/ manipulators? 
+        if (!selectedPaths[2].isFinished()) {
+          selectedPaths[2].update();
+        } else {
+          SmartDashboard.putString("DB/String 4", "Full Path complete");
+          driveTrain.autoUpdateSpeed(0,0);
+          //maybe something w/ manipulators?
+        }
+      }
     }
   }
 
