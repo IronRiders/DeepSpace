@@ -23,6 +23,7 @@ public class MotionProfiling {
     private EncoderFollower left;
     private EncoderFollower right;
     private boolean isDriverControlling;
+    private boolean started = false;
 
     
     public MotionProfiling(DriveTrain driveTrain, File setup) {
@@ -44,6 +45,8 @@ public class MotionProfiling {
         right.configurePIDVA(1.0, 0.0, 0.0, 1 / maxVelocity, 0);
     }
     public void update() { //probably needs a new name
+        started = true;
+
         double l = left.calculate(leftMotor.getSelectedSensorPosition());
         double r = right.calculate(rightMotor.getSelectedSensorPosition());
     
@@ -52,7 +55,8 @@ public class MotionProfiling {
 
         double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
         double turn = 0.8 * (-1.0/80.0) * angleDifference;
-      driveTrain.autoUpdateSpeed(l + turn, r - turn);
+
+        driveTrain.autoUpdateSpeed(l + turn, r - turn);
     }
     public boolean isFinished() {
         if (left.isFinished() && right.isFinished()) {
@@ -61,11 +65,12 @@ public class MotionProfiling {
             return false;       
         }      
     }
-
+    public boolean isStarted() {
+        return started;
+    }
     public void changeDriverControl(){  
         this.isDriverControlling = !isDriverControlling;
     }
-
     public boolean isDriverControlling(){
         return isDriverControlling;
     }

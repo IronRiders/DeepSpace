@@ -96,16 +96,20 @@ public class Robot extends TimedRobot {
     } else if (!selectedPaths[0].isFinished()) { //had to remove driver control now that its path dependant
       selectedPaths[0].update();
     } else {
-      SmartDashboard.putString("DB/String 4", "Path part 1 complete");
-      driveTrain.autoUpdateSpeed(0,0);
-      //Something for manipulators?
-      if (!selectedPaths[1].isFinished()) {
+      if (!selectedPaths[1].isStarted()) {
+        SmartDashboard.putString("DB/String 4", "Path part 1 complete");
+        driveTrain.autoUpdateSpeed(0,0);
+        //manipulator control
+        selectedPaths[1].update();
+      } else if (!selectedPaths[1].isFinished()) {
         selectedPaths[1].update();
       } else {
-        SmartDashboard.putString("DB/String 4", "Path part 2 complete");
-        driveTrain.autoUpdateSpeed(0,0);
-        //Possibly something w/ manipulators? 
-        if (!selectedPaths[2].isFinished()) {
+        if (!selectedPaths[2].isStarted()) {
+          SmartDashboard.putString("DB/String 4", "Path part 2 complete");
+          driveTrain.autoUpdateSpeed(0,0);
+          //Possibly something w/ manipulators? 
+          selectedPaths[2].update();
+        } else if (!selectedPaths[2].isFinished()) {
           selectedPaths[2].update();
         } else {
           SmartDashboard.putString("DB/String 4", "Full Path complete");
