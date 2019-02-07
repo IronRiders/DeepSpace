@@ -25,15 +25,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends TimedRobot {
   private File pathFiles[] = new File[10]; //10 is a random number, needs to be how many paths
-  int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 1", "Path one?"));
-  int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 2", "Path two?"));
-  int thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 3", "Path three?"));
-  private int chosenPathNumbers[] = new int[]{firstPath, secondPath, thirdPath};
-  private MotionProfiling pathPartOne;
-  private MotionProfiling pathPartTwo;
-  private MotionProfiling pathPartThree;
-  private MotionProfiling selectedPaths[] = new MotionProfiling[]{pathPartOne, pathPartTwo, pathPartThree};
+  //private MotionProfiling pathPartOne;
+  //private MotionProfiling pathPartTwo;
+  //private MotionProfiling pathPartThree;
+  private MotionProfiling selectedPaths[] = new MotionProfiling[3];
 
+  private boolean isDriverControlling;  
   public final DriveTrain driveTrain = new DriveTrain(LEFT_DRIVETRAIN_1, LEFT_DRIVETRAIN_2 , RIGHT_DRIVETAIN_1 , RIGHT_DRIVETAIN_2 , GYRO_PORT);
   private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
   
@@ -46,6 +43,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     CameraServer.getInstance().startAutomaticCapture();
+    joystick1.addButton(1, this::changeDriverControl); //num can be changed
   }
 
   /**
@@ -75,14 +73,17 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 1", "Path one?"));
+    int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 2", "Path two?"));
+    int thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 3", "Path three?"));
     for (int i = 0; i < pathFiles.length; i++) {
       pathFiles[i] = new File(i+"");
     }
+    int chosenPathNumbers[] = new int[]{firstPath, secondPath, thirdPath};
+
     for (int i = 0; i < selectedPaths.length; i++) {
       selectedPaths[i] = new MotionProfiling(driveTrain, pathFiles[chosenPathNumbers[i]]);
     }
-
-    // //add a button to the joystick that triggers auto.isDriverControlling();
   }
 
   /**
@@ -132,6 +133,12 @@ public class Robot extends TimedRobot {
       joystick1.listen();  
     }
   }
+
+  public void changeDriverControl(){  
+    this.isDriverControlling = !isDriverControlling;
+}
+
+
 
   /**
    * This function is called periodically during test mode.
