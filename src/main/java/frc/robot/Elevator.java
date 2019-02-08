@@ -11,7 +11,8 @@ public class Elevator {
     private final double iConstant = 0.01;
     private final double dConstant = 4.0;
     private final double fConstant = 0.0;
-    private final int maxAmps = 5;
+    private final int maxAmps = 10;
+    private final int diameter = 7; //THIS NEEDS TO BE SET --- IT IS THE DIAMETER OF THE ELEVATOR SPOOL THING
     DigitalInput limitSwitch;
 
     public Elevator(int elevatorPort , int limitSwitchPort){
@@ -27,7 +28,7 @@ public class Elevator {
 
     //@param distance is in inches
     public void move(double distance){
-        double totalPulses = distance * (4096/(Math.PI*6));
+        double totalPulses = distance * (4096/(Math.PI*diameter));
         talon.set(ControlMode.Position, totalPulses);
     }
 
@@ -39,10 +40,6 @@ public class Elevator {
         else {
             talon.set(ControlMode.PercentOutput, 0);
         }
-        
-
-
-
     }
 
 
