@@ -25,9 +25,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends TimedRobot {
   private File pathFiles[] = new File[10]; //10 is a random number, needs to be how many paths
-  //private MotionProfiling pathPartOne;
-  //private MotionProfiling pathPartTwo;
-  //private MotionProfiling pathPartThree;
   private MotionProfiling selectedPaths[] = new MotionProfiling[3];
 
   private boolean isDriverControlling;  
@@ -36,6 +33,8 @@ public class Robot extends TimedRobot {
   
   private final Elevator elevator = new Elevator(ELEVATOR_PORT , ELEVATOR_ZERO_PORT);
   private final ImageRecognition imageRec = new ImageRecognition();
+  private String filePath = "/home/lvuser/deploy/paths/path%s.pf1.csv"; 
+  
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -77,7 +76,8 @@ public class Robot extends TimedRobot {
     int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 2", "Path two?"));
     int thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 3", "Path three?"));
     for (int i = 0; i < pathFiles.length; i++) {
-      pathFiles[i] = new File(i+"");
+      String fileName = String.format(filePath , i)
+      pathFiles[i] = new File(fileName);
     }
     int chosenPathNumbers[] = new int[]{firstPath, secondPath, thirdPath};
 
@@ -91,33 +91,20 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    //below could use while loops instead, but not sure how that works when auto periodic is called repetedly. 
+    int currentPath = 0;
+
+    for (int i = 0 ; i < selectedPaths.length ; i++){
+      if(!selectedPaths[i].isFinished()){
+        currentPath = i;
+        break;
+      }
+    }
     if (imageRec.isImageRecTriggered()){
       //image rec code here
-    } else if (!selectedPaths[0].isFinished()) { //had to remove driver control now that its path dependant
-      selectedPaths[0].update();
+    } else if (isDriverControlling) { //had to remove driver control now that its path dependant
+      joystick1.listen();
     } else {
-      if (!selectedPaths[1].isStarted()) {
-        SmartDashboard.putString("DB/String 4", "Path part 1 complete");
-        driveTrain.autoUpdateSpeed(0,0);
-        //manipulator control
-        selectedPaths[1].update();
-      } else if (!selectedPaths[1].isFinished()) {
-        selectedPaths[1].update();
-      } else {
-        if (!selectedPaths[2].isStarted()) {
-          SmartDashboard.putString("DB/String 4", "Path part 2 complete");
-          driveTrain.autoUpdateSpeed(0,0);
-          //Possibly something w/ manipulators? 
-          selectedPaths[2].update();
-        } else if (!selectedPaths[2].isFinished()) {
-          selectedPaths[2].update();
-        } else {
-          SmartDashboard.putString("DB/String 4", "Full Path complete");
-          driveTrain.autoUpdateSpeed(0,0);
-          //maybe something w/ manipulators?
-        }
-      }
+      selectedPaths[currentPath].update();
     }
   }
 

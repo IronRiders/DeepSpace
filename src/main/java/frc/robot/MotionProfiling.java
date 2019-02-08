@@ -23,7 +23,6 @@ public class MotionProfiling {
     private EncoderFollower left;
     private EncoderFollower right;
     private boolean isDriverControlling;
-    private boolean started = false;
 
     
     public MotionProfiling(DriveTrain driveTrain, File setup) {
@@ -44,9 +43,7 @@ public class MotionProfiling {
         left.configurePIDVA(1.0, 0.0, 0.0, 1 / maxVelocity, 0); //Filler PID vals
         right.configurePIDVA(1.0, 0.0, 0.0, 1 / maxVelocity, 0);
     }
-    public void update() { //probably needs a new name
-        started = true;
-
+    public void update() { 
         double l = left.calculate(leftMotor.getSelectedSensorPosition());
         double r = right.calculate(rightMotor.getSelectedSensorPosition());
     
@@ -64,9 +61,6 @@ public class MotionProfiling {
         } else {
             return false;       
         }      
-    }
-    public boolean isStarted() {
-        return started;
     }
     public void changeDriverControl(){  
         this.isDriverControlling = !isDriverControlling;
