@@ -15,19 +15,17 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 public class MotionProfiling {
     private DriveTrain driveTrain;
     private final double wheelBaseWidth = 2.25; // Width in feet  
-    private final double wheelDiameter = 8; //inches
+    private final double wheelDiameter = 0.1524; //meters
     private final TalonSRX leftMotor;
     private final TalonSRX rightMotor;
     private final int encoderTicksPerRevolution = 1024;
-    private final double maxVelocity = 1.0;
+    private final double maxVelocity = 13; //ft/s
     private EncoderFollower left;
     private EncoderFollower right;
-    private boolean isDriverControlling;
 
     
     public MotionProfiling(DriveTrain driveTrain, File setup) {
         this.driveTrain = driveTrain;
-        isDriverControlling = false;
         leftMotor = driveTrain.getLeftMotor();
         rightMotor = driveTrain.getRightMotor();
 
@@ -55,17 +53,12 @@ public class MotionProfiling {
 
         driveTrain.autoUpdateSpeed(l + turn, r - turn);
     }
+
     public boolean isFinished() {
         if (left.isFinished() && right.isFinished()) {
             return true;
         } else {
             return false;       
         }      
-    }
-    public void changeDriverControl(){  
-        this.isDriverControlling = !isDriverControlling;
-    }
-    public boolean isDriverControlling(){
-        return isDriverControlling;
     }
 }

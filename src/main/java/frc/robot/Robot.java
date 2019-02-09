@@ -42,7 +42,10 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     CameraServer.getInstance().startAutomaticCapture();
-    joystick1.addButton(1, this::changeDriverControl); //num can be changed
+    for (int i = 0; i < pathFiles.length; i++) {
+      String fileName = String.format(filePath , i);
+      pathFiles[i] = new File(fileName);
+    }
   }
 
   /**
@@ -75,10 +78,6 @@ public class Robot extends TimedRobot {
     int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 1", "Path one?"));
     int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 2", "Path two?"));
     int thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 3", "Path three?"));
-    for (int i = 0; i < pathFiles.length; i++) {
-      String fileName = String.format(filePath , i)
-      pathFiles[i] = new File(fileName);
-    }
     int chosenPathNumbers[] = new int[]{firstPath, secondPath, thirdPath};
 
     for (int i = 0; i < selectedPaths.length; i++) {
@@ -121,7 +120,7 @@ public class Robot extends TimedRobot {
     }
   }
 
-  public void changeDriverControl(){  
+public void changeDriverControl(){  
     this.isDriverControlling = !isDriverControlling;
 }
 
