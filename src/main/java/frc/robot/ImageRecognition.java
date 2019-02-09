@@ -55,6 +55,26 @@ int heightOfCamera = 1080;
 
 
     }
+    
+    public void determinedPath(double distanceTapeToRobotInches, double distanceToRightInches) {
+    if (distanceToRightInches < 5 && distanceToRightInches > -5) { 
+        // if the robot is not too far right or left (values need to be tested and updated)
+        // drive straight for x inches
+    }
+    else if(distanceToRightInches > 0) {
+        // make the robot turn right 
+        // move x inches 
+        // turn left
+        // drive straight for x inches
+    }
+    else {
+        // make the robot turn left
+        // move x inches
+        // turn right
+        // drive straight for x inches
+    }
+        
+    }
 
 
 
