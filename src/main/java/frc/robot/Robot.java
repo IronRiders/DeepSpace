@@ -35,7 +35,7 @@ public class Robot extends TimedRobot {
   private final Grabber grabber = new Grabber(LEFT_FLYWHEEL_PORT , RIGHT_FLYWHEEL_PORT , CLAW_LEFT , CLAW_RIGHT , CLAW_LEFT_LIMIT_SWITCH , CLAW_RIGHT_LIMIT_SWITCH );
   private final Arm arm = new Arm(ARM_PORT , ARM_LIMIT_SWITCH_PORT);
   private String filePath = "/home/lvuser/deploy/paths/path%s.pf1.csv"; 
-  
+  private final ImageRecognition imageRec = new ImageRecognition(driveTrain);
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -91,6 +91,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+
     int currentPath = 0;
 
     for (int i = 0 ; i < selectedPaths.length ; i++){

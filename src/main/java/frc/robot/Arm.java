@@ -47,4 +47,8 @@ public class Arm{
             spark.set(0);
         }
     }
+
+    public void stop(){
+        spark.set(0);
+    }
 }
