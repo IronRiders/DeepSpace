@@ -16,6 +16,9 @@ public class Ports{
     //sensor ports - need to be set
     public static final int GYRO_PORT = 0;
     public static final int ELEVATOR_ZERO_PORT = 9;
+    public static final int ARM_LIMIT_SWITCH_PORT = 10;
+    public static final int CLAW_LEFT_LIMIT_SWITCH = 12;
+    public static final int CLAW_RIGHT_LIMIT_SWITCH = 13;
 
     //pwm ports
     public static final int LEFT_FLYWHEEL_PORT = 0; 

@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -21,7 +22,7 @@ public class Grabber {
     private final int maxAmps = 10; //ask Jim
 
 
-    public Grabber(int leftFlywheelPort , int rightFlywheelPort , int rightClawPort , int leftClawPort , int rightLimitPort , int leftLimitPort){
+    public Grabber(int leftFlywheelPort , int rightFlywheelPort , int leftClawPort , int rightClawPort , int leftLimitPort , int rightLimitPort){
         leftFlywheel = new VictorSP(leftFlywheelPort);
         rightFlywheel = new VictorSP(rightFlywheelPort);
         rightClaw = new TalonSRX(rightClawPort);
@@ -31,12 +32,14 @@ public class Grabber {
         rightClaw.config_kI(0, iConstant);
         rightClaw.config_kF(0, fConstant);
         rightClaw.configPeakCurrentLimit(maxAmps);
+        rightClaw.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
 
         leftClaw.config_kD(0, dConstant);
         leftClaw.config_kP(0, pConstant);
         leftClaw.config_kI(0, iConstant);
         leftClaw.config_kF(0, fConstant);
         leftClaw.configPeakCurrentLimit(maxAmps);
+        leftClaw.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
 
         leftLimitSwitch = new DigitalInput(leftLimitPort);
         rightLimitSwitch = new DigitalInput(rightLimitPort);

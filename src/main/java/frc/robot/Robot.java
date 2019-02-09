@@ -24,13 +24,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  private static final String defaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  private File pathFiles[] = new File[12]; //10 is a random number, needs to be how many paths
+  private MotionProfiling selectedPaths[] = new MotionProfiling[3];
+
+  private boolean isDriverControlling;  
   public final DriveTrain driveTrain = new DriveTrain(LEFT_DRIVETRAIN_1, LEFT_DRIVETRAIN_2 , RIGHT_DRIVETAIN_1 , RIGHT_DRIVETAIN_2 , GYRO_PORT);
   private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
+  
   private final Elevator elevator = new Elevator(ELEVATOR_PORT , ELEVATOR_ZERO_PORT);
+  private final Grabber grabber = new Grabber(LEFT_FLYWHEEL_PORT , RIGHT_FLYWHEEL_PORT , CLAW_LEFT , CLAW_RIGHT , CLAW_LEFT_LIMIT_SWITCH , CLAW_RIGHT_LIMIT_SWITCH );
+  private final Arm arm = new Arm(ARM_PORT , ARM_LIMIT_SWITCH_PORT);
+  private String filePath = "/home/lvuser/deploy/paths/path%s.pf1.csv"; 
+  
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -38,10 +43,10 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     CameraServer.getInstance().startAutomaticCapture();
-    m_chooser.setDefaultOption("Default Auto", defaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
-
+    for (int i = 0; i < pathFiles.length; i++) {
+      String fileName = String.format(filePath , i);
+      pathFiles[i] = new File(fileName);
+    }
   }
 
   /**
@@ -54,6 +59,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    
     
   }
 
@@ -70,9 +76,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
+    int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 1", "Path one?"));
+    int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 2", "Path two?"));
+    int thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 3", "Path three?"));
+    int chosenPathNumbers[] = new int[]{firstPath, secondPath, thirdPath};
+
+    for (int i = 0; i < selectedPaths.length; i++) {
+      selectedPaths[i] = new MotionProfiling(driveTrain, pathFiles[chosenPathNumbers[i]]);
+    }
   }
 
   /**
@@ -80,18 +91,21 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    //File file;
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        //file = new File(whatever the path is.....)
+    int currentPath = 0;
+
+    for (int i = 0 ; i < selectedPaths.length ; i++){
+      if(!selectedPaths[i].isFinished()){
+        currentPath = i;
         break;
-      case defaultAuto:
-      default:
-        // Put default auto code here
-        break;
+      }
     }
-    //MotionProfiling auto = new MotionProfiling(driveTrain, file);
+    if (imageRec.isImageRecTriggered()){
+      //image rec code here
+    } else if (isDriverControlling) { //had to remove driver control now that its path dependant
+      joystick1.listen();
+    } else {
+      selectedPaths[currentPath].update();
+    }
   }
 
   /**
@@ -99,8 +113,19 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    joystick1.listen();
+    if(imageRec.isImageRecTriggered()){
+      //image recognition code here
+    }
+    else{
+      joystick1.listen();  
+    }
   }
+
+public void changeDriverControl(){  
+    this.isDriverControlling = !isDriverControlling;
+}
+
+
 
   /**
    * This function is called periodically during test mode.
