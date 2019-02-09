@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  private File pathFiles[] = new File[10]; //10 is a random number, needs to be how many paths
+  private File pathFiles[] = new File[12];
   private MotionProfiling selectedPaths[] = new MotionProfiling[3];
 
   private boolean isDriverControlling;  
@@ -43,7 +43,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     CameraServer.getInstance().startAutomaticCapture();
     for (int i = 0; i < pathFiles.length; i++) {
-      String fileName = String.format(filePath , i);
+      String fileName = String.format(filePath , i+1);
       pathFiles[i] = new File(fileName);
     }
   }
