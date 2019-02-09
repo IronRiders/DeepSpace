@@ -24,21 +24,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  private static final String autoOne = "Auto 1";
-  private static final String autoTwo = "Auto 2";
-  private static final String autoThree = "Auto 3";
-  private static final String autoFour = "Auto 4";
-  private static final String autoFive = "Auto 5";
-  private static final String autoSix = "Auto 6";
-  private static final String autoSeven = "Auto 7";
-  private String autoSelected;
-  private final SendableChooser<String> autoChooser = new SendableChooser<>();
+  private File pathFiles[] = new File[12];
+  private MotionProfiling selectedPaths[] = new MotionProfiling[3];
+
+  private boolean isDriverControlling;  
   public final DriveTrain driveTrain = new DriveTrain(LEFT_DRIVETRAIN_1, LEFT_DRIVETRAIN_2 , RIGHT_DRIVETAIN_1 , RIGHT_DRIVETAIN_2 , GYRO_PORT);
   private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
   
-  private MotionProfiling auto;
   private final Elevator elevator = new Elevator(ELEVATOR_PORT , ELEVATOR_ZERO_PORT);
   private final ImageRecognition imageRec = new ImageRecognition();
+  private String filePath = "/home/lvuser/deploy/paths/path%s.pf1.csv"; 
+  
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -46,14 +42,10 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     CameraServer.getInstance().startAutomaticCapture();
-    autoChooser.setDefaultOption("Auto 1", autoOne);
-    autoChooser.addOption("Auto 2", autoTwo);
-    autoChooser.addOption("Auto 3", autoThree);
-    autoChooser.addOption("Auto 4", autoFour);
-    autoChooser.addOption("Auto 5", autoFive);
-    autoChooser.addOption("Auto 6", autoSix);
-    autoChooser.addOption("Auto 7", autoSeven);
-    SmartDashboard.putData("Auto choices", autoChooser);
+    for (int i = 0; i < pathFiles.length; i++) {
+      String fileName = String.format(filePath , i+1);
+      pathFiles[i] = new File(fileName);
+    }
   }
 
   /**
@@ -83,37 +75,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    autoSelected = autoChooser.getSelected();
-    System.out.println("Auto selected: " + autoSelected);
-    File file;
-    switch (autoSelected) {
-      case autoOne:
-        file = new File();
-        break;
-      case autoTwo:
-        file = new File();
-        break;
-      case autoThree:
-        file = new File();
-        break;
-      case autoFour:
-        file = new File();
-        break;
-      case autoFive:
-        file = new File();
-        break;
-      case autoSix:
-        file = new File();
-        break;
-      case autoSeven:
-        file = new File();
-        break;
-      default:
-        file = new File();
-        break;
+    int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 1", "Path one?"));
+    int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 2", "Path two?"));
+    int thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 3", "Path three?"));
+    int chosenPathNumbers[] = new int[]{firstPath, secondPath, thirdPath};
+
+    for (int i = 0; i < selectedPaths.length; i++) {
+      selectedPaths[i] = new MotionProfiling(driveTrain, pathFiles[chosenPathNumbers[i]]);
     }
-    auto = new MotionProfiling(driveTrain, file);
-    //add a button to the joystick that triggers auto.isDriverControlling();
   }
 
   /**
@@ -121,14 +90,20 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-   if (imageRec.isImageRecTriggered()){
-      //put image rec code here  
-   }  
-   else if (auto.isFinished() || auto.isDriverControlling()) {
-      SmartDashboard.putString("DB/String 4", "Path complete");
+    int currentPath = 0;
+
+    for (int i = 0 ; i < selectedPaths.length ; i++){
+      if(!selectedPaths[i].isFinished()){
+        currentPath = i;
+        break;
+      }
+    }
+    if (imageRec.isImageRecTriggered()){
+      //image rec code here
+    } else if (isDriverControlling) { //had to remove driver control now that its path dependant
       joystick1.listen();
     } else {
-      auto.update();
+      selectedPaths[currentPath].update();
     }
   }
 
@@ -144,6 +119,12 @@ public class Robot extends TimedRobot {
       joystick1.listen();  
     }
   }
+
+public void changeDriverControl(){  
+    this.isDriverControlling = !isDriverControlling;
+}
+
+
 
   /**
    * This function is called periodically during test mode.
