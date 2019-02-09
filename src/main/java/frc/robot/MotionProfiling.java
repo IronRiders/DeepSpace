@@ -38,8 +38,8 @@ public class MotionProfiling {
         left.configureEncoder(leftMotor.getSelectedSensorPosition(), 1024, wheelDiameter); //1024 or 4096 - before or after quad?
         right.configureEncoder(rightMotor.getSelectedSensorPosition(), 1024, wheelDiameter);
 
-        left.configurePIDVA(1.0, 0.0, 0.0, 1 / maxVelocity, 0); //Filler PID vals
-        right.configurePIDVA(1.0, 0.0, 0.0, 1 / maxVelocity, 0);
+        left.configurePIDVA(0.9, 0.0, 0.0, 1 / maxVelocity, 0); //Filler PID vals
+        right.configurePIDVA(0.9, 0.0, 0.0, 1 / maxVelocity, 0);
     }
     public void update() { 
         double l = left.calculate(leftMotor.getSelectedSensorPosition());
