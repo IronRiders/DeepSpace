@@ -16,7 +16,7 @@ public class Arm{
     private final double iConstant = 0.01;
     private final double dConstant = 4.0;
     private final double fConstant = 0.0;
-    private final int maxMotorAmps = 5;
+    private final int maxMotorAmps = 6;
     DigitalInput limitSwitch;
    // double pulsesPerInch = 4096/(Math.PI*diameter of wheel)
 

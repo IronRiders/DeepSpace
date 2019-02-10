@@ -11,7 +11,7 @@ public class Elevator {
     private final double iConstant = 0.01;
     private final double dConstant = 4.0;
     private final double fConstant = 0.0;
-    private final int maxAmps = 10;
+    private final int maxAmps = 6;
     private final int diameter = 7; //THIS NEEDS TO BE SET --- IT IS THE DIAMETER OF THE ELEVATOR SPOOL THING
     DigitalInput limitSwitch;
 

@@ -19,7 +19,7 @@ public class Grabber {
     private final double iConstant = 10;
     private final double dConstant = 0.0;
     private final double fConstant = 0.0;
-    private final int maxAmps = 10; //ask Jim
+    private final int maxAmps = 3; 
 
 
     public Grabber(int leftFlywheelPort , int rightFlywheelPort , int leftClawPort , int rightClawPort , int leftLimitPort , int rightLimitPort){
