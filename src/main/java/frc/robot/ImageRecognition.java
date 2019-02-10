@@ -65,15 +65,23 @@ int heightOfCamera = 1080;
     }
     else if(distanceToRightInches > 0) {
         // make the robot turn right 
+        driveTrain.autoUpdateSpeed(-0.3, -0.3);
         // move x inches 
+        driveTrain.autoUpdateSpeed(0.3, -0.3);
         // turn left
+        driveTrain.autoUpdateSpeed(0.3, 0.3);
         // drive straight for x inches
+        driveTrain.autoUpdateSpeed(0.3, -0.3);
     }
     else {
         // make the robot turn left
+        driveTrain.autoUpdateSpeed(0.3, 0.3);
         // move x inches
+        driveTrain.autoUpdateSpeed(0.3, -0.3);
         // turn right
+        driveTrain.autoUpdateSpeed(-0.3, -0.3);
         // drive straight for x inches
+        driveTrain.autoUpdateSpeed(0.3, -0.3);
     }
         
     }
