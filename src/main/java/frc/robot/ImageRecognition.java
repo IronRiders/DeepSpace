@@ -20,6 +20,8 @@ DriveTrain driveTrain;
 int widthOfCamera = 1920; //we need to change these!
 int heightOfCamera = 1080; 
 
+// https://wpilib.screenstepslive.com/s/currentCS/m/75361 HOW TO USE NETWORKTABLES!
+
     public ImageRecognition(DriveTrain driveTrain) {
         this.driveTrain = driveTrain;
         isImageRecTriggered = false;
