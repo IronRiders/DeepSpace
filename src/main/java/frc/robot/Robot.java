@@ -98,7 +98,7 @@ public class Robot extends TimedRobot {
         break;
       }
     }
-    if (selectedPaths[selectedPaths.length - 1].isFinished()){
+    if (selectedPaths[selectedPaths.length - 1].isFinished()){ // Assuming that the last path will only finished after it as occurred
       if(!imageRec.isImageRecTriggered()) {
         imageRec.triggerImageRec();
       }
@@ -116,7 +116,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     if(imageRec.isImageRecTriggered()){
-      imageRec.triggerImageRec();
+      // the imageRec.triggerImageRec() must be called by joystick
+      imageRec.startNextMove();
     }
     else{
       joystick1.listen();  
