@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
   private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
   
   private final Elevator elevator = new Elevator(ELEVATOR_PORT , ELEVATOR_ZERO_PORT);
-  private final ImageRecognition imageRec = new ImageRecognition();
+  private final ImageRecognition imageRec = new ImageRecognition(driveTrain);
   private String filePath = "/home/lvuser/deploy/paths/path%s.pf1.csv"; 
   
   /**
@@ -98,8 +98,11 @@ public class Robot extends TimedRobot {
         break;
       }
     }
-    if (imageRec.isImageRecTriggered()){
-      //image rec code here
+    if (selectedPaths[selectedPaths.length - 1].isFinished()){
+      if(!imageRec.isImageRecTriggered()) {
+        imageRec.triggerImageRec();
+      }
+      imageRec.startNextMove();
     } else if (isDriverControlling) { //had to remove driver control now that its path dependant
       joystick1.listen();
     } else {
@@ -113,7 +116,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     if(imageRec.isImageRecTriggered()){
-      //image recognition code here
+      imageRec.triggerImageRec();
     }
     else{
       joystick1.listen();  
