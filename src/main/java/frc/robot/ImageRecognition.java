@@ -53,7 +53,7 @@ public class ImageRecognition {
         isImageRecTriggered = !isImageRecTriggered;
         getNetworkTablesValues();
         determinePath(distanceToRobotInches, distanceRightToRobotInches);
-        lastSensorPosition = driveTrain.getLeftMotor().getSelectedSensorPosition()
+        lastSensorPosition = driveTrain.getLeftMotor().getSelectedSensorPosition();
     }
 
     public boolean isImageRecTriggered() {
