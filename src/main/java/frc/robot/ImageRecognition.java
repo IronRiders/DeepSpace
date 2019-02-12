@@ -33,11 +33,12 @@ public class ImageRecognition {
     private double currentRobotAngle;
     private int stage = 0;
     private double[] pathData = new double[4];
-    DecimalFormat df = new DecimalFormat("##.######");
+    //DecimalFormat df = new DecimalFormat("##.######");
     private static final double ANGLE_TOLERANCE = 10. / 360 * 2 * Math.PI; // 10 Degrees of tolerance
     private static final double DISTANCE_TOLERANCE = 5; // inches
     private static final int CCW_IS_POSITIVE = 1; // 1 = true, -1 = false
     private double tempTravelDistance = 0;
+    private int lastSensorPosition;
 
 // https://wpilib.screenstepslive.com/s/currentCS/m/75361 HOW TO USE NETWORKTABLES!
 
@@ -52,6 +53,7 @@ public class ImageRecognition {
         isImageRecTriggered = !isImageRecTriggered;
         getNetworkTablesValues();
         determinePath(distanceToRobotInches, distanceRightToRobotInches);
+        lastSensorPosition = driveTrain.getLeftMotor().getSelectedSensorPosition()
     }
 
     public boolean isImageRecTriggered() {
@@ -74,7 +76,6 @@ public class ImageRecognition {
     //         //turn left
     //         driveTrain.autoUpdateSpeed(0.3, 0.3);
     //     }
-
     //     //positive turns right , negative turns left
     // }
 
@@ -89,6 +90,10 @@ public class ImageRecognition {
             case 2:
                 turnToAngle(pathData[stage]);
             case 3:
+                if(!isPathCorrect()) {
+                    stage = 0;
+                    startNextMove();
+                }
                 travelDistanceInches(pathData[stage]);
             case 4:
                 stage = 0;
@@ -112,7 +117,9 @@ public class ImageRecognition {
         }
     }
 
+    // Drives foward or backwards untill target distance is reached
     private void travelDistanceInches(double travelDistance) {
+        tempTravelDistance += straightDistanceTraveled();
         if(Math.abs(tempTravelDistance - travelDistance) < DISTANCE_TOLERANCE) {
             tempTravelDistance = 0;
             stage++;
@@ -127,7 +134,28 @@ public class ImageRecognition {
         }
     }
 
+    // Gets the straight distance traveled using the left motor
+    private double straightDistanceTraveled() {
+        int tempSensorPosition = lastSensorPosition;
+        lastSensorPosition = driveTrain.getLeftMotor().getSelectedSensorPosition();
+        return (lastSensorPosition - tempSensorPosition) / ENCODER_TICKS_PER_REVOLUTION * 
+                (Math.PI * WHEEL_DIAMETER_INCHES);
+    }
+
+    // Checks the current path to see if it still works
+    private boolean isPathCorrect() {
+        triggerImageRec();
+        isImageRecTriggered = true;
+        if(pathData[1] == 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     
+    // Makes the path that the robot will take with the image recognition data
     private void determinePath(double distanceTapeToRobotInches, double distanceToRightInches) {
 
         currentRobotAngle = driveTrain.getGyro().getAngle();
