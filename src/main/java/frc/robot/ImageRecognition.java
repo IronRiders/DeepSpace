@@ -170,21 +170,21 @@ public class ImageRecognition {
         }
         else if(distanceToRightInches > 0) {
             // make the robot turn right 
-            pathData[0] = (-Math.PI / 2 * CCW_IS_POSITIVE + Math.PI * 2  + currentRobotAngle) % (2 * Double.parseDouble(df.format(Math.PI))); 
+            pathData[0] = (-Math.PI / 2 * CCW_IS_POSITIVE + Math.PI * 2  + currentRobotAngle) % (2 * Math.PI); 
             // drive straight for x inches 
             pathData[1] = distanceToRightInches;
             // turn left
-            pathData[2] = (Math.PI / 2 * CCW_IS_POSITIVE + Math.PI * 2  + currentRobotAngle) % (2 * Double.parseDouble(df.format(Math.PI)));
+            pathData[2] = (Math.PI / 2 * CCW_IS_POSITIVE + Math.PI * 2  + currentRobotAngle) % (2 * Math.PI);
             // drive straight for x inches
             pathData[3] = distanceTapeToRobotInches;
         }
         else {
             // turn left
-            pathData[0] = (Math.PI / 2 * CCW_IS_POSITIVE + Math.PI * 2  + currentRobotAngle) % (2 * Double.parseDouble(df.format(Math.PI)));
+            pathData[0] = (Math.PI / 2 * CCW_IS_POSITIVE + Math.PI * 2  + currentRobotAngle) % (2 * Math.PI);
             // drive straight for x inches
             pathData[1] = distanceToRightInches;
             // make the robot turn right 
-            pathData[2] = (-Math.PI / 2 * CCW_IS_POSITIVE + Math.PI * 2  + currentRobotAngle) % (2 * Double.parseDouble(df.format(Math.PI))); 
+            pathData[2] = (-Math.PI / 2 * CCW_IS_POSITIVE + Math.PI * 2  + currentRobotAngle) % (2 * Math.PI); 
             // drive straight for x inches
             pathData[3] = distanceTapeToRobotInches;
         }
