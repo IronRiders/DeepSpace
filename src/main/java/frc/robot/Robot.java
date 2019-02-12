@@ -34,6 +34,7 @@ public class Robot extends TimedRobot {
   private final Elevator elevator = new Elevator(ELEVATOR_PORT , ELEVATOR_ZERO_PORT);
   private final ImageRecognition imageRec = new ImageRecognition();
   private String filePath = "/home/lvuser/deploy/paths/path%s.pf1.csv"; 
+  int currentPath;
   
   /**
    * This function is run when the robot is first started up and should be
@@ -83,6 +84,8 @@ public class Robot extends TimedRobot {
     for (int i = 0; i < selectedPaths.length; i++) {
       selectedPaths[i] = new MotionProfiling(driveTrain, pathFiles[chosenPathNumbers[i]]);
     }
+
+    currentPath = 0;
   }
 
   /**
@@ -90,13 +93,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    int currentPath = 0;
 
-    for (int i = 0 ; i < selectedPaths.length ; i++){
-      if(!selectedPaths[i].isFinished()){
-        currentPath = i;
-        break;
-      }
+    if(selectedPaths[currentPath].isFinished()){
+        isDriverControlling = !isDriverControlling;
+        if(currentPath < 2) //prevents indexOutOfBoundsException
+        currentPath++;
+        selectedPaths[currentPath].reset();
     }
     if (imageRec.isImageRecTriggered()){
       //image rec code here
