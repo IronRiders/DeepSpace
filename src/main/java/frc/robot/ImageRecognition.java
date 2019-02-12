@@ -39,6 +39,7 @@ public class ImageRecognition {
     private static final int CCW_IS_POSITIVE = 1; // 1 = true, -1 = false
     private double tempTravelDistance = 0;
     private int lastSensorPosition;
+    private final double startingGyroOrientation;
 
 // https://wpilib.screenstepslive.com/s/currentCS/m/75361 HOW TO USE NETWORKTABLES!
 
@@ -47,6 +48,7 @@ public class ImageRecognition {
         isImageRecTriggered = false;
         nwtInstance = NetworkTableInstance.getDefault();
         table = nwtInstance.getTable("GRIP");
+        startingGyroOrientation = driveTrain.getGyro().getAngle();
     }
 
     public void triggerImageRec() {
@@ -171,6 +173,7 @@ public class ImageRecognition {
             pathData[3] = distanceTapeToRobotInches;
         }
         else if(distanceToRightInches > 0) {
+            // Still needs to take into account original angle of robot
             // make the robot turn right 
             pathData[0] = (-Math.PI / 2 * CCW_IS_POSITIVE + Math.PI * 2  + currentRobotAngle) % (2 * Math.PI); 
             // drive straight for x inches 
@@ -181,6 +184,7 @@ public class ImageRecognition {
             pathData[3] = distanceTapeToRobotInches;
         }
         else {
+            // Still needs to take into account original angle of robot
             // turn left
             pathData[0] = (Math.PI / 2 * CCW_IS_POSITIVE + Math.PI * 2  + currentRobotAngle) % (2 * Math.PI);
             // drive straight for x inches
@@ -190,6 +194,33 @@ public class ImageRecognition {
             // drive straight for x inches
             pathData[3] = distanceTapeToRobotInches;
         }
+
+        /*
+         * 
+         * Here are some of my thoughts so far:
+         * 
+         * Since we can get the original starting orientation of the robot,
+         * we can have the robot perfectly angled for the cargo ship because it is perpendicular
+         * to the field. The rocket ship will also be at a certain predeterimined angles.
+         * 
+         * We can sense this by using line detectors and detecting if we are on
+         * a line. (If the middle line sensor is activated but the others are not, then it is the rocket.
+         * this is the automatic method of determining if we are at a rocket or the cargo ship.)
+         * 
+         * Another option could include a button or switch on the dashboard/joystick an be pressed to indicate
+         * 90 degrees or "rocket degrees" as the possibilities for the robot to put stuff in.
+         * 
+         * This way, we do not need very accurate angle calculations for our robot angle.
+         * 
+         * As of now, there is a rough draft of the driving done by image recognition.
+         * Next step is to write some elevator and grabber code.
+         *      - Make sure camera is not blocked before image recognition
+         * 
+         * 
+         * - Victor Shan
+         * Written on Feb 12, 2019 at 00:12 AM
+         * 
+         */ 
         
     }
 
