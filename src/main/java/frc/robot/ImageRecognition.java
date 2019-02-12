@@ -51,9 +51,11 @@ public class ImageRecognition {
 
     public void triggerImageRec() {
         isImageRecTriggered = !isImageRecTriggered;
-        getNetworkTablesValues();
-        determinePath(distanceToRobotInches, distanceRightToRobotInches);
-        lastSensorPosition = driveTrain.getLeftMotor().getSelectedSensorPosition();
+        if(isImageRecTriggered) {
+            getNetworkTablesValues();
+            determinePath(distanceToRobotInches, distanceRightToRobotInches);
+            lastSensorPosition = driveTrain.getLeftMotor().getSelectedSensorPosition();
+        }
     }
 
     public boolean isImageRecTriggered() {
@@ -97,6 +99,7 @@ public class ImageRecognition {
                 travelDistanceInches(pathData[stage]);
             case 4:
                 stage = 0;
+                isImageRecTriggered = false;
         }
     }
 
@@ -129,7 +132,7 @@ public class ImageRecognition {
             // Drive fowards
             driveTrain.autoUpdateSpeed(0.3, -0.3);
         } else {
-            // Drive backwords
+            // Drive backwords at slightly slower speed
             driveTrain.autoUpdateSpeed(-0.2, 0.2);
         }
     }
@@ -145,7 +148,6 @@ public class ImageRecognition {
     // Checks the current path to see if it still works
     private boolean isPathCorrect() {
         triggerImageRec();
-        isImageRecTriggered = true;
         if(pathData[1] == 0) {
             return true;
         }
