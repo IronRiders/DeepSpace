@@ -61,4 +61,11 @@ public class MotionProfiling {
             return false;       
         }      
     }
+
+    public void reset(){
+        left.reset();
+        right.reset();
+        left.configureEncoder(leftMotor.getSelectedSensorPosition(), 1024, wheelDiameter); //1024 or 4096 - before or after quad?
+        right.configureEncoder(rightMotor.getSelectedSensorPosition(), 1024, wheelDiameter);
+    }
 }
