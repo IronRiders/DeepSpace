@@ -32,8 +32,10 @@ public class Robot extends TimedRobot {
   private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
   
   private final Elevator elevator = new Elevator(ELEVATOR_PORT , ELEVATOR_ZERO_PORT);
-  private final ImageRecognition imageRec = new ImageRecognition();
+  private final Grabber grabber = new Grabber(LEFT_FLYWHEEL_PORT , RIGHT_FLYWHEEL_PORT , CLAW_LEFT , CLAW_RIGHT , CLAW_LEFT_LIMIT_SWITCH , CLAW_RIGHT_LIMIT_SWITCH );
+  private final Arm arm = new Arm(ARM_PORT , ARM_LIMIT_SWITCH_PORT);
   private String filePath = "/home/lvuser/deploy/paths/path%s.pf1.csv"; 
+  private final ImageRecognition imageRec = new ImageRecognition(driveTrain);
   int currentPath;
   
   /**
@@ -102,7 +104,7 @@ public class Robot extends TimedRobot {
     }
     if (imageRec.isImageRecTriggered()){
       //image rec code here
-    } else if (isDriverControlling) { //had to remove driver control now that its path dependant
+    } else if (isDriverControlling) {
       joystick1.listen();
     } else {
       selectedPaths[currentPath].update();

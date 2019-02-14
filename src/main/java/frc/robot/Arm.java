@@ -11,14 +11,19 @@ public class Arm{
     private CANSparkMax spark;
     private CANEncoder encoder;
     private CANPIDController pid;
-    private int numRevolutions = 5; //ask bailey
-    private final double pConstant = 0.3;
-    private final double iConstant = 0.01;
-    private final double dConstant = 4.0;
+    private final double pConstant = 0.6;
+    private final double iConstant = 0.001;
+    private final double dConstant = 1.0;
     private final double fConstant = 0.0;
-    private final int maxMotorAmps = 5;
+    private final int maxMotorAmps = 6;
     DigitalInput limitSwitch;
    // double pulsesPerInch = 4096/(Math.PI*diameter of wheel)
+
+    private final double mediumHatch = 18.5;
+    private final double mediumCargo = 27.0;
+    private final double highHatch = 46.5;
+    private final double highCargo = 55.0;
+
 
     public Arm(int portNumber, int limitSwitchPort){
         spark = new CANSparkMax(portNumber, MotorType.kBrushless);
@@ -34,7 +39,8 @@ public class Arm{
 
     }
 
-    public void makeItFastOrSlow(){
+    public void move(double distance){
+        double numRevolutions = distance / (2*Math.PI); //this needs to change
         pid.setReference(numRevolutions, ControlType.kPosition);
 
     }
@@ -51,4 +57,16 @@ public class Arm{
     public void stop(){
         spark.set(0);
     }
+    public void getToMediumHatch(){
+        move(mediumHatch);
+    }
+
+    public void getToMediumCargo(){
+        move(mediumCargo);
+    }
+
+    public void getToHighHatch(){
+        move(highHatch);
+    }
+
 }
