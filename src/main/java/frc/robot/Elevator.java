@@ -15,6 +15,11 @@ public class Elevator {
     private final int diameter = 7; //THIS NEEDS TO BE SET --- IT IS THE DIAMETER OF THE ELEVATOR SPOOL THING
     DigitalInput limitSwitch;
 
+    private final int distancePickUp = 0; //inches for all
+    private final int distanceLowHatch = 19; 
+    private final int distanceLowCargo = 21;
+    private final int distanceMediumHigh = 22;
+
     public Elevator(int elevatorPort , int limitSwitchPort){
         talon = new TalonSRX(elevatorPort);
         talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
@@ -46,15 +51,14 @@ public class Elevator {
         talon.set(ControlMode.PercentOutput , 0);
     }
 
+    public void lowCargo(){
+        move(distanceLowCargo);
+    }
+    public void lowHatch(){
+        move(distanceLowHatch);
+    }
 
-
-
-
-
-
-
-
-
-
-
+    public void mediumHigh(){
+        move(distanceMediumHigh);
+    }
 }
