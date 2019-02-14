@@ -40,7 +40,7 @@ public class Arm{
     }
 
     public void move(double distance){
-        numRevolutions = 100 * 
+        double numRevolutions = distance / (2*Math.PI); //this needs to change
         pid.setReference(numRevolutions, ControlType.kPosition);
 
     }

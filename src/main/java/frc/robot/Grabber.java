@@ -16,8 +16,8 @@ public class Grabber {
     private DigitalInput rightLimitSwitch;
     private final double flywheelSpeed = 0.5;
     private final double pConstant = 0.6;
-    private final double iConstant = 10;
-    private final double dConstant = 0.0;
+    private final double iConstant = 0.001;
+    private final double dConstant = 1.0;
     private final double fConstant = 0.0;
     private final int maxAmps = 3; 
 
