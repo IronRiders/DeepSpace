@@ -36,6 +36,8 @@ public class Robot extends TimedRobot {
   private final Arm arm = new Arm(ARM_PORT , ARM_LIMIT_SWITCH_PORT);
   private String filePath = "/home/lvuser/deploy/paths/path%s.pf1.csv"; 
   private final ImageRecognition imageRec = new ImageRecognition(driveTrain);
+  int currentPath;
+  
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -84,6 +86,8 @@ public class Robot extends TimedRobot {
     for (int i = 0; i < selectedPaths.length; i++) {
       selectedPaths[i] = new MotionProfiling(driveTrain, pathFiles[chosenPathNumbers[i]]);
     }
+
+    currentPath = 0;
   }
 
   /**
@@ -91,13 +95,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    int currentPath = 0;
 
-    for (int i = 0 ; i < selectedPaths.length ; i++){
-      if(!selectedPaths[i].isFinished()){
-        currentPath = i;
-        break;
-      }
+    if(selectedPaths[currentPath].isFinished()){
+        isDriverControlling = !isDriverControlling;
+        if(currentPath < 2) //prevents indexOutOfBoundsException
+        currentPath++;
+        selectedPaths[currentPath].reset();
     }
     if (imageRec.isImageRecTriggered()){
       //image rec code here
