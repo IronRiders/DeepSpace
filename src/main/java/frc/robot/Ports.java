@@ -1,7 +1,5 @@
 package frc.robot;
 
-//This file will have all of our port numbers that corrospond to each motor 
-
 public class Ports{
     //can ports
     public static final int LEFT_DRIVETRAIN_1 = 1;
@@ -19,6 +17,10 @@ public class Ports{
     public static final int ARM_LIMIT_SWITCH_PORT = 10;
     public static final int CLAW_LEFT_LIMIT_SWITCH = 12;
     public static final int CLAW_RIGHT_LIMIT_SWITCH = 13;
+
+    public static final int LINE_SENSOR_LEFT = 14;
+    public static final int LINE_SENSOR_MIDDLE = 15;
+    public static final int LINE_SENSOR_RIGHT = 16;
 
     //pwm ports
     public static final int LEFT_FLYWHEEL_PORT = 0; 
