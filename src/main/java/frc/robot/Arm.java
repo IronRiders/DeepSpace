@@ -17,8 +17,7 @@ public class Arm{
     private final double fConstant = 0.0;
     private final int maxMotorAmps = 6;
     DigitalInput limitSwitch;
-   // double pulsesPerInch = 4096/(Math.PI*diameter of wheel)
-
+    int enocderPulsesPerRevolution = 100; //reminder:these are built in encoders that are different than the 1024 ones
     private final double mediumHatch = 18.5;
     private final double mediumCargo = 27.0;
     private final double highHatch = 46.5;

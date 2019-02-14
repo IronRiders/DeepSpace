@@ -19,7 +19,7 @@ public class Elevator {
     private final int distanceLowHatch = 19; 
     private final int distanceLowCargo = 21;
     private final int distanceMediumHigh = 22;
-    double pulsesPerInch = 1024 / 2*Math.PI; //this needs to change but basically it's the number of pulses per revolution (1024) divided by the number of inches travelled in one revolution
+    double pulsesPerInch = 1024 / 2*Math.PI;
 
     public Elevator(int elevatorPort , int limitSwitchPort){
         talon = new TalonSRX(elevatorPort);
