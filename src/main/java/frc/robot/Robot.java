@@ -49,6 +49,7 @@ public class Robot extends TimedRobot {
       String fileName = String.format(filePath , i+1);
       pathFiles[i] = new File(fileName);
     }
+    driveTrain.makeVictorsFollowers();
   }
 
   /**
