@@ -28,14 +28,15 @@ public class Robot extends TimedRobot {
   private MotionProfiling selectedPaths[] = new MotionProfiling[3];
 
   private boolean isDriverControlling;  
-  public final DriveTrain driveTrain = new DriveTrain(LEFT_DRIVETRAIN_1, LEFT_DRIVETRAIN_2 , RIGHT_DRIVETAIN_1 , RIGHT_DRIVETAIN_2 , GYRO_PORT);
-  private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
+  // public final DriveTrain driveTrain = new DriveTrain(LEFT_DRIVETRAIN_1, LEFT_DRIVETRAIN_2 , RIGHT_DRIVETAIN_1 , RIGHT_DRIVETAIN_2 , GYRO_PORT);
+  // private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
   
-  private final Elevator elevator = new Elevator(ELEVATOR_PORT , ELEVATOR_ZERO_PORT);
-  private final Grabber grabber = new Grabber(LEFT_FLYWHEEL_PORT , RIGHT_FLYWHEEL_PORT , CLAW_LEFT , CLAW_RIGHT , CLAW_LEFT_LIMIT_SWITCH , CLAW_RIGHT_LIMIT_SWITCH );
-  private final Arm arm = new Arm(ARM_PORT , ARM_LIMIT_SWITCH_PORT);
+  // private final Elevator elevator = new Elevator(ELEVATOR_PORT , ELEVATOR_ZERO_PORT);
+  // private final Grabber grabber = new Grabber(LEFT_FLYWHEEL_PORT , RIGHT_FLYWHEEL_PORT , CLAW_LEFT , CLAW_RIGHT , CLAW_LEFT_LIMIT_SWITCH , CLAW_RIGHT_LIMIT_SWITCH );
+  // private final Arm arm = new Arm(ARM_PORT , ARM_LIMIT_SWITCH_PORT);
   private String filePath = "/home/lvuser/deploy/paths/path%s.pf1.csv"; 
-  private final ImageRecognition imageRec = new ImageRecognition(driveTrain);
+  // private final ImageRecognition imageRec = new ImageRecognition(driveTrain);
+  private final ImageRecognition imageRec = new ImageRecognition();
   int currentPath;
   
   /**
@@ -44,6 +45,7 @@ public class Robot extends TimedRobot {
    */ 
   @Override
   public void robotInit() {
+    System.out.println("obj");
     CameraServer.getInstance().startAutomaticCapture();
     for (int i = 0; i < pathFiles.length; i++) {
       String fileName = String.format(filePath , i+1);
@@ -84,7 +86,7 @@ public class Robot extends TimedRobot {
     int chosenPathNumbers[] = new int[]{firstPath, secondPath, thirdPath};
 
     for (int i = 0; i < selectedPaths.length; i++) {
-      selectedPaths[i] = new MotionProfiling(driveTrain, pathFiles[chosenPathNumbers[i]]);
+      //selectedPaths[i] = new MotionProfiling(driveTrain, pathFiles[chosenPathNumbers[i]]);
     }
 
     currentPath = 0;
@@ -95,7 +97,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-
+    imageRec.setTriggered(true);
     if(selectedPaths[currentPath].isFinished()){
         isDriverControlling = !isDriverControlling;
         if(currentPath < 2) //prevents indexOutOfBoundsException
@@ -105,7 +107,7 @@ public class Robot extends TimedRobot {
     if (imageRec.isImageRecTriggered()){
       //image rec code here
     } else if (isDriverControlling) {
-      joystick1.listen();
+      //joystick1.listen();
     } else {
       selectedPaths[currentPath].update();
     }
@@ -116,11 +118,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    imageRec.setTriggered(true);
     if(imageRec.isImageRecTriggered()){
       //image recognition code here
     }
     else{
-      joystick1.listen();  
+      //joystick1.listen();  
     }
   }
 
