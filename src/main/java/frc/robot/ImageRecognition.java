@@ -80,20 +80,6 @@ public class ImageRecognition {
         distanceRightToRobotInches = DISTANCE_RIGHT_TO_ROBOT_INCHES_ENTRY.getValue().getDouble();      
     }
 
-    // Legacy code
-    // private void horizontalPID() {
-    //     double error = (widthOfCamera / 2) - centerXDouble;
-    //     if (error < 0) { 
-    //         //turn right
-    //         driveTrain.autoUpdateSpeed(-0.3, -0.3);
-    //     } else {
-    //         //turn left
-    //         driveTrain.autoUpdateSpeed(0.3, 0.3);
-    //     }
-    //     //positive turns right , negative turns left
-    // }
-
-
     // Does the next action in line 
     public void startNextMove() {
         switch(stage) {
@@ -242,6 +228,11 @@ public class ImageRecognition {
         cargoAndRocketAngles[LEFT_ROCKET_BACK] = (cargoAndRocketAngles[LEFT_ROCKET_BACK] + CCW_IS_POSITIVE * 2 * ROCKET_ANGLE) % (2 * Math.PI);
         cargoAndRocketAngles[RIGHT_ROCKET_FRONT] = (initialGyroAngle - CCW_IS_POSITIVE * (Math.PI - ROCKET_ANGLE) + 2 * Math.PI) % (2 * Math.PI);
         cargoAndRocketAngles[RIGHT_ROCKET_BACK] = (cargoAndRocketAngles[RIGHT_ROCKET_BACK] - CCW_IS_POSITIVE * 2 * ROCKET_ANGLE) % (2 * Math.PI);;
+    }
+
+    // Will return one of the cargleAndRocketAngles values
+    private int whatIsClosestAngle() {
+        return 0;
     }
 
 
