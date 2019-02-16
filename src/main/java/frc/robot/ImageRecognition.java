@@ -32,8 +32,8 @@ public class ImageRecognition {
 
     // Final Constants
     private final double STARTING_GYRO_ORIENTATION;
-    private final int WIDTH_OF_CAMERA = 1920; //we need to change these!
-    private final int HEIGHT_OF_CAMERA = 1080; 
+    private static final int WIDTH_OF_CAMERA = 1920; //we need to change these!
+    private static final int HEIGHT_OF_CAMERA = 1080; 
     private static final double ANGLE_TOLERANCE = 10. / 360 * 2 * Math.PI; // 10 Degrees of tolerance
     private static final double DISTANCE_TOLERANCE = 5; // inches
     private static final int CCW_IS_POSITIVE = 1; // 1 = true, -1 = false
