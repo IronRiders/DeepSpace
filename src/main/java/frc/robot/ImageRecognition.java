@@ -10,15 +10,15 @@ import edu.wpi.first.networktables.NetworkTableValue;
 public class ImageRecognition {
 
     private boolean isImageRecTriggered;
-    NetworkTableInstance nwtInstance;
-    NetworkTable table;
+    private NetworkTableInstance nwtInstance;
+    private NetworkTable table;
     // private final NetworkTableEntry distanceToRobotInchesEntry;
     // private final NetworkTableEntry distanceRightToRobotInchesEntry;
     // private final NetworkTableEntry angleOfRobotEntry;
-    double distanceToRobotInches;
-    double distanceRightToRobotInches;
-    double angleOfRobot;
-    DriveTrain driveTrain;
+    private double distanceToRobotInches;
+    private double distanceRightToRobotInches;
+    private double angleOfRobot;
+    private DriveTrain driveTrain;
 
     // Network tables columns 1, 2, 3 in order.
     private final String GRIP_DISTANCE_TO_ROBOT = "DistanceToRobotInches";
@@ -40,6 +40,7 @@ public class ImageRecognition {
     private double tempTravelDistance = 0;
     private int lastSensorPosition;
     private final double startingGyroOrientation;
+    private boolean isRocket = false;
 
 // https://wpilib.screenstepslive.com/s/currentCS/m/75361 HOW TO USE NETWORKTABLES!
 
