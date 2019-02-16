@@ -19,6 +19,7 @@ public class Grabber {
     private final double iConstant = 0.001;
     private final double dConstant = 1.0;
     private final double fConstant = 0.0;
+    private final int pulsesPerRevolution = 4096;
     private final int maxAmps = 3; 
 
 
@@ -32,14 +33,14 @@ public class Grabber {
         rightClaw.config_kI(0, iConstant);
         rightClaw.config_kF(0, fConstant);
         rightClaw.configPeakCurrentLimit(maxAmps);
-        rightClaw.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+        rightClaw.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
 
         leftClaw.config_kD(0, dConstant);
         leftClaw.config_kP(0, pConstant);
         leftClaw.config_kI(0, iConstant);
         leftClaw.config_kF(0, fConstant);
         leftClaw.configPeakCurrentLimit(maxAmps);
-        leftClaw.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+        leftClaw.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
 
         leftLimitSwitch = new DigitalInput(leftLimitPort);
         rightLimitSwitch = new DigitalInput(rightLimitPort);
