@@ -9,47 +9,48 @@ import edu.wpi.first.networktables.NetworkTableValue;
 
 public class ImageRecognition {
 
-    private boolean isImageRecTriggered;
-    private NetworkTableInstance nwtInstance;
-    private NetworkTable table;
-    // private final NetworkTableEntry distanceToRobotInchesEntry;
-    // private final NetworkTableEntry distanceRightToRobotInchesEntry;
-    // private final NetworkTableEntry angleOfRobotEntry;
+    // Global Values change change
+    private DriveTrain driveTrain;
+    private double currentRobotAngle;
     private double distanceToRobotInches;
     private double distanceRightToRobotInches;
+    private int stage = 0;
+    private int lastSensorPosition;
+    private double[] pathData = new double[4];
+    private double tempTravelDistance = 0;
     private double angleOfRobot;
-    private DriveTrain driveTrain;
+    private boolean isRocket = false;
+    private boolean isImageRecTriggered;
 
-    // Network tables columns 1, 2, 3 in order.
+    // Network Tables
+    private NetworkTableInstance nwtInstance;
+    private NetworkTable table;
+    private final NetworkTableEntry distanceToRobotInchesEntry;
+    private final NetworkTableEntry distanceRightToRobotInchesEntry;
     private final String GRIP_DISTANCE_TO_ROBOT = "DistanceToRobotInches";
     private final String GRIP_DISTANCE_RIGHT_TO_ROBOT = "DistanceRightToRobot";
-    private final String GRIP_ANGLE_OF_ROBOT_TO_TAPE = "AngleOfRobotToTapeRadians";
 
-    int widthOfCamera = 1920; //we need to change these!
-    int heightOfCamera = 1080; 
-
-    private static final double WHEEL_DIAMETER_INCHES = 6; // Converting meters to inches
-    private static final int ENCODER_TICKS_PER_REVOLUTION = 1024;
-    private double currentRobotAngle;
-    private int stage = 0;
-    private double[] pathData = new double[4];
-    //DecimalFormat df = new DecimalFormat("##.######");
+    // Final Constants
+    private final double startingGyroOrientation;
+    private final int WIDTH_OF_CAMERA = 1920; //we need to change these!
+    private final int HEIGHT_OF_CAMERA = 1080; 
     private static final double ANGLE_TOLERANCE = 10. / 360 * 2 * Math.PI; // 10 Degrees of tolerance
     private static final double DISTANCE_TOLERANCE = 5; // inches
     private static final int CCW_IS_POSITIVE = 1; // 1 = true, -1 = false
-    private double tempTravelDistance = 0;
-    private int lastSensorPosition;
-    private final double startingGyroOrientation;
-    private boolean isRocket = false;
+    private static final double WHEEL_DIAMETER_INCHES = 6;
+    private static final int ENCODER_TICKS_PER_REVOLUTION = 1024;
 
-// https://wpilib.screenstepslive.com/s/currentCS/m/75361 HOW TO USE NETWORKTABLES!
 
     public ImageRecognition(DriveTrain driveTrain) {
         this.driveTrain = driveTrain;
         isImageRecTriggered = false;
+        startingGyroOrientation = driveTrain.getGyro().getAngle();
+
+        // Network Tables
         nwtInstance = NetworkTableInstance.getDefault();
         table = nwtInstance.getTable("GRIP");
-        startingGyroOrientation = driveTrain.getGyro().getAngle();
+        distanceToRobotInchesEntry = table.getEntry(GRIP_DISTANCE_TO_ROBOT);
+        distanceRightToRobotInchesEntry = table.getEntry(GRIP_DISTANCE_RIGHT_TO_ROBOT);
     }
 
     public void triggerImageRec() {
@@ -66,9 +67,8 @@ public class ImageRecognition {
     }
 
     public void getNetworkTablesValues() {
-        distanceToRobotInches = table.getEntry(GRIP_DISTANCE_TO_ROBOT).getValue().getDouble();
-        distanceRightToRobotInches = table.getEntry(GRIP_DISTANCE_RIGHT_TO_ROBOT).getValue().getDouble();
-        angleOfRobot = table.getEntry(GRIP_ANGLE_OF_ROBOT_TO_TAPE).getValue().getDouble();        
+        distanceToRobotInches = distanceToRobotInchesEntry.getValue().getDouble();
+        distanceRightToRobotInches = distanceRightToRobotInchesEntry.getValue().getDouble();      
     }
 
     // Legacy code
