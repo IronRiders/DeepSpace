@@ -1,11 +1,10 @@
 package frc.robot;
 
-import java.text.DecimalFormat;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.NetworkTableValue;
+// import edu.wpi.first.networktables.NetworkTableValue;
 
 public class ImageRecognition {
 
@@ -17,6 +16,7 @@ public class ImageRecognition {
     private int stage = 0;
     private int lastSensorPosition;
     private double[] pathData = new double[4];
+    private double[] cargoAndRocketAngles = new double[7];
     private double tempTravelDistance = 0;
     private double angleOfRobot;
     private boolean isRocket = false;
@@ -25,13 +25,13 @@ public class ImageRecognition {
     // Network Tables
     private NetworkTableInstance nwtInstance;
     private NetworkTable table;
-    private final NetworkTableEntry distanceToRobotInchesEntry;
-    private final NetworkTableEntry distanceRightToRobotInchesEntry;
+    private final NetworkTableEntry DISTANCE_TO_ROBOT_INCHES_ENTRY;
+    private final NetworkTableEntry DISTANCE_RIGHT_TO_ROBOT_INCHES_ENTRY;
     private final String GRIP_DISTANCE_TO_ROBOT = "DistanceToRobotInches";
     private final String GRIP_DISTANCE_RIGHT_TO_ROBOT = "DistanceRightToRobot";
 
     // Final Constants
-    private final double startingGyroOrientation;
+    private final double STARTING_GYRO_ORIENTATION;
     private final int WIDTH_OF_CAMERA = 1920; //we need to change these!
     private final int HEIGHT_OF_CAMERA = 1080; 
     private static final double ANGLE_TOLERANCE = 10. / 360 * 2 * Math.PI; // 10 Degrees of tolerance
@@ -39,18 +39,27 @@ public class ImageRecognition {
     private static final int CCW_IS_POSITIVE = 1; // 1 = true, -1 = false
     private static final double WHEEL_DIAMETER_INCHES = 6;
     private static final int ENCODER_TICKS_PER_REVOLUTION = 1024;
+    private static final int LEFTSIDE_HORIZONTAL = 0;
+    private static final int RIGHTSIDE_HORIZONTAL = 1;
+    private static final int FORWARDS = 2;
+    private static final int LEFT_ROCKET_FRONT = 3;
+    private static final int LEFT_ROCKET_BACK = 4;
+    private static final int RIGHT_ROCKET_FRONT = 5;
+    private static final int RIGHT_ROCKET_BACK = 6;
+    private static final double ROCKET_ANGLE = 61.25 / 360 * 2 * Math.PI; // Rocket angle in Radians
 
 
     public ImageRecognition(DriveTrain driveTrain) {
         this.driveTrain = driveTrain;
         isImageRecTriggered = false;
-        startingGyroOrientation = driveTrain.getGyro().getAngle();
+        STARTING_GYRO_ORIENTATION = driveTrain.getGyro().getAngle();
+        determineCargoAndRocketAngles(STARTING_GYRO_ORIENTATION);
 
         // Network Tables
         nwtInstance = NetworkTableInstance.getDefault();
         table = nwtInstance.getTable("GRIP");
-        distanceToRobotInchesEntry = table.getEntry(GRIP_DISTANCE_TO_ROBOT);
-        distanceRightToRobotInchesEntry = table.getEntry(GRIP_DISTANCE_RIGHT_TO_ROBOT);
+        DISTANCE_TO_ROBOT_INCHES_ENTRY = table.getEntry(GRIP_DISTANCE_TO_ROBOT);
+        DISTANCE_RIGHT_TO_ROBOT_INCHES_ENTRY = table.getEntry(GRIP_DISTANCE_RIGHT_TO_ROBOT);
     }
 
     public void triggerImageRec() {
@@ -67,8 +76,8 @@ public class ImageRecognition {
     }
 
     public void getNetworkTablesValues() {
-        distanceToRobotInches = distanceToRobotInchesEntry.getValue().getDouble();
-        distanceRightToRobotInches = distanceRightToRobotInchesEntry.getValue().getDouble();      
+        distanceToRobotInches = DISTANCE_TO_ROBOT_INCHES_ENTRY.getValue().getDouble();
+        distanceRightToRobotInches = DISTANCE_RIGHT_TO_ROBOT_INCHES_ENTRY.getValue().getDouble();      
     }
 
     // Legacy code
@@ -223,6 +232,16 @@ public class ImageRecognition {
          * 
          */ 
         
+    }
+
+    private void determineCargoAndRocketAngles(double initialGyroAngle) {
+        cargoAndRocketAngles[FORWARDS] = initialGyroAngle;
+        cargoAndRocketAngles[LEFTSIDE_HORIZONTAL] = (initialGyroAngle + 7/8 * 2 * Math.PI) % (2 * Math.PI);
+        cargoAndRocketAngles[RIGHTSIDE_HORIZONTAL] = (initialGyroAngle + 1/8 * 2 * Math.PI) % (2 * Math.PI);
+        cargoAndRocketAngles[LEFT_ROCKET_FRONT] = (initialGyroAngle + CCW_IS_POSITIVE * (Math.PI - ROCKET_ANGLE) + 2 * Math.PI) % (2 * Math.PI);
+        cargoAndRocketAngles[LEFT_ROCKET_BACK] = (cargoAndRocketAngles[LEFT_ROCKET_BACK] + CCW_IS_POSITIVE * 2 * ROCKET_ANGLE) % (2 * Math.PI);
+        cargoAndRocketAngles[RIGHT_ROCKET_FRONT] = (initialGyroAngle - CCW_IS_POSITIVE * (Math.PI - ROCKET_ANGLE) + 2 * Math.PI) % (2 * Math.PI);
+        cargoAndRocketAngles[RIGHT_ROCKET_BACK] = (cargoAndRocketAngles[RIGHT_ROCKET_BACK] - CCW_IS_POSITIVE * 2 * ROCKET_ANGLE) % (2 * Math.PI);;
     }
 
 
