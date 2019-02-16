@@ -42,20 +42,20 @@ public class DriveTrain {
             //gyroPortNumber should be analong 0 or 1
 
     }
+
+    public void makeVictorsFollowers(){
+        leftMotor2.set(ControlMode.Follower , leftPort1);
+        rightMotor2.set(ControlMode.Follower, rightPort1);
+    }
     public void updateSpeed(final ThrottlePosition throttlePosition) {
         final double right = (-throttlePosition.x - throttlePosition.y)*-1;
         final double left = (throttlePosition.y - throttlePosition.x)*-1;
         leftMotor1.set(ControlMode.PercentOutput, left);
-        leftMotor2.set(ControlMode.Follower, leftPort1);
         rightMotor1.set(ControlMode.PercentOutput, right);
-        rightMotor2.set(ControlMode.Follower, rightPort1);
-
     }
     public void autoUpdateSpeed(double left, double right) {
         leftMotor1.set(ControlMode.PercentOutput, left);
-        leftMotor2.set(ControlMode.Follower, leftPort1);
         rightMotor1.set(ControlMode.PercentOutput, right);
-        rightMotor2.set(ControlMode.Follower, rightPort1);
     }
     public TalonSRX getLeftMotor() {
         return leftMotor1;

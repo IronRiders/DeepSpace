@@ -45,10 +45,12 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     CameraServer.getInstance().startAutomaticCapture();
+    updateSmartDB();
     for (int i = 0; i < pathFiles.length; i++) {
       String fileName = String.format(filePath , i+1);
       pathFiles[i] = new File(fileName);
     }
+    driveTrain.makeVictorsFollowers();
   }
 
   /**
@@ -78,9 +80,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 1", "Path one?"));
-    int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 2", "Path two?"));
-    int thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 3", "Path three?"));
+    int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 7", "1"));
+    int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 8", "2"));
+    int thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 9", "3"));
     int chosenPathNumbers[] = new int[]{firstPath, secondPath, thirdPath};
 
     for (int i = 0; i < selectedPaths.length; i++) {
@@ -128,6 +130,11 @@ public void changeDriverControl(){
     this.isDriverControlling = !isDriverControlling;
 }
 
+private void updateSmartDB(){
+  SmartDashboard.putString("DB/String 2", "1st Path --->");
+  SmartDashboard.putString("DB/String 3", "2nd Path --->");
+  SmartDashboard.putString("DB/String 4", "3rd Path --->");
+}
 
 
   /**
