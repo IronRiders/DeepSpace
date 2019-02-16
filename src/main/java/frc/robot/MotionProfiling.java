@@ -18,7 +18,7 @@ public class MotionProfiling {
     private final double wheelDiameter = 0.1524; //meters
     private final TalonSRX leftMotor;
     private final TalonSRX rightMotor;
-    private final int encoderTicksPerRevolution = 1024;
+    private final int encoderTicksPerRevolution = 4096;
     private final double maxVelocity = 13; //ft/s
     private EncoderFollower left;
     private EncoderFollower right;
@@ -35,7 +35,7 @@ public class MotionProfiling {
         left = new EncoderFollower(modifier.getLeftTrajectory());
         right = new EncoderFollower(modifier.getRightTrajectory());
 
-        left.configureEncoder(leftMotor.getSelectedSensorPosition(), encoderTicksPerRevolution, wheelDiameter); //1024 or 4096 - before or after quad?
+        left.configureEncoder(leftMotor.getSelectedSensorPosition(), encoderTicksPerRevolution, wheelDiameter); 
         right.configureEncoder(rightMotor.getSelectedSensorPosition(), encoderTicksPerRevolution, wheelDiameter);
 
         left.configurePIDVA(0.9, 0.0, 0.0, 1 / maxVelocity, 0); //Filler PID vals
@@ -65,7 +65,7 @@ public class MotionProfiling {
     public void reset(){
         left.reset();
         right.reset();
-        left.configureEncoder(leftMotor.getSelectedSensorPosition(), encoderTicksPerRevolution, wheelDiameter); //1024 or 4096 - before or after quadrature encoding?
+        left.configureEncoder(leftMotor.getSelectedSensorPosition(), encoderTicksPerRevolution, wheelDiameter); 
         right.configureEncoder(rightMotor.getSelectedSensorPosition(), encoderTicksPerRevolution, wheelDiameter);
     }
 }

@@ -19,6 +19,7 @@ public class Grabber {
     private final double iConstant = 0.001;
     private final double dConstant = 1.0;
     private final double fConstant = 0.0;
+    private final int pulsesPerRevolution = 4096;
     private final int maxAmps = 3; 
 
 
