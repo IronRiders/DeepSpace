@@ -46,11 +46,12 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     CameraServer.getInstance().startAutomaticCapture();
     updateSmartDB();
+    //driveTrain.makeVictorsFollowers();
     for (int i = 0; i < pathFiles.length; i++) {
       String fileName = String.format(filePath , i+1);
       pathFiles[i] = new File(fileName);
     }
-    driveTrain.makeVictorsFollowers();
+    
   }
 
   /**
@@ -142,5 +143,6 @@ private void updateSmartDB(){
    */
   @Override
   public void testPeriodic() {
+   driveTrain.autoUpdateSpeed(0.25, -0.25);
   }
 }

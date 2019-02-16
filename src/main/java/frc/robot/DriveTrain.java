@@ -22,6 +22,7 @@ public class DriveTrain {
     private final int leftPort2;
     private final int rightPort2;
     private final AnalogGyro gyro;
+    private int counter = 0;
 
 
     public DriveTrain(final int leftPort1, final int leftPort2, final int rightPort1, final int rightPort2, final int gyroPortNumber) {
@@ -45,20 +46,61 @@ public class DriveTrain {
     }
 
     public void makeVictorsFollowers(){
-        leftMotor2.set(ControlMode.Follower , leftPort1);
+        leftMotor2.set(ControlMode.Follower , leftMotor1.getDeviceID());
         leftMotor2.setInverted(InvertType.FollowMaster);
-        rightMotor2.set(ControlMode.Follower, rightPort1);
+        rightMotor2.set(ControlMode.Follower, rightMotor2.getDeviceID());
         rightMotor2.setInverted(InvertType.FollowMaster);
     }
     public void updateSpeed(final ThrottlePosition throttlePosition) {
-        final double right = (-throttlePosition.x - throttlePosition.y)*-1;
-        final double left = (throttlePosition.y - throttlePosition.x)*-1;
+        double scaledX = throttlePosition.x;
+        double scaleFactorA = 0.2;
+        double scaleFactorB = 0.8;
+        scaledX = (scaleFactorA * throttlePosition.x) + (scaleFactorB * throttlePosition.x * throttlePosition.x);
+        if (throttlePosition.x <0){
+            scaledX = scaledX * -1;
+        }
+        
+        final double right = (-scaledX - throttlePosition.y)*-1;
+        final double left = (throttlePosition.y - scaledX)*-1;
+
+
         leftMotor1.set(ControlMode.PercentOutput, left);
+        leftMotor2.follow(leftMotor1);
         rightMotor1.set(ControlMode.PercentOutput, right);
+        rightMotor2.follow(rightMotor2);
+
+        counter++;
+        if(counter % 10 == 0){
+            double left1Current = leftMotor1.getOutputCurrent();
+            double left1Voltage = leftMotor1.getMotorOutputVoltage();
+            double right1Current = rightMotor1.getOutputCurrent();
+            double right1Voltage = rightMotor1.getMotorOutputVoltage();
+            double left2Voltage = leftMotor2.getMotorOutputVoltage();
+            double right2Voltage = rightMotor2.getMotorOutputVoltage();
+            System.out.print(String.format("Currents: R: %.2f L: %.2f ", right1Current, left1Current));
+            System.out.print(String.format("Voltage: L1: %.2f R1: %.2f L2: %.2f R2: %.2f\n", left1Voltage, right1Voltage, left2Voltage, right2Voltage));
+
+        }
+        //makeVictorsFollowers();
     }
     public void autoUpdateSpeed(double left, double right) {
         leftMotor1.set(ControlMode.PercentOutput, left);
         rightMotor1.set(ControlMode.PercentOutput, right);
+        leftMotor2.follow(leftMotor1);
+        rightMotor2.follow(rightMotor1);
+
+        counter++;
+        if(counter % 10 == 0){
+           double left1Current = leftMotor1.getOutputCurrent();
+           double left1Voltage = leftMotor1.getMotorOutputVoltage();
+           double right1Current = rightMotor1.getOutputCurrent();
+           double right1Voltage = rightMotor1.getMotorOutputVoltage();
+           double left2Voltage = leftMotor2.getMotorOutputVoltage();
+           double right2Voltage = rightMotor2.getMotorOutputVoltage();
+           System.out.print(String.format("Currents: R: %.2f L: %.2f ", right1Current, left1Current));
+           System.out.print(String.format("Voltage: L1: %.2f R1: %.2f L2: %.2f R2: %.2f\n", left1Voltage, right1Voltage, left2Voltage, right2Voltage));
+
+        }
     }
     public TalonSRX getLeftMotor() {
         return leftMotor1;
