@@ -32,8 +32,11 @@ public class Robot extends TimedRobot {
   private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
   
   private final Elevator elevator = new Elevator(ELEVATOR_PORT , ELEVATOR_ZERO_PORT);
-  private final ImageRecognition imageRec = new ImageRecognition(driveTrain);
+  private final Grabber grabber = new Grabber(LEFT_FLYWHEEL_PORT , RIGHT_FLYWHEEL_PORT , CLAW_LEFT , CLAW_RIGHT , CLAW_LEFT_LIMIT_SWITCH , CLAW_RIGHT_LIMIT_SWITCH );
+  private final Arm arm = new Arm(ARM_PORT , ARM_LIMIT_SWITCH_PORT);
   private String filePath = "/home/lvuser/deploy/paths/path%s.pf1.csv"; 
+  private final ImageRecognition imageRec = new ImageRecognition(driveTrain);
+  int currentPath;
   
   /**
    * This function is run when the robot is first started up and should be
@@ -42,10 +45,12 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     CameraServer.getInstance().startAutomaticCapture();
+    updateSmartDB();
     for (int i = 0; i < pathFiles.length; i++) {
       String fileName = String.format(filePath , i+1);
       pathFiles[i] = new File(fileName);
     }
+    driveTrain.makeVictorsFollowers();
   }
 
   /**
@@ -75,14 +80,16 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 1", "Path one?"));
-    int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 2", "Path two?"));
-    int thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 3", "Path three?"));
+    int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 7", "1"));
+    int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 8", "2"));
+    int thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 9", "3"));
     int chosenPathNumbers[] = new int[]{firstPath, secondPath, thirdPath};
 
     for (int i = 0; i < selectedPaths.length; i++) {
       selectedPaths[i] = new MotionProfiling(driveTrain, pathFiles[chosenPathNumbers[i]]);
     }
+
+    currentPath = 0;
   }
 
   /**
@@ -90,13 +97,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    int currentPath = 0;
 
-    for (int i = 0 ; i < selectedPaths.length ; i++){
-      if(!selectedPaths[i].isFinished()){
-        currentPath = i;
-        break;
-      }
+    if(selectedPaths[currentPath].isFinished()){
+        isDriverControlling = !isDriverControlling;
+        if(currentPath < 2) //prevents indexOutOfBoundsException
+        currentPath++;
+        selectedPaths[currentPath].reset();
     }
     if (selectedPaths[selectedPaths.length - 1].isFinished()){ // Assuming that the last path will only finished after it as occurred
       if(!imageRec.isImageRecTriggered()) {
@@ -128,6 +134,11 @@ public void changeDriverControl(){
     this.isDriverControlling = !isDriverControlling;
 }
 
+private void updateSmartDB(){
+  SmartDashboard.putString("DB/String 2", "1st Path --->");
+  SmartDashboard.putString("DB/String 3", "2nd Path --->");
+  SmartDashboard.putString("DB/String 4", "3rd Path --->");
+}
 
 
   /**

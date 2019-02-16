@@ -35,8 +35,8 @@ public class MotionProfiling {
         left = new EncoderFollower(modifier.getLeftTrajectory());
         right = new EncoderFollower(modifier.getRightTrajectory());
 
-        left.configureEncoder(leftMotor.getSelectedSensorPosition(), 1024, wheelDiameter); //1024 or 4096 - before or after quad?
-        right.configureEncoder(rightMotor.getSelectedSensorPosition(), 1024, wheelDiameter);
+        left.configureEncoder(leftMotor.getSelectedSensorPosition(), encoderTicksPerRevolution, wheelDiameter); //1024 or 4096 - before or after quad?
+        right.configureEncoder(rightMotor.getSelectedSensorPosition(), encoderTicksPerRevolution, wheelDiameter);
 
         left.configurePIDVA(0.9, 0.0, 0.0, 1 / maxVelocity, 0); //Filler PID vals
         right.configurePIDVA(0.9, 0.0, 0.0, 1 / maxVelocity, 0);
@@ -60,5 +60,12 @@ public class MotionProfiling {
         } else {
             return false;       
         }      
+    }
+
+    public void reset(){
+        left.reset();
+        right.reset();
+        left.configureEncoder(leftMotor.getSelectedSensorPosition(), encoderTicksPerRevolution, wheelDiameter); //1024 or 4096 - before or after quadrature encoding?
+        right.configureEncoder(rightMotor.getSelectedSensorPosition(), encoderTicksPerRevolution, wheelDiameter);
     }
 }

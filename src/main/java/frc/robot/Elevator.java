@@ -7,12 +7,19 @@ import edu.wpi.first.wpilibj.DigitalInput;
 
 public class Elevator {
     private TalonSRX talon;
-    private final double pConstant = 0.3; //we need to change these
-    private final double iConstant = 0.01;
-    private final double dConstant = 4.0;
+    private final double pConstant = 0.6; //we need to change these
+    private final double iConstant = 0.001;
+    private final double dConstant = 1.0;
     private final double fConstant = 0.0;
-    private final int maxAmps = 5;
+    private final int maxAmps = 6;
+    private final int diameter = 7; //THIS NEEDS TO BE SET --- IT IS THE DIAMETER OF THE ELEVATOR SPOOL THING
     DigitalInput limitSwitch;
+
+    private final int distancePickUp = 0; //inches for all
+    private final int distanceLowHatch = 19; 
+    private final int distanceLowCargo = 21;
+    private final int distanceMediumHigh = 22;
+    double pulsesPerInch = 1024 / 2*Math.PI; //this needs to change but basically it's the number of pulses per revolution (1024) divided by the number of inches travelled in one revolution
 
     public Elevator(int elevatorPort , int limitSwitchPort){
         talon = new TalonSRX(elevatorPort);
@@ -27,7 +34,7 @@ public class Elevator {
 
     //@param distance is in inches
     public void move(double distance){
-        double totalPulses = distance * (4096/(Math.PI*6));
+        double totalPulses = distance * pulsesPerInch;
         talon.set(ControlMode.Position, totalPulses);
     }
 
@@ -45,15 +52,14 @@ public class Elevator {
         talon.set(ControlMode.PercentOutput , 0);
     }
 
+    public void lowCargo(){
+        move(distanceLowCargo);
+    }
+    public void lowHatch(){
+        move(distanceLowHatch);
+    }
 
-
-
-
-
-
-
-
-
-
-
+    public void mediumHigh(){
+        move(distanceMediumHigh);
+    }
 }
