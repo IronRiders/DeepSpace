@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.*;
@@ -45,7 +46,9 @@ public class DriveTrain {
 
     public void makeVictorsFollowers(){
         leftMotor2.set(ControlMode.Follower , leftPort1);
+        leftMotor2.setInverted(InvertType.FollowMaster);
         rightMotor2.set(ControlMode.Follower, rightPort1);
+        rightMotor2.setInverted(InvertType.FollowMaster);
     }
     public void updateSpeed(final ThrottlePosition throttlePosition) {
         final double right = (-throttlePosition.x - throttlePosition.y)*-1;
