@@ -39,8 +39,8 @@ public class ImageRecognition {
     private static final int CCW_IS_POSITIVE = 1; // 1 = true, -1 = false
     private static final double WHEEL_DIAMETER_INCHES = 6;
     private static final int ENCODER_TICKS_PER_REVOLUTION = 1024;
-    private static final int LEFTSIDE_HORIZONTAL = 0;
-    private static final int RIGHTSIDE_HORIZONTAL = 1;
+    private static final int LEFT_FACING_HORIZONTAL = 0;
+    private static final int RIGHT_FACING_HORIZONTAL = 1;
     private static final int FORWARDS = 2;
     private static final int LEFT_ROCKET_FRONT = 3;
     private static final int LEFT_ROCKET_BACK = 4;
@@ -222,8 +222,8 @@ public class ImageRecognition {
 
     private void determineCargoAndRocketAngles(double initialGyroAngle) {
         cargoAndRocketAngles[FORWARDS] = initialGyroAngle;
-        cargoAndRocketAngles[LEFTSIDE_HORIZONTAL] = (initialGyroAngle + 7/8 * 2 * Math.PI) % (2 * Math.PI);
-        cargoAndRocketAngles[RIGHTSIDE_HORIZONTAL] = (initialGyroAngle + 1/8 * 2 * Math.PI) % (2 * Math.PI);
+        cargoAndRocketAngles[LEFT_FACING_HORIZONTAL] = (initialGyroAngle + 1/8 * 2 * Math.PI) % (2 * Math.PI);
+        cargoAndRocketAngles[RIGHT_FACING_HORIZONTAL] = (initialGyroAngle + 7/8 * 2 * Math.PI) % (2 * Math.PI);
         cargoAndRocketAngles[LEFT_ROCKET_FRONT] = (initialGyroAngle + CCW_IS_POSITIVE * (Math.PI - ROCKET_ANGLE) + 2 * Math.PI) % (2 * Math.PI);
         cargoAndRocketAngles[LEFT_ROCKET_BACK] = (cargoAndRocketAngles[LEFT_ROCKET_BACK] + CCW_IS_POSITIVE * 2 * ROCKET_ANGLE) % (2 * Math.PI);
         cargoAndRocketAngles[RIGHT_ROCKET_FRONT] = (initialGyroAngle - CCW_IS_POSITIVE * (Math.PI - ROCKET_ANGLE) + 2 * Math.PI) % (2 * Math.PI);
