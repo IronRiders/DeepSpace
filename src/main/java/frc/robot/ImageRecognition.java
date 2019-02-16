@@ -75,7 +75,8 @@ public ImageRecognition() {
     public void getNetworkTablesValues() {
         distanceToRobotInches = table.getEntry(GRIP_DISTANCE_TO_ROBOT).getValue().getDouble();
         distanceRightToRobotInches = table.getEntry(GRIP_DISTANCE_RIGHT_TO_ROBOT).getValue().getDouble();
-        angleOfRobot = table.getEntry(GRIP_ANGLE_OF_ROBOT_TO_TAPE).getValue().getDouble();        
+        angleOfRobot = table.getEntry(GRIP_ANGLE_OF_ROBOT_TO_TAPE).getValue().getDouble();  
+        System.out.println(distanceToRobotInches + " " + distanceRightToRobotInches);      
     }
 
     public void setTriggered(boolean isTriggered) {

@@ -52,7 +52,7 @@ public class Robot extends TimedRobot {
       String fileName = String.format(filePath , i+1);
       pathFiles[i] = new File(fileName);
     }
-    driveTrain.makeVictorsFollowers();
+    //driveTrain.makeVictorsFollowers();
   }
 
   /**
@@ -120,9 +120,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    imageRec.setTriggered(true);
+    imageRec.triggerImageRec();
     if(imageRec.isImageRecTriggered()){
-      //image recognition code here
+      imageRec.startNextMove();
     }
     else{
       //joystick1.listen();  
