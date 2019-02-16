@@ -28,7 +28,7 @@ public class ImageRecognition {
     int widthOfCamera = 1920; //we need to change these!
     int heightOfCamera = 1080; 
 
-    private static final double WHEEL_DIAMETER_INCHES = 0.1524 * 100 / 2.54; // Converting meters to inches
+    private static final double WHEEL_DIAMETER_INCHES = 6; // Converting meters to inches
     private static final int ENCODER_TICKS_PER_REVOLUTION = 1024;
     private double currentRobotAngle;
     private int stage = 0;
