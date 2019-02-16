@@ -51,6 +51,7 @@ public class Robot extends TimedRobot {
       pathFiles[i] = new File(fileName);
     }
     driveTrain.makeVictorsFollowers();
+    joystick1.addButton(1, imageRec::triggerImageRec); // Random joystick button
   }
 
   /**
