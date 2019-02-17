@@ -19,12 +19,12 @@ public class Grabber {
     private final double iConstant = 0.001;
     private final double dConstant = 1.0;
     private final double fConstant = 0.0;
-    //private final int pulsesPerRevolution = 4096;
+    private final int pulsesPerRevolution = 4096;
     private final int maxAmps = 3; 
-    private final double open = 6200;
-    private final double cargo = 4133;
-    private final double hatch = 609;
-    private final double closed = 0;
+    private final double openRevolutions = 12.5;
+    private final double cargoRevolutions = 8.33;
+    private final double hatchRevolutions = 1.389;
+    private final double closedRevolutions = 0;
 
 
 
@@ -33,6 +33,7 @@ public class Grabber {
         rightFlywheel = new VictorSP(rightFlywheelPort);
         rightClaw = new TalonSRX(rightClawPort);
         leftClaw = new TalonSRX(leftClawPort);
+        
         rightClaw.config_kD(0, dConstant);
         rightClaw.config_kP(0, pConstant);
         rightClaw.config_kI(0, iConstant);
@@ -54,26 +55,27 @@ public class Grabber {
     public void open(){
         leftClaw.config_kI(0,iConstant);
         rightClaw.config_kI(0,iConstant);
-        move(open);
+        move(openRevolutions);
 
     }  
 
     public void cargo(){
         leftClaw.config_kI(0,iConstant);
         rightClaw.config_kI(0,iConstant);
-        move(cargo);
+        move(cargoRevolutions);
     }  
     public void hatch(){
         leftClaw.config_kI(0,0.0);
         rightClaw.config_kI(0,0.0);
-        move(hatch);
+        move(hatchRevolutions);
     }
     public void closed(){
         leftClaw.config_kI(0,iConstant);
         rightClaw.config_kI(0,iConstant);
-        move(closed);
+        move(closedRevolutions);
     }
-    public void move(double totalPulses){
+    public void move(double numRevolutions){
+            double totalPulses = numRevolutions * pulsesPerRevolution;
             leftClaw.set(ControlMode.Position, totalPulses);
             rightClaw.set(ControlMode.Position , totalPulses);
         }
