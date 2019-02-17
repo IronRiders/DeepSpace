@@ -53,16 +53,25 @@ public class DriveTrain {
     }
     public void updateSpeed(final ThrottlePosition throttlePosition) {
         double scaledX = throttlePosition.x;
-        double scaleFactorA = 0.2;
-        double scaleFactorB = 0.8;
-        
+        double scaledY = throttlePosition.y;
+        double scaleFactorA = 0.5;
+        double scaleFactorB = 0.5;
+        //Top is X scale bottem is Y
+        double scaleFactorC = .5 ;
+        double scaleFactorD = .5;
+        scaledY = (scaleFactorC * Math.abs(throttlePosition.y)) + (scaleFactorD * throttlePosition.y * throttlePosition.y);
         scaledX = (scaleFactorA * Math.abs(throttlePosition.x)) + (scaleFactorB * throttlePosition.x * throttlePosition.x);
+        if (throttlePosition.y < 0){
+            scaledY = scaledY * -1;
+        }
         if (throttlePosition.x <0){
             scaledX = scaledX * -1;
         }
+
+        scaledX*=0.5;
         
-        final double right = (-scaledX - throttlePosition.y)*-1;
-        final double left = (throttlePosition.y - scaledX)*-1;
+        final double right = (-scaledX - scaledY)*-1;
+        final double left = (scaledY - scaledX)*-1;
 
 
         leftMotor1.set(ControlMode.PercentOutput, left);
