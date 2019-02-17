@@ -108,11 +108,11 @@ public class ImageRecognition {
             stage++;
             startNextMove();
         }
-        else if(newAngle - currentRobotAngle > 0 || newAngle - currentRobotAngle > currentRobotAngle - Math.PI) {
+        else if(closestAngle(currentRobotAngle, newAngle) < 0) {
             // turn left
             driveTrain.autoUpdateSpeed(0.3 * CCW_IS_POSITIVE, 0.3 * CCW_IS_POSITIVE);
         }
-        else if(newAngle - currentRobotAngle < 0 || newAngle - currentRobotAngle > currentRobotAngle + Math.PI) {
+        else {
             // turn right
             driveTrain.autoUpdateSpeed(-0.3 *CCW_IS_POSITIVE, -0.3 * CCW_IS_POSITIVE);
         }
@@ -231,11 +231,23 @@ public class ImageRecognition {
     }
 
     // Will return one of the cargleAndRocketAngles values
-    private int whatIsClosestAngle() {
-        return 0;
+    private double whatIsClosestAngle(double currentAngle) {
+        double closestAngle = closestAngle(currentAngle, cargoAndRocketAngles[0]);
+        for (int i = 1; i < 7; i++) {
+            if (Math.abs(closestAngle(currentAngle, cargoAndRocketAngles[i])) < closestAngle) {
+                closestAngle = closestAngle(currentAngle, cargoAndRocketAngles[i]);
+            }
+        }
+        return closestAngle;
     }
-
-
-
+    private double closestAngle(double currentAngle, Double newAngle) {                   
+        if (newAngle - currentAngle < Math.PI && newAngle - currentAngle > -Math.PI) {         
+            return newAngle - currentAngle;                                            
+        }                                                                              
+        if (newAngle - currentAngle > Math.PI) {                                           
+            return newAngle - currentAngle - 2 * Math.PI;                                      
+        }                                                                              
+        return (newAngle +  2 * 180 - currentAngle) % (2 * Math.PI);                               
+    }                                                                                  
 
 }
