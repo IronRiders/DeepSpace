@@ -66,8 +66,7 @@ public class Grabber {
     public void closed(){
         move(closed);
     }
-    public void move(double rotations){
-            double totalPulses = rotations;
+    public void move(double totalPulses){
             leftClaw.set(ControlMode.Position, totalPulses);
             rightClaw.set(ControlMode.Position , totalPulses);
         }
