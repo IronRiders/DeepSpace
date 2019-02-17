@@ -12,14 +12,13 @@ public class Elevator {
     private final double dConstant = 1.0;
     private final double fConstant = 0.0;
     private final int maxAmps = 6;
-    private final int diameter = 7; //THIS NEEDS TO BE SET --- IT IS THE DIAMETER OF THE ELEVATOR SPOOL THING
     DigitalInput limitSwitch;
 
     private final int distancePickUp = 0; //inches for all
     private final int distanceLowHatch = 19; 
     private final int distanceLowCargo = 21;
     private final int distanceMediumHigh = 22;
-    double pulsesPerInch = 4096 / 2*Math.PI;
+    double pulsesPerInch = 4096 / 2*Math.PI; 
 
     public Elevator(int elevatorPort , int limitSwitchPort){
         talon = new TalonSRX(elevatorPort);

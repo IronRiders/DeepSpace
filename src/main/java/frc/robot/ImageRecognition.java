@@ -29,12 +29,12 @@ public class ImageRecognition {
     int heightOfCamera = 1080; 
 
     private static final double WHEEL_DIAMETER_INCHES = 6; // Converting meters to inches
-    private static final int ENCODER_TICKS_PER_REVOLUTION = 1024;
+    private static final int ENCODER_TICKS_PER_REVOLUTION = 4096;
     private double currentRobotAngle;
     private int stage = 0;
     private double[] pathData = new double[4];
     //DecimalFormat df = new DecimalFormat("##.######");
-    private static final double ANGLE_TOLERANCE = 10. / 360 * 2 * Math.PI; // 10 Degrees of tolerance
+    private static final double ANGLE_TOLERANCE = 10; // 10 Degrees of tolerance
     private static final double DISTANCE_TOLERANCE = 5; // inches
     private static final int CCW_IS_POSITIVE = 1; // 1 = true, -1 = false
     private double tempTravelDistance = 0;
