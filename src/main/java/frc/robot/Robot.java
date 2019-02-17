@@ -102,7 +102,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    imageRec.setTriggered(true);
     if(selectedPaths[currentPath].isFinished()){
         isDriverControlling = !isDriverControlling;
         if(currentPath < 2) //prevents indexOutOfBoundsException
