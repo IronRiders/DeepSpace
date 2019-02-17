@@ -54,6 +54,8 @@ public ImageRecognition() {
         //this.driveTrain = driveTrain;
         isImageRecTriggered = false;
         nwtInstance = NetworkTableInstance.getDefault();
+        nwtInstance.startClientTeam(4180);
+        nwtInstance.startDSClient();
         table = nwtInstance.getTable("GRIP");
         //startingGyroOrientation = driveTrain.getGyro().getAngle();
     }
