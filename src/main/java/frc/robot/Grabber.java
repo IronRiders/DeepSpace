@@ -51,19 +51,26 @@ public class Grabber {
         rightLimitSwitch = new DigitalInput(rightLimitPort);
     }
 
-
     public void open(){
+        leftClaw.config_kI(0,iConstant);
+        rightClaw.config_kI(0,iConstant);
         move(open);
 
     }  
 
     public void cargo(){
+        leftClaw.config_kI(0,iConstant);
+        rightClaw.config_kI(0,iConstant);
         move(cargo);
     }  
     public void hatch(){
+        leftClaw.config_kI(0,0.0);
+        rightClaw.config_kI(0,0.0);
         move(hatch);
     }
     public void closed(){
+        leftClaw.config_kI(0,iConstant);
+        rightClaw.config_kI(0,iConstant);
         move(closed);
     }
     public void move(double totalPulses){

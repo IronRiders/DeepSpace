@@ -59,15 +59,8 @@ public class DriveTrain {
         //Top is X scale bottem is Y
         double scaleFactorC = .5 ;
         double scaleFactorD = .5;
-        scaledY = (scaleFactorC * Math.abs(throttlePosition.y)) + (scaleFactorD * throttlePosition.y * throttlePosition.y);
-        scaledX = (scaleFactorA * Math.abs(throttlePosition.x)) + (scaleFactorB * throttlePosition.x * throttlePosition.x);
-        if (throttlePosition.y < 0){
-            scaledY = scaledY * -1;
-        }
-        if (throttlePosition.x <0){
-            scaledX = scaledX * -1;
-        }
-
+        scaledY = (scaleFactorC * Math.abs(throttlePosition.y)) + (scaleFactorD * throttlePosition.y * throttlePosition.y *throttlePosition.y);
+        scaledX = (scaleFactorA * Math.abs(throttlePosition.x)) + (scaleFactorB * throttlePosition.x * throttlePosition.x *throttlePosition.x);
         scaledX*=0.5;
         
         final double right = (-scaledX - scaledY)*-1;
