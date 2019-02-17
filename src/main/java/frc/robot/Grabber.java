@@ -19,8 +19,13 @@ public class Grabber {
     private final double iConstant = 0.001;
     private final double dConstant = 1.0;
     private final double fConstant = 0.0;
-    private final int pulsesPerRevolution = 4096;
+    //private final int pulsesPerRevolution = 4096;
     private final int maxAmps = 3; 
+    private final double open = 6200;
+    private final double cargo = 4133;
+    private final double hatch = 609;
+    private final double closed = 0;
+
 
 
     public Grabber(int leftFlywheelPort , int rightFlywheelPort , int leftClawPort , int rightClawPort , int leftLimitPort , int rightLimitPort){
@@ -47,8 +52,22 @@ public class Grabber {
     }
 
 
-        public void move(double rotations){
-            double totalPulses = rotations * 4096;
+    public void open(){
+        move(open);
+
+    }  
+
+    public void cargo(){
+        move(cargo);
+    }  
+    public void hatch(){
+        move(hatch);
+    }
+    public void closed(){
+        move(closed);
+    }
+    public void move(double rotations){
+            double totalPulses = rotations;
             leftClaw.set(ControlMode.Position, totalPulses);
             rightClaw.set(ControlMode.Position , totalPulses);
         }
