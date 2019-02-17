@@ -55,7 +55,8 @@ public class DriveTrain {
         double scaledX = throttlePosition.x;
         double scaleFactorA = 0.2;
         double scaleFactorB = 0.8;
-        scaledX = (scaleFactorA * throttlePosition.x) + (scaleFactorB * throttlePosition.x * throttlePosition.x);
+        
+        scaledX = (scaleFactorA * Math.abs(throttlePosition.x)) + (scaleFactorB * throttlePosition.x * throttlePosition.x);
         if (throttlePosition.x <0){
             scaledX = scaledX * -1;
         }
@@ -67,7 +68,7 @@ public class DriveTrain {
         leftMotor1.set(ControlMode.PercentOutput, left);
         leftMotor2.follow(leftMotor1);
         rightMotor1.set(ControlMode.PercentOutput, right);
-        rightMotor2.follow(rightMotor2);
+        rightMotor2.follow(rightMotor1);
 
         counter++;
         if(counter % 10 == 0){
