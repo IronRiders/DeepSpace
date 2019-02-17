@@ -1,44 +1,54 @@
 package frc.robot;
 
-import java.text.DecimalFormat;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.NetworkTableValue;
+// import edu.wpi.first.networktables.NetworkTableValue;
 
 public class ImageRecognition {
 
+    // Global Values change change
+    private DriveTrain driveTrain;
+    private double currentRobotAngle;
+    private double distanceToRobotInches;
+    private double distanceRightToRobotInches;
+    private int stage = 0;
+    private int lastSensorPosition;
+    private double[] pathData = new double[4];
+    private double[] cargoAndRocketAngles = new double[7];
+    private double tempTravelDistance = 0;
+    private double angleOfRobot;
+    private boolean isRocket = false;
     private boolean isImageRecTriggered;
-    NetworkTableInstance nwtInstance;
-    NetworkTable table;
-    // private final NetworkTableEntry distanceToRobotInchesEntry;
-    // private final NetworkTableEntry distanceRightToRobotInchesEntry;
-    // private final NetworkTableEntry angleOfRobotEntry;
-    double distanceToRobotInches;
-    double distanceRightToRobotInches;
-    double angleOfRobot;
-    //DriveTrain driveTrain;
 
-    // Network tables columns 1, 2, 3 in order.
+    // Network Tables
+    private NetworkTableInstance nwtInstance;
+    private NetworkTable table;
+    private final NetworkTableEntry DISTANCE_TO_ROBOT_INCHES_ENTRY;
+    private final NetworkTableEntry DISTANCE_RIGHT_TO_ROBOT_INCHES_ENTRY;
     private final String GRIP_DISTANCE_TO_ROBOT = "DistanceToRobotInches";
     private final String GRIP_DISTANCE_RIGHT_TO_ROBOT = "DistanceRightToRobot";
-    private final String GRIP_ANGLE_OF_ROBOT_TO_TAPE = "AngleOfRobotToTapeRadians";
 
-    int widthOfCamera = 1920; //we need to change these!
-    int heightOfCamera = 1080; 
-
-    private static final double WHEEL_DIAMETER_INCHES = 6; // Converting meters to inches
-    private static final int ENCODER_TICKS_PER_REVOLUTION = 4096;
-    private double currentRobotAngle;
-    private int stage = 0;
-    private double[] pathData = new double[4];
-    //DecimalFormat df = new DecimalFormat("##.######");
+    // Final Constants
+    //private final double STARTING_GYRO_ORIENTATION;
+    private static final int WIDTH_OF_CAMERA = 1920; //we need to change these!
+    private static final int HEIGHT_OF_CAMERA = 1080; 
     private static final double ANGLE_TOLERANCE = 10; // 10 Degrees of tolerance
     private static final double DISTANCE_TOLERANCE = 5; // inches
     private static final int CCW_IS_POSITIVE = 1; // 1 = true, -1 = false
-    private double tempTravelDistance = 0;
-    private int lastSensorPosition;
+    private static final double WHEEL_DIAMETER_INCHES = 6;
+    private static final int ENCODER_TICKS_PER_REVOLUTION = 1024;
+    private static final int LEFT_FACING_HORIZONTAL = 0;
+    private static final int RIGHT_FACING_HORIZONTAL = 1;
+    private static final int FORWARDS = 2;
+    private static final int LEFT_ROCKET_FRONT = 3;
+    private static final int LEFT_ROCKET_BACK = 4;
+    private static final int RIGHT_ROCKET_FRONT = 5;
+    private static final int RIGHT_ROCKET_BACK = 6;
+    private static final double ROCKET_ANGLE = 61.25 / 360 * 2 * Math.PI; // Rocket angle in Radians
+
+    //DriveTrain driveTrain;
     //private final double startingGyroOrientation;
 
 // https://wpilib.screenstepslive.com/s/currentCS/m/75361 HOW TO USE NETWORKTABLES!
@@ -48,16 +58,24 @@ public ImageRecognition() {
     isImageRecTriggered = false;
     nwtInstance = NetworkTableInstance.getDefault();
     table = nwtInstance.getTable("GRIP");
+    DISTANCE_TO_ROBOT_INCHES_ENTRY = table.getEntry(GRIP_DISTANCE_TO_ROBOT);
+    DISTANCE_RIGHT_TO_ROBOT_INCHES_ENTRY = table.getEntry(GRIP_DISTANCE_RIGHT_TO_ROBOT);
     //startingGyroOrientation = driveTrain.getGyro().getAngle();
 }
     public ImageRecognition(DriveTrain driveTrain) {
-        //this.driveTrain = driveTrain;
+        
         isImageRecTriggered = false;
+        //STARTING_GYRO_ORIENTATION = driveTrain.getGyro().getAngle();
+        //determineCargoAndRocketAngles(STARTING_GYRO_ORIENTATION);
+
+        // Network Tables
         nwtInstance = NetworkTableInstance.getDefault();
         nwtInstance.startClientTeam(4180);
         nwtInstance.startDSClient();
         table = nwtInstance.getTable("GRIP");
         //startingGyroOrientation = driveTrain.getGyro().getAngle();
+        DISTANCE_TO_ROBOT_INCHES_ENTRY = table.getEntry(GRIP_DISTANCE_TO_ROBOT);
+        DISTANCE_RIGHT_TO_ROBOT_INCHES_ENTRY = table.getEntry(GRIP_DISTANCE_RIGHT_TO_ROBOT);
     }
 
     public void triggerImageRec() {
@@ -75,29 +93,10 @@ public ImageRecognition() {
     }
 
     public void getNetworkTablesValues() {
-        distanceToRobotInches = table.getEntry(GRIP_DISTANCE_TO_ROBOT).getValue().getDouble();
-        distanceRightToRobotInches = table.getEntry(GRIP_DISTANCE_RIGHT_TO_ROBOT).getValue().getDouble();
-        angleOfRobot = table.getEntry(GRIP_ANGLE_OF_ROBOT_TO_TAPE).getValue().getDouble();  
-        System.out.println(distanceToRobotInches + " " + distanceRightToRobotInches);      
+        distanceToRobotInches = DISTANCE_TO_ROBOT_INCHES_ENTRY.getValue().getDouble();
+        distanceRightToRobotInches = DISTANCE_RIGHT_TO_ROBOT_INCHES_ENTRY.getValue().getDouble();
+        System.out.println(distanceToRobotInches + " " + distanceRightToRobotInches);     
     }
-
-    public void setTriggered(boolean isTriggered) {
-        isImageRecTriggered = isTriggered;
-    }
-
-    // Legacy code
-    // private void horizontalPID() {
-    //     double error = (widthOfCamera / 2) - centerXDouble;
-    //     if (error < 0) { 
-    //         //turn right
-    //         driveTrain.autoUpdateSpeed(-0.3, -0.3);
-    //     } else {
-    //         //turn left
-    //         driveTrain.autoUpdateSpeed(0.3, 0.3);
-    //     }
-    //     //positive turns right , negative turns left
-    // }
-
 
     // Does the next action in line 
     public void startNextMove() {
@@ -122,18 +121,18 @@ public ImageRecognition() {
 
     // Needs to be fixed if CCW is not positive
     private void turnToAngle(double newAngle) {
-        //currentRobotAngle = driveTrain.getGyro().getAngle();
+        currentRobotAngle = driveTrain.getGyro().getAngle();
         if(Math.abs((currentRobotAngle - newAngle + 2 * Math.PI) % (2 * Math.PI)) < ANGLE_TOLERANCE) {
             stage++;
             startNextMove();
         }
-        else if(newAngle - currentRobotAngle > 0 || newAngle - currentRobotAngle > currentRobotAngle - Math.PI) {
+        else if(closestAngle(currentRobotAngle, newAngle) < 0) {
             // turn left
-            //driveTrain.autoUpdateSpeed(0.3 * CCW_IS_POSITIVE, 0.3 * CCW_IS_POSITIVE);
+            driveTrain.autoUpdateSpeed(0.3 * CCW_IS_POSITIVE, 0.3 * CCW_IS_POSITIVE);
         }
-        else if(newAngle - currentRobotAngle < 0 || newAngle - currentRobotAngle > currentRobotAngle + Math.PI) {
+        else {
             // turn right
-            //driveTrain.autoUpdateSpeed(-0.3 *CCW_IS_POSITIVE, -0.3 * CCW_IS_POSITIVE);
+            driveTrain.autoUpdateSpeed(-0.3 *CCW_IS_POSITIVE, -0.3 * CCW_IS_POSITIVE);
         }
     }
 
@@ -147,17 +146,17 @@ public ImageRecognition() {
         }
         else if (tempTravelDistance < travelDistance) {
             // Drive fowards
-            //driveTrain.autoUpdateSpeed(0.3, -0.3);
+            driveTrain.autoUpdateSpeed(0.3, -0.3);
         } else {
             // Drive backwords at slightly slower speed
-            //driveTrain.autoUpdateSpeed(-0.2, 0.2);
+            driveTrain.autoUpdateSpeed(-0.2, 0.2);
         }
     }
 
     // Gets the straight distance traveled using the left motor
     private double straightDistanceTraveled() {
         int tempSensorPosition = lastSensorPosition;
-        //lastSensorPosition = driveTrain.getLeftMotor().getSelectedSensorPosition();
+        lastSensorPosition = driveTrain.getLeftMotor().getSelectedSensorPosition();
         return (lastSensorPosition - tempSensorPosition) / ENCODER_TICKS_PER_REVOLUTION * 
                 (Math.PI * WHEEL_DIAMETER_INCHES);
     }
@@ -177,7 +176,7 @@ public ImageRecognition() {
     // Makes the path that the robot will take with the image recognition data
     private void determinePath(double distanceTapeToRobotInches, double distanceToRightInches) {
 
-        //currentRobotAngle = driveTrain.getGyro().getAngle();
+        currentRobotAngle = driveTrain.getGyro().getAngle();
 
         if (distanceToRightInches < 5 && distanceToRightInches > -5) { 
             // if the robot is not too far right or left (values need to be tested and updated)
@@ -239,7 +238,34 @@ public ImageRecognition() {
         
     }
 
+    private void determineCargoAndRocketAngles(double initialGyroAngle) {
+        cargoAndRocketAngles[FORWARDS] = initialGyroAngle;
+        cargoAndRocketAngles[LEFT_FACING_HORIZONTAL] = (initialGyroAngle + 1/8 * 2 * Math.PI) % (2 * Math.PI);
+        cargoAndRocketAngles[RIGHT_FACING_HORIZONTAL] = (initialGyroAngle + 7/8 * 2 * Math.PI) % (2 * Math.PI);
+        cargoAndRocketAngles[LEFT_ROCKET_FRONT] = (initialGyroAngle + CCW_IS_POSITIVE * (Math.PI - ROCKET_ANGLE) + 2 * Math.PI) % (2 * Math.PI);
+        cargoAndRocketAngles[LEFT_ROCKET_BACK] = (cargoAndRocketAngles[LEFT_ROCKET_BACK] + CCW_IS_POSITIVE * 2 * ROCKET_ANGLE) % (2 * Math.PI);
+        cargoAndRocketAngles[RIGHT_ROCKET_FRONT] = (initialGyroAngle - CCW_IS_POSITIVE * (Math.PI - ROCKET_ANGLE) + 2 * Math.PI) % (2 * Math.PI);
+        cargoAndRocketAngles[RIGHT_ROCKET_BACK] = (cargoAndRocketAngles[RIGHT_ROCKET_BACK] - CCW_IS_POSITIVE * 2 * ROCKET_ANGLE) % (2 * Math.PI);;
+    }
 
-
+    // Will return one of the cargleAndRocketAngles values
+    private double whatIsClosestAngle(double currentAngle) {
+        double closestAngle = closestAngle(currentAngle, cargoAndRocketAngles[0]);
+        for (int i = 1; i < 7; i++) {
+            if (Math.abs(closestAngle(currentAngle, cargoAndRocketAngles[i])) < closestAngle) {
+                closestAngle = closestAngle(currentAngle, cargoAndRocketAngles[i]);
+            }
+        }
+        return closestAngle;
+    }
+    private double closestAngle(double currentAngle, Double newAngle) {                   
+        if (newAngle - currentAngle < Math.PI && newAngle - currentAngle > -Math.PI) {         
+            return newAngle - currentAngle;                                            
+        }                                                                              
+        if (newAngle - currentAngle > Math.PI) {                                           
+            return newAngle - currentAngle - 2 * Math.PI;                                      
+        }                                                                              
+        return (newAngle +  2 * 180 - currentAngle) % (2 * Math.PI);                               
+    }                                                                                  
 
 }

@@ -54,6 +54,8 @@ public class Robot extends TimedRobot {
       pathFiles[i] = new File(fileName);
     }
     //driveTrain.makeVictorsFollowers();
+
+    //joystick1.addButton(1, imageRec::triggerImageRec); // Random joystick button
   }
 
   /**
@@ -107,9 +109,12 @@ public class Robot extends TimedRobot {
         currentPath++;
         selectedPaths[currentPath].reset();
     }
-    if (imageRec.isImageRecTriggered()){
-      //image rec code here
-    } else if (isDriverControlling) {
+    if (selectedPaths[selectedPaths.length - 1].isFinished()){ // Assuming that the last path will only finished after it as occurred
+      if(!imageRec.isImageRecTriggered()) {
+        imageRec.triggerImageRec();
+      }
+      imageRec.startNextMove();
+    } else if (isDriverControlling) { //had to remove driver control now that its path dependant
       //joystick1.listen();
     } else {
       selectedPaths[currentPath].update();
@@ -122,7 +127,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     imageRec.triggerImageRec();
-    if(imageRec.isImageRecTriggered()){
+    if(imageRec.isImageRecTriggered()) {
+      // the triggerImageRec() must be called by joystick
       imageRec.startNextMove();
     }
     else{
