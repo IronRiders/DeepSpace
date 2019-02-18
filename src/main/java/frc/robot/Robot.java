@@ -34,7 +34,7 @@ public class Robot extends TimedRobot {
   private final Elevator elevator = new Elevator(ELEVATOR_PORT , ELEVATOR_ZERO_PORT);
   private final Grabber grabber = new Grabber(LEFT_FLYWHEEL_PORT , RIGHT_FLYWHEEL_PORT , CLAW_LEFT , CLAW_RIGHT , CLAW_LEFT_LIMIT_SWITCH , CLAW_RIGHT_LIMIT_SWITCH );
   private final Arm arm = new Arm(ARM_PORT , ARM_LIMIT_SWITCH_PORT);
-  private String filePath = "/home/lvuser/deploy/paths/path%s"; 
+  private String filePath = "path%s"; 
   private final ImageRecognition imageRec = new ImageRecognition(driveTrain);
   int currentPath;
   
@@ -46,10 +46,13 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     CameraServer.getInstance().startAutomaticCapture();
     updateSmartDB();
-    for (int i = 1; i <= pathFiles.length; i++) {
-      pathFiles[i] = String.format(filePath , i);
+    for (int i = 0; i < pathFiles.length; i++) {
+      pathFiles[i] = String.format(filePath , i + 1);
     }
     
+    joystick1.addButton(1, elevator::lowCargo);
+    joystick1.addButton(2, elevator::lowHatch);
+    joystick1.addButton(3, elevator::mediumHigh);
   }
 
   /**
@@ -82,10 +85,14 @@ public class Robot extends TimedRobot {
     int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 7", "1"));
     int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 8", "2"));
     int thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 9", "3"));
+    //because it's from 0-11 instead of 1-12 with arrays
+    firstPath--;
+    secondPath--;
+    thirdPath--;
     int chosenPathNumbers[] = new int[]{firstPath, secondPath, thirdPath};
 
     for (int i = 0; i < selectedPaths.length; i++) {
-      selectedPaths[i] = new MotionProfiling(driveTrain, pathFiles[chosenPathNumbers[i]] + ".left.pf1.csv" , pathFiles[chosenPathNumbers[i]] + ".right.pf1.csv");
+      selectedPaths[i] = new MotionProfiling(driveTrain, pathFiles[chosenPathNumbers[i]] + ".left" , pathFiles[chosenPathNumbers[i]] + ".right");
     }
 
     currentPath = 0;

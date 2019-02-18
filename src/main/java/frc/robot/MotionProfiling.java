@@ -28,7 +28,6 @@ public class MotionProfiling {
         this.driveTrain = driveTrain;
         leftMotor = driveTrain.getLeftMotor();
         rightMotor = driveTrain.getRightMotor();
-
         //pathweaver has an error with mixing up left and right
         Trajectory trajectoryLeft = PathfinderFRC.getTrajectory(setupRight);
         Trajectory trajectoryRight = PathfinderFRC.getTrajectory(setupLeft);
