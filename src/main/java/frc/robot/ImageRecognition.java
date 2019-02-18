@@ -5,6 +5,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 // import edu.wpi.first.networktables.NetworkTableValue;
+import edu.wpi.first.networktables.NetworkTableValue;
 
 public class ImageRecognition {
 
@@ -25,10 +26,10 @@ public class ImageRecognition {
     // Network Tables
     private NetworkTableInstance nwtInstance;
     private NetworkTable table;
-    private final NetworkTableEntry DISTANCE_TO_ROBOT_INCHES_ENTRY;
-    private final NetworkTableEntry DISTANCE_RIGHT_TO_ROBOT_INCHES_ENTRY;
+    private  NetworkTableEntry DISTANCE_TO_ROBOT_INCHES_ENTRY;
+    private  NetworkTableEntry DISTANCE_RIGHT_TO_ROBOT_INCHES_ENTRY;
     private final String GRIP_DISTANCE_TO_ROBOT = "DistanceToRobotInches";
-    private final String GRIP_DISTANCE_RIGHT_TO_ROBOT = "DistanceRightToRobot";
+    private final String GRIP_DISTANCE_RIGHT_TO_ROBOT = "DistanceRightToRobotInches";
 
     // Final Constants
     //private final double STARTING_GYRO_ORIENTATION;
@@ -93,13 +94,19 @@ public ImageRecognition() {
     }
 
     public void getNetworkTablesValues() {
-        distanceToRobotInches = DISTANCE_TO_ROBOT_INCHES_ENTRY.getValue().getDouble();
-        distanceRightToRobotInches = DISTANCE_RIGHT_TO_ROBOT_INCHES_ENTRY.getValue().getDouble();
+        NetworkTableValue distance = DISTANCE_TO_ROBOT_INCHES_ENTRY.getValue();
+        System.out.println("Distance from tape: " + distance.getDouble());
+        distanceToRobotInches = distance.getDouble();
+        NetworkTableValue distanceRight = DISTANCE_RIGHT_TO_ROBOT_INCHES_ENTRY.getValue();
+        System.out.println("Distance right from tape: " +  distanceRight.getDouble());
+        distanceRightToRobotInches = distanceRight.getDouble();
+
         System.out.println(distanceToRobotInches + " " + distanceRightToRobotInches);     
     }
 
     // Does the next action in line 
     public void startNextMove() {
+        /*
         switch(stage) {
             case 0:
                 turnToAngle((pathData[stage] + angleOfRobot) % (2 * Math.PI));
@@ -116,12 +123,12 @@ public ImageRecognition() {
             case 4:
                 stage = 0;
                 isImageRecTriggered = false;
-        }
+        } */
     }
 
     // Needs to be fixed if CCW is not positive
     private void turnToAngle(double newAngle) {
-        currentRobotAngle = driveTrain.getGyro().getAngle();
+        currentRobotAngle = 0; //driveTrain.getGyro().getAngle();
         if(Math.abs((currentRobotAngle - newAngle + 2 * Math.PI) % (2 * Math.PI)) < ANGLE_TOLERANCE) {
             stage++;
             startNextMove();
@@ -176,7 +183,7 @@ public ImageRecognition() {
     // Makes the path that the robot will take with the image recognition data
     private void determinePath(double distanceTapeToRobotInches, double distanceToRightInches) {
 
-        currentRobotAngle = driveTrain.getGyro().getAngle();
+        //currentRobotAngle = driveTrain.getGyro().getAngle();
 
         if (distanceToRightInches < 5 && distanceToRightInches > -5) { 
             // if the robot is not too far right or left (values need to be tested and updated)

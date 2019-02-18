@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     System.out.println("obj");
-    CameraServer.getInstance().startAutomaticCapture();
+    //CameraServer.getInstance().startAutomaticCapture();
     updateSmartDB();
     //driveTrain.makeVictorsFollowers();
     for (int i = 0; i < pathFiles.length; i++) {
@@ -102,6 +102,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+
     if(selectedPaths[currentPath].isFinished()){
         isDriverControlling = !isDriverControlling;
         if(currentPath < 2) //prevents indexOutOfBoundsException
