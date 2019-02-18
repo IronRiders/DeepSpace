@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  private File pathFiles[] = new File[12];
+  private String pathFiles[] = new String[12];
   private MotionProfiling selectedPaths[] = new MotionProfiling[3];
 
   private boolean isDriverControlling;  
@@ -34,10 +34,9 @@ public class Robot extends TimedRobot {
   // private final Elevator elevator = new Elevator(ELEVATOR_PORT , ELEVATOR_ZERO_PORT);
   // private final Grabber grabber = new Grabber(LEFT_FLYWHEEL_PORT , RIGHT_FLYWHEEL_PORT , CLAW_LEFT , CLAW_RIGHT , CLAW_LEFT_LIMIT_SWITCH , CLAW_RIGHT_LIMIT_SWITCH );
   // private final Arm arm = new Arm(ARM_PORT , ARM_LIMIT_SWITCH_PORT);
-  private String filePath = "/home/lvuser/deploy/paths/path%s.pf1.csv"; 
+  private String filePath = "/home/lvuser/deploy/paths/path%s"; 
   // private final ImageRecognition imageRec = new ImageRecognition(driveTrain);
-  private final ImageRecognition imageRec = new ImageRecognition();
-  int currentPath;
+    int currentPath;
   
   /**
    * This function is run when the robot is first started up and should be
@@ -48,21 +47,9 @@ public class Robot extends TimedRobot {
     System.out.println("obj");
     //CameraServer.getInstance().startAutomaticCapture();
     updateSmartDB();
-    //driveTrain.makeVictorsFollowers();
-    for (int i = 0; i < pathFiles.length; i++) {
-      String fileName = String.format(filePath , i+1);
-      pathFiles[i] = new File(fileName);
+    for (int i = 1; i <= pathFiles.length; i++) {
+      pathFiles[i] = String.format(filePath , i);
     }
-
-    int firstPath = 1;
-    int secondPath = 2;
-    int thirdPath = 3;
-    int chosenPathNumbers[] = new int[]{firstPath, secondPath, thirdPath};
-
-    for (int i = 0; i < selectedPaths.length; i++) {
-      selectedPaths[i] = new MotionProfiling(pathFiles[chosenPathNumbers[i]]);
-    }
-
     //driveTrain.makeVictorsFollowers();
 
     //joystick1.addButton(1, imageRec::triggerImageRec); // Random joystick button
@@ -95,9 +82,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    //int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 7", "1"));
-    //int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 8", "2"));
-    //int thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 9", "3"));
+    int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 7", "1"));
+    int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 8", "2"));
+    int thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 9", "3"));
+    int chosenPathNumbers[] = new int[]{firstPath, secondPath, thirdPath};
+
+    for (int i = 0; i < selectedPaths.length; i++) {
+      selectedPaths[i] = new MotionProfiling(pathFiles[chosenPathNumbers[i]] + ".left.pf1.csv" , pathFiles[chosenPathNumbers[i]] + ".right.pf1.csv");
+    }
 
     currentPath = 0;
   }
@@ -114,12 +106,13 @@ public class Robot extends TimedRobot {
         currentPath++;
         selectedPaths[currentPath].reset();
     }
-    if (selectedPaths[selectedPaths.length - 1].isFinished()){ // Assuming that the last path will only finished after it as occurred
-      if(!imageRec.isImageRecTriggered()) {
-        imageRec.triggerImageRec();
-      }
-      imageRec.startNextMove();
-    } else if (isDriverControlling) { //had to remove driver control now that its path dependant
+    //if (selectedPaths[selectedPaths.length - 1].isFinished()){ // Assuming that the last path will only finished after it as occurred
+      //if(!imageRec.isImageRecTriggered()) {
+        //imageRec.triggerImageRec();
+      //}
+      //imageRec.startNextMove();
+    //}
+     if (isDriverControlling) { //had to remove driver control now that its path dependant
       //joystick1.listen();
     } else {
       selectedPaths[currentPath].update();
@@ -131,14 +124,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    imageRec.triggerImageRec();
-    if(imageRec.isImageRecTriggered()) {
+    //imageRec.triggerImageRec();
+    //if(imageRec.isImageRecTriggered()) {
       // the triggerImageRec() must be called by joystick
-      imageRec.startNextMove();
-    }
-    else{
+      //imageRec.startNextMove();
+    //}
+    //else{
       //joystick1.listen();  
-    }
+    //}
   }
 
 public void changeDriverControl(){  
