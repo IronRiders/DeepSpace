@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  private File pathFiles[] = new File[12];
+  private String pathFiles[] = new String[12];
   private MotionProfiling selectedPaths[] = new MotionProfiling[3];
 
   private boolean isDriverControlling;  
@@ -34,7 +34,7 @@ public class Robot extends TimedRobot {
   private final Elevator elevator = new Elevator(ELEVATOR_PORT , ELEVATOR_ZERO_PORT);
   private final Grabber grabber = new Grabber(LEFT_FLYWHEEL_PORT , RIGHT_FLYWHEEL_PORT , CLAW_LEFT , CLAW_RIGHT , CLAW_LEFT_LIMIT_SWITCH , CLAW_RIGHT_LIMIT_SWITCH );
   private final Arm arm = new Arm(ARM_PORT , ARM_LIMIT_SWITCH_PORT);
-  private String filePath = "/home/lvuser/deploy/paths/path%s.pf1.csv"; 
+  private String filePath = "/home/lvuser/deploy/paths/path%s"; 
   private final ImageRecognition imageRec = new ImageRecognition(driveTrain);
   int currentPath;
   
@@ -46,10 +46,8 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     CameraServer.getInstance().startAutomaticCapture();
     updateSmartDB();
-    //driveTrain.makeVictorsFollowers();
-    for (int i = 0; i < pathFiles.length; i++) {
-      String fileName = String.format(filePath , i+1);
-      pathFiles[i] = new File(fileName);
+    for (int i = 1; i <= pathFiles.length; i++) {
+      pathFiles[i] = String.format(filePath , i);
     }
     
   }
@@ -87,7 +85,7 @@ public class Robot extends TimedRobot {
     int chosenPathNumbers[] = new int[]{firstPath, secondPath, thirdPath};
 
     for (int i = 0; i < selectedPaths.length; i++) {
-      selectedPaths[i] = new MotionProfiling(driveTrain, pathFiles[chosenPathNumbers[i]]);
+      selectedPaths[i] = new MotionProfiling(driveTrain, pathFiles[chosenPathNumbers[i]] + ".left.pf1.csv" , pathFiles[chosenPathNumbers[i]] + ".right.pf1.csv");
     }
 
     currentPath = 0;
