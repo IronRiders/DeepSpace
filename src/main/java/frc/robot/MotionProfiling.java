@@ -24,7 +24,7 @@ public class MotionProfiling {
     private EncoderFollower right;
 
     
-    public MotionProfiling(DriveTrain driveTrain, File setup) {
+    public MotionProfiling(File setup) {
         this.driveTrain = driveTrain;
         leftMotor = driveTrain.getLeftMotor();
         rightMotor = driveTrain.getRightMotor();
@@ -35,8 +35,8 @@ public class MotionProfiling {
         left = new EncoderFollower(modifier.getLeftTrajectory());
         right = new EncoderFollower(modifier.getRightTrajectory());
 
-        left.configureEncoder(leftMotor.getSelectedSensorPosition(), encoderTicksPerRevolution, wheelDiameter); 
-        right.configureEncoder(rightMotor.getSelectedSensorPosition(), encoderTicksPerRevolution, wheelDiameter);
+        //left.configureEncoder(leftMotor.getSelectedSensorPosition(), encoderTicksPerRevolution, wheelDiameter); 
+        //right.configureEncoder(rightMotor.getSelectedSensorPosition(), encoderTicksPerRevolution, wheelDiameter);
 
         left.configurePIDVA(0.9, 0.0, 0.0, 1 / maxVelocity, 0); //Filler PID vals
         right.configurePIDVA(0.9, 0.0, 0.0, 1 / maxVelocity, 0);

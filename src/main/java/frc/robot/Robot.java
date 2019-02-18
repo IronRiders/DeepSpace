@@ -53,6 +53,16 @@ public class Robot extends TimedRobot {
       String fileName = String.format(filePath , i+1);
       pathFiles[i] = new File(fileName);
     }
+
+    int firstPath = 1;
+    int secondPath = 2;
+    int thirdPath = 3;
+    int chosenPathNumbers[] = new int[]{firstPath, secondPath, thirdPath};
+
+    for (int i = 0; i < selectedPaths.length; i++) {
+      selectedPaths[i] = new MotionProfiling(pathFiles[chosenPathNumbers[i]]);
+    }
+
     //driveTrain.makeVictorsFollowers();
 
     //joystick1.addButton(1, imageRec::triggerImageRec); // Random joystick button
@@ -85,14 +95,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 7", "1"));
-    int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 8", "2"));
-    int thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 9", "3"));
-    int chosenPathNumbers[] = new int[]{firstPath, secondPath, thirdPath};
-
-    for (int i = 0; i < selectedPaths.length; i++) {
-      //selectedPaths[i] = new MotionProfiling(driveTrain, pathFiles[chosenPathNumbers[i]]);
-    }
+    //int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 7", "1"));
+    //int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 8", "2"));
+    //int thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 9", "3"));
 
     currentPath = 0;
   }
