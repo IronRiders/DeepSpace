@@ -17,12 +17,15 @@ public class Arm{
     private final double fConstant = 0.0;
     private final int maxMotorAmps = 6;
     DigitalInput limitSwitch;
-   // double pulsesPerInch = 4096/(Math.PI*diameter of wheel)
-
+    int enocderPulsesPerRevolution = 100; //reminder:these are built in encoders that are different than the 1024 ones
     private final double mediumHatch = 18.5;
     private final double mediumCargo = 27.0;
     private final double highHatch = 46.5;
     private final double highCargo = 55.0;
+
+    private final int mediumHatchRevolutions = 13;
+    private final int mediumCargoRevolutions = 17;
+    private final int highHatchRevolutions = 29;
 
 
     public Arm(int portNumber, int limitSwitchPort){
@@ -39,8 +42,7 @@ public class Arm{
 
     }
 
-    public void move(double distance){
-        double numRevolutions = distance / (2*Math.PI); //this needs to change
+    public void move(int numRevolutions){
         pid.setReference(numRevolutions, ControlType.kPosition);
 
     }
@@ -58,15 +60,15 @@ public class Arm{
         spark.set(0);
     }
     public void getToMediumHatch(){
-        move(mediumHatch);
+        move(mediumHatchRevolutions);
     }
 
     public void getToMediumCargo(){
-        move(mediumCargo);
+        move(mediumCargoRevolutions);
     }
 
     public void getToHighHatch(){
-        move(highHatch);
+        move(highHatchRevolutions);
     }
 
 }
