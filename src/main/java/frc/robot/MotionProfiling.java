@@ -26,6 +26,7 @@ public class MotionProfiling {
     
 
     public MotionProfiling(String setupLeft , String setupRight) {
+        System.out.println("Got to motion profiling");
         //this.driveTrain = driveTrain;
         //leftMotor = driveTrain.getLeftMotor();
         //rightMotor = driveTrain.getRightMotor();
@@ -44,8 +45,8 @@ public class MotionProfiling {
         right.configurePIDVA(0.9, 0.0, 0.0, 1 / maxVelocity, 0);
     }
     public void update() { 
-        double l = left.calculate(leftMotor.getSelectedSensorPosition());
-        double r = right.calculate(rightMotor.getSelectedSensorPosition());
+        //double l = left.calculate(leftMotor.getSelectedSensorPosition());
+        //double r = right.calculate(rightMotor.getSelectedSensorPosition());
     
         double gyroHeading = driveTrain.getGyro().getAngle();   // Assuming the gyro is giving a value in degrees
         double desiredHeading = -Pathfinder.r2d(left.getHeading());  // Should also be in degrees
@@ -53,7 +54,7 @@ public class MotionProfiling {
         double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
         double turn = 0.8 * (-1.0/80.0) * angleDifference;
 
-        driveTrain.autoUpdateSpeed(l + turn, r - turn);
+        //driveTrain.autoUpdateSpeed(l + turn, r - turn);
     }
 
     public boolean isFinished() {
@@ -67,7 +68,7 @@ public class MotionProfiling {
     public void reset(){
         left.reset();
         right.reset();
-        left.configureEncoder(leftMotor.getSelectedSensorPosition(), encoderTicksPerRevolution, wheelDiameter); 
-        right.configureEncoder(rightMotor.getSelectedSensorPosition(), encoderTicksPerRevolution, wheelDiameter);
+        //left.configureEncoder(leftMotor.getSelectedSensorPosition(), encoderTicksPerRevolution, wheelDiameter); 
+        //right.configureEncoder(rightMotor.getSelectedSensorPosition(), encoderTicksPerRevolution, wheelDiameter);
     }
 }

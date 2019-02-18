@@ -14,6 +14,9 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import jaci.pathfinder.PathfinderFRC;
+import jaci.pathfinder.Trajectory;
+import jaci.pathfinder.followers.EncoderFollower;
 
 
 /**
@@ -37,6 +40,7 @@ public class Robot extends TimedRobot {
   private String filePath = "/home/lvuser/deploy/paths/path%s"; 
   // private final ImageRecognition imageRec = new ImageRecognition(driveTrain);
     int currentPath;
+    int maxVelocity = 13;
   
   /**
    * This function is run when the robot is first started up and should be
@@ -47,9 +51,13 @@ public class Robot extends TimedRobot {
     System.out.println("obj");
     //CameraServer.getInstance().startAutomaticCapture();
     updateSmartDB();
-    for (int i = 1; i <= pathFiles.length; i++) {
-      pathFiles[i] = String.format(filePath , i);
+    for (int i = 0; i < pathFiles.length; i++) {
+      pathFiles[i] = String.format(filePath , i + 1);
     }
+
+    //int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 7", "1")) - 1;
+    //int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 8", "2")) - 1;
+    //int thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 9", "3")) - 1;
     //driveTrain.makeVictorsFollowers();
 
     //joystick1.addButton(1, imageRec::triggerImageRec); // Random joystick button
@@ -82,13 +90,25 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 7", "1"));
-    int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 8", "2"));
-    int thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 9", "3"));
+    int firstPath = 0;
+    int secondPath = 1;
+    int thirdPath = 3;
     int chosenPathNumbers[] = new int[]{firstPath, secondPath, thirdPath};
 
     for (int i = 0; i < selectedPaths.length; i++) {
-      selectedPaths[i] = new MotionProfiling(pathFiles[chosenPathNumbers[i]] + ".left.pf1.csv" , pathFiles[chosenPathNumbers[i]] + ".right.pf1.csv");
+      String leftFile = pathFiles[chosenPathNumbers[i]] + ".left.pf1.csv";
+      String rightFile = pathFiles[chosenPathNumbers[i]] + ".right.pf1.csv";
+      Trajectory trajectoryLeft = PathfinderFRC.getTrajectory(leftFile);
+      Trajectory trajectoryRight = PathfinderFRC.getTrajectory(rightFile);
+
+      EncoderFollower left = new EncoderFollower(trajectoryLeft);
+      EncoderFollower right = new EncoderFollower(trajectoryRight);
+
+      //left.configureEncoder(leftMotor.getSelectedSensorPosition(), encoderTicksPerRevolution, wheelDiameter); 
+      //right.configureEncoder(rightMotor.getSelectedSensorPosition(), encoderTicksPerRevolution, wheelDiameter);
+
+      left.configurePIDVA(0.9, 0.0, 0.0, 1 / maxVelocity, 0); //Filler PID vals
+      right.configurePIDVA(0.9, 0.0, 0.0, 1 / maxVelocity, 0);
     }
 
     currentPath = 0;
