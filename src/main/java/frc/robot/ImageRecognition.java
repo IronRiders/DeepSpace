@@ -64,6 +64,7 @@ public class ImageRecognition {
 
     public void triggerImageRec() {
         isImageRecTriggered = !isImageRecTriggered;
+        System.out.println("Image recognition activation set to " + isImageRecTriggered);
         if(isImageRecTriggered) {
             getNetworkTablesValues();
             determinePath(distanceToRobotInches, distanceRightToRobotInches);
@@ -77,7 +78,8 @@ public class ImageRecognition {
 
     public void getNetworkTablesValues() {
         distanceToRobotInches = DISTANCE_TO_ROBOT_INCHES_ENTRY.getValue().getDouble();
-        distanceRightToRobotInches = DISTANCE_RIGHT_TO_ROBOT_INCHES_ENTRY.getValue().getDouble();      
+        distanceRightToRobotInches = DISTANCE_RIGHT_TO_ROBOT_INCHES_ENTRY.getValue().getDouble();   
+        System.out.printf("Network Table Values:\tDistance to robot=%.2f\tDistance right of robot=%.2f", distanceToRobotInches, distanceRightToRobotInches);   
     }
 
     // Does the next action in line 
@@ -108,13 +110,15 @@ public class ImageRecognition {
             stage++;
             startNextMove();
         }
-        else if(closestAngle(currentRobotAngle, newAngle) < 0) {
+        else if(closestAngle(currentRobotAngle, newAngle) * CCW_IS_POSITIVE > 0) {
             // turn left
-            driveTrain.autoUpdateSpeed(0.3 * CCW_IS_POSITIVE, 0.3 * CCW_IS_POSITIVE);
+            System.out.printf("Turning left, Currently %.2f degrees.", closestAngle(currentRobotAngle, newAngle) * CCW_IS_POSITIVE);
+            driveTrain.autoUpdateSpeed(0.3 , 0.3);
         }
         else {
             // turn right
-            driveTrain.autoUpdateSpeed(-0.3 *CCW_IS_POSITIVE, -0.3 * CCW_IS_POSITIVE);
+            System.out.printf("Turning right, Currently %.2f degrees.", closestAngle(currentRobotAngle, newAngle) * CCW_IS_POSITIVE);
+            driveTrain.autoUpdateSpeed(-0.3, -0.3);
         }
     }
 
@@ -222,8 +226,8 @@ public class ImageRecognition {
 
     private void determineCargoAndRocketAngles(double initialGyroAngle) {
         cargoAndRocketAngles[FORWARDS] = initialGyroAngle;
-        cargoAndRocketAngles[LEFT_FACING_HORIZONTAL] = (initialGyroAngle + 1/8 * 360) % (360);
-        cargoAndRocketAngles[RIGHT_FACING_HORIZONTAL] = (initialGyroAngle + 7/8 * 360) % (360);
+        cargoAndRocketAngles[LEFT_FACING_HORIZONTAL] = (initialGyroAngle + 90) % (360);
+        cargoAndRocketAngles[RIGHT_FACING_HORIZONTAL] = (initialGyroAngle - 90) % (360);
         cargoAndRocketAngles[LEFT_ROCKET_FRONT] = (initialGyroAngle + CCW_IS_POSITIVE * (180 - ROCKET_ANGLE) + 360) % (360);
         cargoAndRocketAngles[LEFT_ROCKET_BACK] = (cargoAndRocketAngles[LEFT_ROCKET_BACK] + CCW_IS_POSITIVE * 2 * ROCKET_ANGLE) % (360);
         cargoAndRocketAngles[RIGHT_ROCKET_FRONT] = (initialGyroAngle - CCW_IS_POSITIVE * (180 - ROCKET_ANGLE) + 360) % (360);
