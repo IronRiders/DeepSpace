@@ -8,6 +8,8 @@
 package frc.robot;
 
 import java.io.File;
+import java.io.IOException;
+
 import static frc.robot.Ports.*;
 
 import edu.wpi.first.cameraserver.CameraServer;
@@ -90,7 +92,12 @@ public class Robot extends TimedRobot {
     int chosenPathNumbers[] = new int[]{firstPath, secondPath, thirdPath};
 
     for (int i = 0; i < selectedPaths.length; i++) {
-      selectedPaths[i] = new MotionProfiling(driveTrain, pathFiles[chosenPathNumbers[i]] + ".left" , pathFiles[chosenPathNumbers[i]] + ".right");
+      try {
+        selectedPaths[i] = new MotionProfiling(driveTrain, pathFiles[chosenPathNumbers[i]] + ".left",
+            pathFiles[chosenPathNumbers[i]] + ".right");
+      } catch (IOException e) {
+		e.printStackTrace();
+	}
     }
 
     currentPath = 0;

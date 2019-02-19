@@ -1,6 +1,7 @@
 package frc.robot;
 
 import java.io.File;
+import java.io.IOException;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,8 +24,8 @@ public class MotionProfiling {
     private EncoderFollower left;
     private EncoderFollower right;
 
-    
-    public MotionProfiling(DriveTrain driveTrain, String setupLeft , String setupRight) {
+
+    public MotionProfiling(DriveTrain driveTrain, String setupLeft , String setupRight) throws IOException {
         this.driveTrain = driveTrain;
         leftMotor = driveTrain.getLeftMotor();
         rightMotor = driveTrain.getRightMotor();
