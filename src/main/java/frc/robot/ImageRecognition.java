@@ -34,7 +34,7 @@ public class ImageRecognition {
     private final double STARTING_GYRO_ORIENTATION;
     private static final int WIDTH_OF_CAMERA = 1920; //we need to change these!
     private static final int HEIGHT_OF_CAMERA = 1080; 
-    private static final double ANGLE_TOLERANCE = 10. / 360 * 2 * Math.PI; // 10 Degrees of tolerance
+    private static final double ANGLE_TOLERANCE = 10; // 10 Degrees of tolerance
     private static final double DISTANCE_TOLERANCE = 5; // inches
     private static final int CCW_IS_POSITIVE = 1; // 1 = true, -1 = false
     private static final double WHEEL_DIAMETER_INCHES = 6;
@@ -46,7 +46,7 @@ public class ImageRecognition {
     private static final int LEFT_ROCKET_BACK = 4;
     private static final int RIGHT_ROCKET_FRONT = 5;
     private static final int RIGHT_ROCKET_BACK = 6;
-    private static final double ROCKET_ANGLE = 61.25 / 360 * 2 * Math.PI; // Rocket angle in Radians
+    private static final double ROCKET_ANGLE = 61.25; // Rocket angle in Radians
 
 
     public ImageRecognition(DriveTrain driveTrain) {
@@ -84,7 +84,7 @@ public class ImageRecognition {
     public void startNextMove() {
         switch(stage) {
             case 0:
-                turnToAngle((pathData[stage] + angleOfRobot) % (2 * Math.PI));
+                turnToAngle((pathData[stage] + angleOfRobot) % (360));
             case 1:
                 travelDistanceInches(pathData[stage]);
             case 2:
@@ -104,7 +104,7 @@ public class ImageRecognition {
     // Needs to be fixed if CCW is not positive
     private void turnToAngle(double newAngle) {
         currentRobotAngle = driveTrain.getGyro().getAngle();
-        if(Math.abs((currentRobotAngle - newAngle + 2 * Math.PI) % (2 * Math.PI)) < ANGLE_TOLERANCE) {
+        if(Math.abs((currentRobotAngle - newAngle + 360) % (360)) < ANGLE_TOLERANCE) {
             stage++;
             startNextMove();
         }
@@ -140,7 +140,7 @@ public class ImageRecognition {
         int tempSensorPosition = lastSensorPosition;
         lastSensorPosition = driveTrain.getLeftMotor().getSelectedSensorPosition();
         return (lastSensorPosition - tempSensorPosition) / ENCODER_TICKS_PER_REVOLUTION * 
-                (Math.PI * WHEEL_DIAMETER_INCHES);
+                (180 * WHEEL_DIAMETER_INCHES);
     }
 
     // Checks the current path to see if it still works
@@ -171,22 +171,22 @@ public class ImageRecognition {
         else if(distanceToRightInches > 0) {
             // Still needs to take into account original angle of robot
             // make the robot turn right 
-            pathData[0] = (-Math.PI / 2 * CCW_IS_POSITIVE + Math.PI * 2  + currentRobotAngle) % (2 * Math.PI); 
+            pathData[0] = (-180 / 2 * CCW_IS_POSITIVE + 180 * 2  + currentRobotAngle) % (360); 
             // drive straight for x inches 
             pathData[1] = distanceToRightInches;
             // turn left
-            pathData[2] = (Math.PI / 2 * CCW_IS_POSITIVE + Math.PI * 2  + currentRobotAngle) % (2 * Math.PI);
+            pathData[2] = (180 / 2 * CCW_IS_POSITIVE + 180 * 2  + currentRobotAngle) % (360);
             // drive straight for x inches
             pathData[3] = distanceTapeToRobotInches;
         }
         else {
             // Still needs to take into account original angle of robot
             // turn left
-            pathData[0] = (Math.PI / 2 * CCW_IS_POSITIVE + Math.PI * 2  + currentRobotAngle) % (2 * Math.PI);
+            pathData[0] = (180 / 2 * CCW_IS_POSITIVE + 180 * 2  + currentRobotAngle) % (360);
             // drive straight for x inches
             pathData[1] = distanceToRightInches;
             // make the robot turn right 
-            pathData[2] = (-Math.PI / 2 * CCW_IS_POSITIVE + Math.PI * 2  + currentRobotAngle) % (2 * Math.PI); 
+            pathData[2] = (-180 / 2 * CCW_IS_POSITIVE + 180 * 2  + currentRobotAngle) % (360); 
             // drive straight for x inches
             pathData[3] = distanceTapeToRobotInches;
         }
@@ -222,12 +222,12 @@ public class ImageRecognition {
 
     private void determineCargoAndRocketAngles(double initialGyroAngle) {
         cargoAndRocketAngles[FORWARDS] = initialGyroAngle;
-        cargoAndRocketAngles[LEFT_FACING_HORIZONTAL] = (initialGyroAngle + 1/8 * 2 * Math.PI) % (2 * Math.PI);
-        cargoAndRocketAngles[RIGHT_FACING_HORIZONTAL] = (initialGyroAngle + 7/8 * 2 * Math.PI) % (2 * Math.PI);
-        cargoAndRocketAngles[LEFT_ROCKET_FRONT] = (initialGyroAngle + CCW_IS_POSITIVE * (Math.PI - ROCKET_ANGLE) + 2 * Math.PI) % (2 * Math.PI);
-        cargoAndRocketAngles[LEFT_ROCKET_BACK] = (cargoAndRocketAngles[LEFT_ROCKET_BACK] + CCW_IS_POSITIVE * 2 * ROCKET_ANGLE) % (2 * Math.PI);
-        cargoAndRocketAngles[RIGHT_ROCKET_FRONT] = (initialGyroAngle - CCW_IS_POSITIVE * (Math.PI - ROCKET_ANGLE) + 2 * Math.PI) % (2 * Math.PI);
-        cargoAndRocketAngles[RIGHT_ROCKET_BACK] = (cargoAndRocketAngles[RIGHT_ROCKET_BACK] - CCW_IS_POSITIVE * 2 * ROCKET_ANGLE) % (2 * Math.PI);;
+        cargoAndRocketAngles[LEFT_FACING_HORIZONTAL] = (initialGyroAngle + 1/8 * 360) % (360);
+        cargoAndRocketAngles[RIGHT_FACING_HORIZONTAL] = (initialGyroAngle + 7/8 * 360) % (360);
+        cargoAndRocketAngles[LEFT_ROCKET_FRONT] = (initialGyroAngle + CCW_IS_POSITIVE * (180 - ROCKET_ANGLE) + 360) % (360);
+        cargoAndRocketAngles[LEFT_ROCKET_BACK] = (cargoAndRocketAngles[LEFT_ROCKET_BACK] + CCW_IS_POSITIVE * 2 * ROCKET_ANGLE) % (360);
+        cargoAndRocketAngles[RIGHT_ROCKET_FRONT] = (initialGyroAngle - CCW_IS_POSITIVE * (180 - ROCKET_ANGLE) + 360) % (360);
+        cargoAndRocketAngles[RIGHT_ROCKET_BACK] = (cargoAndRocketAngles[RIGHT_ROCKET_BACK] - CCW_IS_POSITIVE * 2 * ROCKET_ANGLE) % (360);;
     }
 
     // Will return one of the cargleAndRocketAngles values
@@ -241,13 +241,13 @@ public class ImageRecognition {
         return closestAngle;
     }
     private double closestAngle(double currentAngle, Double newAngle) {                   
-        if (newAngle - currentAngle < Math.PI && newAngle - currentAngle > -Math.PI) {         
+        if (newAngle - currentAngle < 180 && newAngle - currentAngle > -180) {         
             return newAngle - currentAngle;                                            
         }                                                                              
-        if (newAngle - currentAngle > Math.PI) {                                           
-            return newAngle - currentAngle - 2 * Math.PI;                                      
+        if (newAngle - currentAngle > 180) {                                           
+            return newAngle - currentAngle - 360;                                      
         }                                                                              
-        return (newAngle +  2 * 180 - currentAngle) % (2 * Math.PI);                               
+        return (newAngle +  2 * 180 - currentAngle) % (360);                               
     }                                                                                  
 
 }
