@@ -240,7 +240,9 @@ public class ImageRecognition {
         }
         return closestAngle;
     }
-    private double closestAngle(double currentAngle, Double newAngle) {                   
+    private double closestAngle(double currentAngle, double newAngle) {   
+        currentAngle %= 360;
+        newAngle %= 360;                
         if (newAngle - currentAngle < 180 && newAngle - currentAngle > -180) {         
             return newAngle - currentAngle;                                            
         }                                                                              
