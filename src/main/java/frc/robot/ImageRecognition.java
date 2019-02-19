@@ -28,7 +28,7 @@ public class ImageRecognition {
     private final NetworkTableEntry DISTANCE_TO_ROBOT_INCHES_ENTRY;
     private final NetworkTableEntry DISTANCE_RIGHT_TO_ROBOT_INCHES_ENTRY;
     private final String GRIP_DISTANCE_TO_ROBOT = "DistanceToRobotInches";
-    private final String GRIP_DISTANCE_RIGHT_TO_ROBOT = "DistanceRightToRobot";
+    private final String GRIP_DISTANCE_RIGHT_TO_ROBOT = "DistanceRightToRobotInches";
 
     // Final Constants
     private final double STARTING_GYRO_ORIENTATION;
@@ -38,7 +38,7 @@ public class ImageRecognition {
     private static final double DISTANCE_TOLERANCE = 5; // inches
     private static final int CCW_IS_POSITIVE = 1; // 1 = true, -1 = false
     private static final double WHEEL_DIAMETER_INCHES = 6;
-    private static final int ENCODER_TICKS_PER_REVOLUTION = 1024;
+    private static final int ENCODER_TICKS_PER_REVOLUTION = 4096;
     private static final int LEFT_FACING_HORIZONTAL = 0;
     private static final int RIGHT_FACING_HORIZONTAL = 1;
     private static final int FORWARDS = 2;
