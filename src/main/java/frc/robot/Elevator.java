@@ -61,4 +61,8 @@ public class Elevator {
     public void mediumHigh(){
         move(distanceMediumHigh);
     }
+
+    public void lowerToZero(){
+        move(distancePickUp);
+    }
 }
