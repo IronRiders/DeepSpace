@@ -48,6 +48,10 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     CameraServer.getInstance().startAutomaticCapture();
     updateSmartDB();
+    elevator.configurePID();
+    grabber.configurePID();
+    arm.configurePID();
+    driveTrain.autoUpdateSpeed(0,0);
     for (int i = 0; i < pathFiles.length; i++) {
       pathFiles[i] = String.format(filePath , i + 1);
     }
@@ -84,6 +88,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    elevator.configurePID();
+    grabber.configurePID();
+    arm.configurePID();
+    driveTrain.autoUpdateSpeed(0,0);
     int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 7", "1")) - 1;
     int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 8", "2")) - 1;
     int thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 9", "3")) - 1;
@@ -104,8 +112,13 @@ public class Robot extends TimedRobot {
 
   @Override  
   public void teleopInit(){
+    elevator.configurePID();
+    grabber.configurePID();
+    arm.configurePID();
     driveTrain.autoUpdateSpeed(0,0);
   }
+
+  
 
   /**
    * This function is called periodically during autonomous.

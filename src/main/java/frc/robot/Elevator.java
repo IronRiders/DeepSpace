@@ -6,13 +6,14 @@ import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Elevator {
     private TalonSRX talon;
-    private final double pConstant = 0.2; //we need to change these
-    private final double iConstant = pConstant / 10000;
-    private final double dConstant = 0.0;
-    private final double fConstant = 0.0;
+    private  double pConstant = 0.2; //we need to change these
+    private  double iConstant = pConstant / 10000;
+    private  double dConstant = 0.0;
+    private  double fConstant = 0.0;
     private final int maxAmps = 20;
     DigitalInput limitSwitch;
 
@@ -22,17 +23,33 @@ public class Elevator {
     private final int distanceMediumHigh = 22;
 
     public Elevator(int elevatorPort , int limitSwitchPort){
+        SmartDashboard.putNumber("pid/elevator/p", 0.0);
+        SmartDashboard.putNumber("pid/elevator/i", 0.0);
+        SmartDashboard.putNumber("pid/elevator/d", 0.0);
+        SmartDashboard.putNumber("pid/elevator/f", 0.0);
+        
         talon = new TalonSRX(elevatorPort);
         talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
         talon.setSensorPhase(true);
         talon.setSelectedSensorPosition(0);
-        talon.config_kD(0, dConstant);
-        talon.config_kP(0, pConstant);
-        talon.config_kI(0, iConstant);
-        talon.config_kF(0, fConstant);
+        // talon.config_kD(0, dConstant);
+        // talon.config_kP(0, pConstant);
+        // talon.config_kI(0, iConstant);
+        // talon.config_kF(0, fConstant);
         talon.configPeakCurrentLimit(maxAmps);
         //talon.configClosedloopRamp(0.25);
         //limitSwitch = new DigitalInput(limitSwitchPort);
+    }
+    //hello yay  nnnnnnnnnnnnnnnnnnnjjjjjjjjjjjjjjjjj
+    public void configurePID() {
+        this.pConstant = SmartDashboard.getNumber("pid/elevator/p", 0.2);
+        this.iConstant = SmartDashboard.getNumber("pid/elevator/i", pConstant / 10000);
+        this.dConstant = SmartDashboard.getNumber("pid/elevator/d", 0.0);
+        this.fConstant = SmartDashboard.getNumber("pid/elevator/f", 0.0);
+        talon.config_kD(0, dConstant);
+        talon.config_kP(0, pConstant);
+        talon.config_kI(0, iConstant);
+        talon.config_kF(0, fConstant);  
     }
 
     //@param distance is in inches
