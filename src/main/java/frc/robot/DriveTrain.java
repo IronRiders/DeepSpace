@@ -59,15 +59,21 @@ public class DriveTrain {
         //Top is X scale bottem is Y
         double scaleFactorC = .5 ;
         double scaleFactorD = .5;
-        scaledY = (scaleFactorC * Math.abs(throttlePosition.y)) + (scaleFactorD * throttlePosition.y * throttlePosition.y *throttlePosition.y);
-        scaledX = (scaleFactorA * Math.abs(throttlePosition.x)) + (scaleFactorB * throttlePosition.x * throttlePosition.x *throttlePosition.x);
+        scaledY = (scaleFactorC * Math.abs(throttlePosition.y)) + (scaleFactorD * throttlePosition.y * throttlePosition.y);
+        scaledX = (scaleFactorA * Math.abs(throttlePosition.x)) + (scaleFactorB * throttlePosition.x * throttlePosition.x);
+        if(throttlePosition.x < 0){
+            scaledX = -scaledX;
+        }
+
+        if(throttlePosition.y < 0){
+            scaledY = -scaledY;
+        }
         scaledX*=0.5;
         
         final double right = (-scaledX - scaledY)*-1;
         final double left = (scaledY - scaledX)*-1;
-
-
         leftMotor1.set(ControlMode.PercentOutput, left);
+
         leftMotor2.follow(leftMotor1);
         rightMotor1.set(ControlMode.PercentOutput, right);
         rightMotor2.follow(rightMotor1);
@@ -113,5 +119,12 @@ public class DriveTrain {
     }
     public AnalogGyro getGyro() {
         return gyro;
+    }
+
+    public void getEncoderPosition(){
+        int encoderPositionLeft = leftMotor1.getSelectedSensorPosition();
+        System.out.println(encoderPositionLeft);
+        int encoderPositionRight = rightMotor1.getSelectedSensorPosition();
+        System.out.println(encoderPositionRight);
     }
 }

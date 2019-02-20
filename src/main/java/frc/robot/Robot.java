@@ -51,11 +51,10 @@ public class Robot extends TimedRobot {
     for (int i = 0; i < pathFiles.length; i++) {
       pathFiles[i] = String.format(filePath , i + 1);
     }
-    
-    joystick1.addButton(1, elevator::lowCargo);
-    joystick1.addButton(2, elevator::lowHatch);
-    joystick1.addButton(3, elevator::mediumHigh);
-    joystick1.addButton(4, elevator::lowerToZero);
+    joystick1.addButton(2, elevator::lowCargo);
+    joystick1.addButton(3, elevator::lowHatch);
+    joystick1.addButton(4, elevator::mediumHigh);
+    joystick1.addButton(5, elevator::lowerToZero);
   }
 
   /**
@@ -101,6 +100,11 @@ public class Robot extends TimedRobot {
     }
 
     currentPath = 0;
+  }
+
+  @Override  
+  public void teleopInit(){
+    //elevator.test();
   }
 
   /**
@@ -153,6 +157,6 @@ private void updateSmartDB(){
    */
   @Override
   public void testPeriodic() {
-   driveTrain.autoUpdateSpeed(0.25, -0.25);
+    elevator.testPower();
   }
 }
