@@ -157,6 +157,5 @@ private void updateSmartDB(){
    */
   @Override
   public void testPeriodic() {
-    elevator.testPower();
   }
 }
