@@ -42,6 +42,7 @@ public class DriveTrain {
             rightMotor2.setNeutralMode(NeutralMode.Brake);
             leftMotor1.setNeutralMode(NeutralMode.Brake);
             leftMotor2.setNeutralMode(NeutralMode.Brake);
+            gyro.reset();
             //gyroPortNumber should be analong 0 or 1
 
     }
