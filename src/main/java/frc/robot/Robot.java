@@ -104,7 +104,7 @@ public class Robot extends TimedRobot {
 
   @Override  
   public void teleopInit(){
-    //elevator.test();
+    driveTrain.autoUpdateSpeed(0,0);
   }
 
   /**

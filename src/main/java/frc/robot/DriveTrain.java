@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.analog.adis16448.frc.ADIS16448_IMU;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
@@ -21,7 +22,8 @@ public class DriveTrain {
     private final int rightPort1;
     private final int leftPort2;
     private final int rightPort2;
-    private final AnalogGyro gyro;
+    public final ADIS16448_IMU gyro = new ADIS16448_IMU();
+
     private int counter = 0;
 
 
@@ -40,7 +42,6 @@ public class DriveTrain {
             rightMotor2.setNeutralMode(NeutralMode.Brake);
             leftMotor1.setNeutralMode(NeutralMode.Brake);
             leftMotor2.setNeutralMode(NeutralMode.Brake);
-            gyro = new AnalogGyro(gyroPortNumber);
             //gyroPortNumber should be analong 0 or 1
 
     }
@@ -117,7 +118,7 @@ public class DriveTrain {
     public TalonSRX getRightMotor() {
         return rightMotor1;
     }
-    public AnalogGyro getGyro() {
+    public ADIS16448_IMU getGyro() {
         return gyro;
     }
 

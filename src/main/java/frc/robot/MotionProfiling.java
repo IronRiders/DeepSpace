@@ -45,8 +45,7 @@ public class MotionProfiling {
     public void update() { 
         double l = left.calculate(leftMotor.getSelectedSensorPosition());
         double r = right.calculate(rightMotor.getSelectedSensorPosition());
-    
-        double gyroHeading = driveTrain.getGyro().getAngle();   // Assuming the gyro is giving a value in degrees
+        double gyroHeading = driveTrain.getGyro().getAngleY();   // Assuming the gyro is giving a value in degrees
         double desiredHeading = -Pathfinder.r2d(left.getHeading());  // Should also be in degrees
 
         double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
