@@ -51,6 +51,8 @@ public class Robot extends TimedRobot {
     elevator.configurePID();
     grabber.configurePID();
     arm.configurePID();
+    elevator.resetToFactorySettings();
+    grabber.resetToFactorySettings();
     driveTrain.autoUpdateSpeed(0,0);
     for (int i = 0; i < pathFiles.length; i++) {
       pathFiles[i] = String.format(filePath , i + 1);
@@ -115,6 +117,8 @@ public class Robot extends TimedRobot {
     elevator.configurePID();
     grabber.configurePID();
     arm.configurePID();
+    elevator.resetToFactorySettings();
+    grabber.resetToFactorySettings();
     driveTrain.autoUpdateSpeed(0,0);
   }
 
