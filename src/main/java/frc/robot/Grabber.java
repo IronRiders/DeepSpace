@@ -73,34 +73,26 @@ public class Grabber {
         rightClaw.config_kF(0, fConstant);
     }
     public void open(){
-        leftClaw.config_kI(0,iConstant);
-        rightClaw.config_kI(0,iConstant);
         move(openRevolutions);
 
     }  
 
     public void cargo(){
-        leftClaw.config_kI(0,iConstant);
-        rightClaw.config_kI(0,iConstant);
         move(cargoRevolutions);
     }  
     public void hatch(){
-        leftClaw.config_kI(0,0.0);
-        rightClaw.config_kI(0,0.0);
         move(hatchRevolutions);
     }
     public void closed(){
-        leftClaw.config_kI(0,iConstant);
-        rightClaw.config_kI(0,iConstant);
         move(closedRevolutions);
     }
     public void move(double numRevolutions){
             double totalPulses = numRevolutions * pulsesPerRevolution;
             leftClaw.set(ControlMode.Position, totalPulses);
             rightClaw.set(ControlMode.Position , totalPulses);
-        }
+    }
     
-        public void toLimitSwitches(){
+    public void toLimitSwitches(){
             // 1 is true(open) , zero is false(closed)
             if (rightLimitSwitch.get()) {
                 rightClaw.set(ControlMode.PercentOutput, -0.3);
@@ -116,7 +108,7 @@ public class Grabber {
                 leftClaw.set(ControlMode.PercentOutput, 0);
             }
 
-        }
+    }
 
     public void intake(){
         leftFlywheel.set(flywheelSpeed);
@@ -132,6 +124,11 @@ public class Grabber {
     public void stop(){
         leftFlywheel.set(0);
         rightFlywheel.set(0);
+    }
+
+    public void resetToFactorySettings(){
+        rightClaw.configFactoryDefault();
+        leftClaw.configFactoryDefault();
     }
 
 

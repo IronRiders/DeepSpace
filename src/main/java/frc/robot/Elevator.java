@@ -15,6 +15,8 @@ public class Elevator {
     private  double dConstant = 0.0;
     private  double fConstant = 0.0;
     private final int maxAmps = 20;
+    private final double diameter = 2.1875;
+    private final int pulsesPerRevolution = 4096;
     DigitalInput limitSwitch;
 
     private final int distancePickUp = 0; //inches for all and baly did the math wrong
@@ -37,10 +39,8 @@ public class Elevator {
         // talon.config_kI(0, iConstant);
         // talon.config_kF(0, fConstant);
         talon.configPeakCurrentLimit(maxAmps);
-        //talon.configClosedloopRamp(0.25);
-        //limitSwitch = new DigitalInput(limitSwitchPort);
+        limitSwitch = new DigitalInput(limitSwitchPort);
     }
-    //hello yay  nnnnnnnnnnnnnnnnnnnjjjjjjjjjjjjjjjjj
     public void configurePID() {
         this.pConstant = SmartDashboard.getNumber("pid/elevator/p", 0.2);
         this.iConstant = SmartDashboard.getNumber("pid/elevator/i", pConstant / 10000);
@@ -56,7 +56,7 @@ public class Elevator {
     public void move(double distance){
         talon.setIntegralAccumulator(0);
         int talonPosition =  talon.getSelectedSensorPosition();
-        double totalPulses = (distance/(2.1875*Math.PI)) * 4096;
+        double totalPulses = (distance/(diameter*Math.PI)) * pulsesPerRevolution;
         talon.set(ControlMode.Position, totalPulses);
         double pulsesAfter = talon.getSelectedSensorPosition();
     }
@@ -112,5 +112,9 @@ public class Elevator {
 
     public void getPosition(){
      int position = talon.getSelectedSensorPosition();
+    }
+
+    public void resetToFactorySettings(){
+        talon.configFactoryDefault();
     }
 }
