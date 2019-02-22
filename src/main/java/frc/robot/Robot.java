@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
     joystick1.addButton(2, elevator::lowCargo);
     joystick1.addButton(3, elevator::lowHatch);
     joystick1.addButton(4, elevator::mediumHigh);
-    joystick1.addButton(5, elevator::lowerToZero);
+    joystick1.addButton(5, elevator::zeroLimitSwitch);
   }
 
   /**

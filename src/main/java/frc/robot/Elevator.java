@@ -6,9 +6,12 @@ import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Elevator {
+    Timer timer = new Timer();
+    double previousTime = 0;
     private TalonSRX talon;
     private  double pConstant = 0.2; //we need to change these
     private  double iConstant = pConstant / 10000;
@@ -40,7 +43,6 @@ public class Elevator {
         //talon.configClosedloopRamp(0.25);
         //limitSwitch = new DigitalInput(limitSwitchPort);
     }
-    //hello yay  nnnnnnnnnnnnnnnnnnnjjjjjjjjjjjjjjjjj
     public void configurePID() {
         this.pConstant = SmartDashboard.getNumber("pid/elevator/p", 0.2);
         this.iConstant = SmartDashboard.getNumber("pid/elevator/i", pConstant / 10000);
@@ -61,15 +63,16 @@ public class Elevator {
         double pulsesAfter = talon.getSelectedSensorPosition();
     }
 
-    public void zero(){
+    public void zeroLimitSwitch(){
         // 1 is true(open) , zero is false(closed)
-        if (limitSwitch.get()) {
-            talon.set(ControlMode.PercentOutput, -0.3);
+        if (limitSwitch.get() || timer.get() - previousTime < 3) {
+            talon.set(ControlMode.PercentOutput, -0.2);
         }
         else {
             talon.set(ControlMode.PercentOutput, 0);
             talon.setSelectedSensorPosition(0);
         }
+        previousTime = timer.get();
     }
     
 
@@ -88,7 +91,7 @@ public class Elevator {
         move(distanceMediumHigh);
     }
 
-    public void lowerToZero(){
+    public void zeroPid(){
         move(distancePickUp);
     }
 
