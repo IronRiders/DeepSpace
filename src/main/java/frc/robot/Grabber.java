@@ -126,10 +126,4 @@ public class Grabber {
         rightFlywheel.set(0);
     }
 
-    public void resetToFactorySettings(){
-        rightClaw.configFactoryDefault();
-        leftClaw.configFactoryDefault();
-    }
-
-
 }

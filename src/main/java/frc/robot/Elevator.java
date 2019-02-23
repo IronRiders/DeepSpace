@@ -113,8 +113,4 @@ public class Elevator {
     public void getPosition(){
      int position = talon.getSelectedSensorPosition();
     }
-
-    public void resetToFactorySettings(){
-        talon.configFactoryDefault();
-    }
 }
