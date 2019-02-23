@@ -12,7 +12,7 @@ public class Grabber {
     private VictorSP leftFlywheel;
     private VictorSP rightFlywheel;
     private TalonSRX rightClaw;
-    private TalonSRX leftClaw;
+    public TalonSRX leftClaw;
     private DigitalInput leftLimitSwitch;
     private DigitalInput rightLimitSwitch;
     private final double flywheelSpeed = 0.5;
@@ -25,6 +25,7 @@ public class Grabber {
     private final double openRevolutions = 12.5;
     private final double cargoRevolutions = 8.33;
     private final double hatchRevolutions = 1.389;
+    private final double testRevolution = 1.389*2;
     private final double closedRevolutions = 0;
 
 
@@ -40,28 +41,34 @@ public class Grabber {
         SmartDashboard.putNumber("pid/claw/d", 0.0);
         SmartDashboard.putNumber("pid/claw/f", 0.0);
         
-        //rightClaw.config_kD(0, dConstant);
-        //rightClaw.config_kP(0, pConstant);
-        //rightClaw.config_kI(0, iConstant);
-       // rightClaw.config_kF(0, fConstant);
         rightClaw.configPeakCurrentLimit(maxAmps);
         rightClaw.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+        rightClaw.setInverted(true);
 
-        //leftClaw.config_kD(0, dConstant);
-        //leftClaw.config_kP(0, pConstant);
-        //leftClaw.config_kI(0, iConstant);
-        //leftClaw.config_kF(0, fConstant);
+        leftClaw.configPeakCurrentLimit(maxAmps);
+        leftClaw.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+        leftClaw.setSensorPhase(true);
+
+        rightClaw.setSelectedSensorPosition(0);
+        leftClaw.setSelectedSensorPosition(0);
+        leftLimitSwitch = new DigitalInput(leftLimitPort);
+        rightLimitSwitch = new DigitalInput(rightLimitPort);
+    }
+
+    public void initializeSettings(){
+        rightClaw.configPeakCurrentLimit(maxAmps);
+        rightClaw.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+        leftClaw.setSensorPhase(true);
         leftClaw.configPeakCurrentLimit(maxAmps);
         leftClaw.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
 
-        leftLimitSwitch = new DigitalInput(leftLimitPort);
-        rightLimitSwitch = new DigitalInput(rightLimitPort);
     }
     public void configurePID() {
         this.pConstant = SmartDashboard.getNumber("pid/claw/p", 0.2);
         this.iConstant = SmartDashboard.getNumber("pid/claw/i", pConstant / 10000);
         this.dConstant = SmartDashboard.getNumber("pid/claw/d", 0.0);
         this.fConstant = SmartDashboard.getNumber("pid/claw/f", 0.0);
+        this.iConstant = (this.iConstant*this.pConstant)/1000;
         leftClaw.config_kD(0, dConstant);
         leftClaw.config_kP(0, pConstant);
         leftClaw.config_kI(0, iConstant);
@@ -71,25 +78,70 @@ public class Grabber {
         rightClaw.config_kP(0, pConstant);
         rightClaw.config_kI(0, iConstant);
         rightClaw.config_kF(0, fConstant);
+
     }
     public void open(){
-        move(openRevolutions);
+        try {
+            move(openRevolutions);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
     }  
 
     public void cargo(){
-        move(cargoRevolutions);
+        try {
+            move(cargoRevolutions);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }  
     public void hatch(){
-        move(hatchRevolutions);
+        try {
+            move(hatchRevolutions);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
     public void closed(){
-        move(closedRevolutions);
+        try {
+            move(closedRevolutions);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
-    public void move(double numRevolutions){
-            double totalPulses = numRevolutions * pulsesPerRevolution;
-            leftClaw.set(ControlMode.Position, totalPulses);
-            rightClaw.set(ControlMode.Position , totalPulses);
+    public void move(double numRevolutions) throws InterruptedException {
+        leftClaw.setIntegralAccumulator(0);
+        rightClaw.setIntegralAccumulator(0);
+        double totalPulses = numRevolutions * pulsesPerRevolution;
+        System.out.println("About to move");
+        leftClaw.set(ControlMode.Position, totalPulses);
+        //rightClaw.set(ControlMode.Position , totalPulses);
+        System.out.println("Move complete");
+
+        double motorVoltage = leftClaw.getMotorOutputVoltage();
+        
+       // double pulsesAfter = rightClaw.getSelectedSensorPosition();
+        //int closedLoopError = rightClaw.getClosedLoopError();
+        //double motorOutput = rightClaw.getMotorOutputPercent();
+        double leftPulsesAfter = leftClaw.getSelectedSensorPosition();
+        double leftClosedLoopError = leftClaw.getClosedLoopError();
+        double leftMotorVoltage = leftClaw.getMotorOutputVoltage();
+       // System.out.println("Right Voltage: " + motorVoltage + "Position after: " + pulsesAfter + "Closed Loop Error" + closedLoopError);
+        System.out.println("Left Voltage: " + leftMotorVoltage + "Position after: " + leftPulsesAfter + "Closed Loop Error" + leftClosedLoopError);
+    }
+
+    public void testTenDegrees(){
+        try {
+            move(testRevolution);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
     
     public void toLimitSwitches(){
@@ -110,13 +162,13 @@ public class Grabber {
 
     }
 
-    public void intake(){
+    public void output(){
         leftFlywheel.set(flywheelSpeed);
         rightFlywheel.set(-flywheelSpeed);
 
     }
 
-    public void output(){
+    public void intake(){
         leftFlywheel.set(-flywheelSpeed);
         rightFlywheel.set(flywheelSpeed);
     }
@@ -126,9 +178,20 @@ public class Grabber {
         rightFlywheel.set(0);
     }
 
-    public void resetToFactorySettings(){
-        rightClaw.configFactoryDefault();
-        leftClaw.configFactoryDefault();
+    public void testEncoderPosition(){
+        double rightBeginningPosition = rightClaw.getSelectedSensorPosition();
+        double leftBeginningPosition = leftClaw.getSelectedSensorPosition();
+        System.out.println("Left: " + leftBeginningPosition + " Right: " + rightBeginningPosition);
+        leftClaw.set(ControlMode.PercentOutput , 0.2);
+        double leftAfter = leftClaw.getSelectedSensorPosition();
+        double rightAfter = rightClaw.getSelectedSensorPosition();
+        System.out.println("Left: " + leftAfter + " Right: " + rightAfter);
+
+    }
+
+    public void spinClawMotor(){
+        leftClaw.set(ControlMode.PercentOutput , 0.4);
+        //rightClaw.set(ControlMode.PercentOutput , 0.4);
     }
 
 

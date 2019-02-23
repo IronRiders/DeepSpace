@@ -45,13 +45,13 @@ public class MotionProfiling {
     public void update() { 
         double l = left.calculate(leftMotor.getSelectedSensorPosition());
         double r = right.calculate(rightMotor.getSelectedSensorPosition());
-        double gyroHeading = driveTrain.getGyro().getAngleY();   // Assuming the gyro is giving a value in degrees
-        double desiredHeading = -Pathfinder.r2d(left.getHeading());  // Should also be in degrees
+        //double gyroHeading = driveTrain.getGyro().getAngleY();   // Assuming the gyro is giving a value in degrees
+        //double desiredHeading = -Pathfinder.r2d(left.getHeading());  // Should also be in degrees
 
-        double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
-        double turn = 0.8 * (-1.0/80.0) * angleDifference;
+        //double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
+        //double turn = 0.8 * (-1.0/80.0) * angleDifference;
 
-        driveTrain.autoUpdateSpeed(l + turn, r - turn);
+        //driveTrain.autoUpdateSpeed(l + turn, r - turn);
     }
 
     public boolean isFinished() {

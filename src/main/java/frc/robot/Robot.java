@@ -51,16 +51,18 @@ public class Robot extends TimedRobot {
     elevator.configurePID();
     grabber.configurePID();
     arm.configurePID();
-    elevator.resetToFactorySettings();
-    grabber.resetToFactorySettings();
+    //elevator.resetToFactorySettings();
+    //grabber.resetToFactorySettings();
     driveTrain.autoUpdateSpeed(0,0);
     for (int i = 0; i < pathFiles.length; i++) {
       pathFiles[i] = String.format(filePath , i + 1);
     }
-    joystick1.addButton(2, elevator::lowCargo);
-    joystick1.addButton(3, elevator::lowHatch);
-    joystick1.addButton(4, elevator::mediumHigh);
-    joystick1.addButton(5, elevator::zeroLimitSwitch);
+    joystick1.addButton(2, grabber::hatch);
+    joystick1.addButton(3, grabber::cargo);
+    joystick1.addButton(4, grabber::open);
+    joystick1.addButton(8 , grabber::intake , grabber::stop);
+    joystick1.addButton(9 , grabber::output , grabber:: stop);
+
   }
 
   /**
@@ -117,9 +119,11 @@ public class Robot extends TimedRobot {
     elevator.configurePID();
     grabber.configurePID();
     arm.configurePID();
-    elevator.resetToFactorySettings();
-    grabber.resetToFactorySettings();
+    //elevator.resetToFactorySettings();
+    //grabber.resetToFactorySettings();
+    grabber.initializeSettings();
     driveTrain.autoUpdateSpeed(0,0);
+
   }
 
   
@@ -156,6 +160,9 @@ public class Robot extends TimedRobot {
     else{
       joystick1.listen();  
     }
+    System.out.println("Voltage: " + grabber.leftClaw.getMotorOutputVoltage() + "Error: " + grabber.leftClaw.getClosedLoopError() + "Current:" + grabber.leftClaw.getOutputCurrent());
+    
+
   }
 
 public void changeDriverControl(){  
@@ -174,5 +181,6 @@ private void updateSmartDB(){
    */
   @Override
   public void testPeriodic() {
+    grabber.testEncoderPosition();
   }
 }
