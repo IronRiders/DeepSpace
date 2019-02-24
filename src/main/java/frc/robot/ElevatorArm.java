@@ -185,4 +185,16 @@ public class ElevatorArm {
         moveElevator(distanceMediumHigh);
         moveArm(highHatchRevolutions);
     }
+
+    public void getToMediumHatch(){
+        moveArm(mediumHatchRevolutions);
+    }
+s
+    public void getToMediumCargo(){
+        moveArm(mediumCargoRevolutions);
+    }
+
+    public void getToHighHatch(){
+        moveArm(highHatchRevolutions);
+    }
 }
