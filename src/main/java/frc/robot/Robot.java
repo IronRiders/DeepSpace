@@ -33,7 +33,7 @@ public class Robot extends TimedRobot {
   public final DriveTrain driveTrain = new DriveTrain(LEFT_DRIVETRAIN_1, LEFT_DRIVETRAIN_2 , RIGHT_DRIVETAIN_1 , RIGHT_DRIVETAIN_2 , GYRO_PORT);
   private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
   
-  private final ElevatorArm elevatorArm = new Elevator(ELEVATOR_PORT , ELEVATOR_ZERO_PORT , ARM_PORT , ARM_LIMIT_SWITCH_PORT);
+  private final ElevatorArm elevatorArm = new ElevatorArm(ELEVATOR_PORT , ELEVATOR_ZERO_PORT , ARM_PORT , ARM_LIMIT_SWITCH_PORT);
   private final Grabber grabber = new Grabber(LEFT_FLYWHEEL_PORT , RIGHT_FLYWHEEL_PORT , CLAW_LEFT , CLAW_RIGHT , CLAW_LEFT_LIMIT_SWITCH , CLAW_RIGHT_LIMIT_SWITCH);
   //private final Arm arm = new Arm(ARM_PORT , ARM_LIMIT_SWITCH_PORT);
   private String filePath = "path%s"; 
