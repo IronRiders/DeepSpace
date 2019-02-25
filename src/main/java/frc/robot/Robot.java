@@ -33,9 +33,9 @@ public class Robot extends TimedRobot {
   public final DriveTrain driveTrain = new DriveTrain(LEFT_DRIVETRAIN_1, LEFT_DRIVETRAIN_2 , RIGHT_DRIVETAIN_1 , RIGHT_DRIVETAIN_2 , GYRO_PORT);
   private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
   
-  private final Elevator elevator = new Elevator(ELEVATOR_PORT , ELEVATOR_ZERO_PORT);
-  private final Grabber grabber = new Grabber(LEFT_FLYWHEEL_PORT , RIGHT_FLYWHEEL_PORT , CLAW_LEFT , CLAW_RIGHT , CLAW_LEFT_LIMIT_SWITCH , CLAW_RIGHT_LIMIT_SWITCH );
-  private final Arm arm = new Arm(ARM_PORT , ARM_LIMIT_SWITCH_PORT);
+  private final ElevatorArm elevatorArm = new ElevatorArm(ELEVATOR_PORT , ELEVATOR_ZERO_PORT , ARM_PORT , ARM_LIMIT_SWITCH_PORT);
+  private final Grabber grabber = new Grabber(LEFT_FLYWHEEL_PORT , RIGHT_FLYWHEEL_PORT , CLAW_LEFT , CLAW_RIGHT , CLAW_LEFT_LIMIT_SWITCH , CLAW_RIGHT_LIMIT_SWITCH);
+  //private final Arm arm = new Arm(ARM_PORT , ARM_LIMIT_SWITCH_PORT);
   private String filePath = "path%s"; 
   private final ImageRecognition imageRec = new ImageRecognition(driveTrain);
   int currentPath;
@@ -48,19 +48,14 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     CameraServer.getInstance().startAutomaticCapture();
     updateSmartDB();
-    elevator.configurePID();
+    elevatorArm.configurePID();
     grabber.configurePID();
-    arm.configurePID();
-    elevator.resetToFactorySettings();
-    grabber.resetToFactorySettings();
+    //arm.configurePID();
     driveTrain.autoUpdateSpeed(0,0);
     for (int i = 0; i < pathFiles.length; i++) {
       pathFiles[i] = String.format(filePath , i + 1);
     }
-    joystick1.addButton(2, elevator::lowCargo);
-    joystick1.addButton(3, elevator::lowHatch);
-    joystick1.addButton(4, elevator::mediumHigh);
-    joystick1.addButton(5, elevator::zeroLimitSwitch);
+    //talk to ishan about button placement
   }
 
   /**
@@ -90,9 +85,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    elevator.configurePID();
+    elevatorArm.configurePID();
     grabber.configurePID();
-    arm.configurePID();
+    //arm.configurePID();
     driveTrain.autoUpdateSpeed(0,0);
     int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 7", "1")) - 1;
     int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 8", "2")) - 1;
@@ -114,11 +109,9 @@ public class Robot extends TimedRobot {
 
   @Override  
   public void teleopInit(){
-    elevator.configurePID();
+    elevatorArm.configurePID();
     grabber.configurePID();
-    arm.configurePID();
-    elevator.resetToFactorySettings();
-    grabber.resetToFactorySettings();
+    //arm.configurePID();
     driveTrain.autoUpdateSpeed(0,0);
   }
 

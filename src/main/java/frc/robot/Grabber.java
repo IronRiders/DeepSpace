@@ -26,6 +26,8 @@ public class Grabber {
     private final double cargoRevolutions = 8.33;
     private final double hatchRevolutions = 1.389;
     private final double closedRevolutions = 0;
+    private final double[] closedToOpenValues = {closedRevolutions, hatchRevolutions , cargoRevolutions , openRevolutions};
+    private int counter; 
 
 
 
@@ -34,6 +36,7 @@ public class Grabber {
         rightFlywheel = new VictorSP(rightFlywheelPort);
         rightClaw = new TalonSRX(rightClawPort);
         leftClaw = new TalonSRX(leftClawPort);
+        counter = 0;
 
         SmartDashboard.putNumber("pid/claw/p", 0.0);
         SmartDashboard.putNumber("pid/claw/i", 0.0);
@@ -86,6 +89,16 @@ public class Grabber {
     public void closed(){
         move(closedRevolutions);
     }
+
+    public void openClaw(){
+        counter++;
+        move(closedToOpenValues[counter]);
+    }
+
+    public void closeClaw(){
+        counter--;
+        move(closedToOpenValues[counter]);
+    }
     public void move(double numRevolutions){
             double totalPulses = numRevolutions * pulsesPerRevolution;
             leftClaw.set(ControlMode.Position, totalPulses);
@@ -125,11 +138,5 @@ public class Grabber {
         leftFlywheel.set(0);
         rightFlywheel.set(0);
     }
-
-    public void resetToFactorySettings(){
-        rightClaw.configFactoryDefault();
-        leftClaw.configFactoryDefault();
-    }
-
 
 }

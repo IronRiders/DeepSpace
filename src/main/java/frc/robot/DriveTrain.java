@@ -129,4 +129,8 @@ public class DriveTrain {
         int encoderPositionRight = rightMotor1.getSelectedSensorPosition();
         System.out.println(encoderPositionRight);
     }
+
+    public void cruiseControl(){
+        autoUpdateSpeed(0.4, -0.4);
+    }
 }
