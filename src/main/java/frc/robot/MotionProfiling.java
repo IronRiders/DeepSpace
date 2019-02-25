@@ -1,6 +1,7 @@
 package frc.robot;
 
 import java.io.File;
+import java.io.IOException;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,12 +24,11 @@ public class MotionProfiling {
     private EncoderFollower left;
     private EncoderFollower right;
 
-    
-    public MotionProfiling(DriveTrain driveTrain, String setupLeft , String setupRight) {
+
+    public MotionProfiling(DriveTrain driveTrain, String setupLeft , String setupRight) throws IOException {
         this.driveTrain = driveTrain;
         leftMotor = driveTrain.getLeftMotor();
         rightMotor = driveTrain.getRightMotor();
-
         //pathweaver has an error with mixing up left and right
         Trajectory trajectoryLeft = PathfinderFRC.getTrajectory(setupRight);
         Trajectory trajectoryRight = PathfinderFRC.getTrajectory(setupLeft);
@@ -45,8 +45,7 @@ public class MotionProfiling {
     public void update() { 
         double l = left.calculate(leftMotor.getSelectedSensorPosition());
         double r = right.calculate(rightMotor.getSelectedSensorPosition());
-    
-        double gyroHeading = driveTrain.getGyro().getAngle();   // Assuming the gyro is giving a value in degrees
+        double gyroHeading = driveTrain.getGyro().getAngleY();   // Assuming the gyro is giving a value in degrees
         double desiredHeading = -Pathfinder.r2d(left.getHeading());  // Should also be in degrees
 
         double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);

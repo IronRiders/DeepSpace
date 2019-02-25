@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.analog.adis16448.frc.ADIS16448_IMU;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
@@ -21,7 +22,8 @@ public class DriveTrain {
     private final int rightPort1;
     private final int leftPort2;
     private final int rightPort2;
-    private final AnalogGyro gyro;
+    public final ADIS16448_IMU gyro = new ADIS16448_IMU();
+
     private int counter = 0;
 
 
@@ -40,7 +42,7 @@ public class DriveTrain {
             rightMotor2.setNeutralMode(NeutralMode.Brake);
             leftMotor1.setNeutralMode(NeutralMode.Brake);
             leftMotor2.setNeutralMode(NeutralMode.Brake);
-            gyro = new AnalogGyro(gyroPortNumber);
+            gyro.reset();
             //gyroPortNumber should be analong 0 or 1
 
     }
@@ -59,15 +61,21 @@ public class DriveTrain {
         //Top is X scale bottem is Y
         double scaleFactorC = .5 ;
         double scaleFactorD = .5;
-        scaledY = (scaleFactorC * Math.abs(throttlePosition.y)) + (scaleFactorD * throttlePosition.y * throttlePosition.y *throttlePosition.y);
-        scaledX = (scaleFactorA * Math.abs(throttlePosition.x)) + (scaleFactorB * throttlePosition.x * throttlePosition.x *throttlePosition.x);
+        scaledY = (scaleFactorC * Math.abs(throttlePosition.y)) + (scaleFactorD * throttlePosition.y * throttlePosition.y);
+        scaledX = (scaleFactorA * Math.abs(throttlePosition.x)) + (scaleFactorB * throttlePosition.x * throttlePosition.x);
+        if(throttlePosition.x < 0){
+            scaledX = -scaledX;
+        }
+
+        if(throttlePosition.y < 0){
+            scaledY = -scaledY;
+        }
         scaledX*=0.5;
         
         final double right = (-scaledX - scaledY)*-1;
         final double left = (scaledY - scaledX)*-1;
-
-
         leftMotor1.set(ControlMode.PercentOutput, left);
+
         leftMotor2.follow(leftMotor1);
         rightMotor1.set(ControlMode.PercentOutput, right);
         rightMotor2.follow(rightMotor1);
@@ -111,7 +119,18 @@ public class DriveTrain {
     public TalonSRX getRightMotor() {
         return rightMotor1;
     }
-    public AnalogGyro getGyro() {
+    public ADIS16448_IMU getGyro() {
         return gyro;
+    }
+
+    public void getEncoderPosition(){
+        int encoderPositionLeft = leftMotor1.getSelectedSensorPosition();
+        System.out.println(encoderPositionLeft);
+        int encoderPositionRight = rightMotor1.getSelectedSensorPosition();
+        System.out.println(encoderPositionRight);
+    }
+
+    public void cruiseControl(){
+        autoUpdateSpeed(0.4, -0.4);
     }
 }

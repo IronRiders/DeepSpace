@@ -8,6 +8,8 @@
 package frc.robot;
 
 import java.io.File;
+import java.io.IOException;
+
 import static frc.robot.Ports.*;
 
 import edu.wpi.first.cameraserver.CameraServer;
@@ -31,10 +33,10 @@ public class Robot extends TimedRobot {
   public final DriveTrain driveTrain = new DriveTrain(LEFT_DRIVETRAIN_1, LEFT_DRIVETRAIN_2 , RIGHT_DRIVETAIN_1 , RIGHT_DRIVETAIN_2 , GYRO_PORT);
   private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
   
-  private final Elevator elevator = new Elevator(ELEVATOR_PORT , ELEVATOR_ZERO_PORT);
-  private final Grabber grabber = new Grabber(LEFT_FLYWHEEL_PORT , RIGHT_FLYWHEEL_PORT , CLAW_LEFT , CLAW_RIGHT , CLAW_LEFT_LIMIT_SWITCH , CLAW_RIGHT_LIMIT_SWITCH );
-  private final Arm arm = new Arm(ARM_PORT , ARM_LIMIT_SWITCH_PORT);
-  private String filePath = "/home/lvuser/deploy/paths/path%s"; 
+  private final ElevatorArm elevatorArm = new Elevator(ELEVATOR_PORT , ELEVATOR_ZERO_PORT , ARM_PORT , ARM_LIMIT_SWITCH_PORT);
+  private final Grabber grabber = new Grabber(LEFT_FLYWHEEL_PORT , RIGHT_FLYWHEEL_PORT , CLAW_LEFT , CLAW_RIGHT , CLAW_LEFT_LIMIT_SWITCH , CLAW_RIGHT_LIMIT_SWITCH);
+  //private final Arm arm = new Arm(ARM_PORT , ARM_LIMIT_SWITCH_PORT);
+  private String filePath = "path%s"; 
   private final ImageRecognition imageRec = new ImageRecognition(driveTrain);
   int currentPath;
   
@@ -46,10 +48,15 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     CameraServer.getInstance().startAutomaticCapture();
     updateSmartDB();
-    for (int i = 1; i <= pathFiles.length; i++) {
-      pathFiles[i] = String.format(filePath , i);
+    elevatorArm.configurePID();
+    grabber.configurePID();
+    //arm.configurePID();
+    driveTrain.autoUpdateSpeed(0,0);
+    for (int i = 0; i < pathFiles.length; i++) {
+      pathFiles[i] = String.format(filePath , i + 1);
     }
-    joystick1.addButton(1, imageRec::triggerImageRec); // Random joystick button
+    //joystick1.addButton(1, imageRec::triggerImageRec); // Random joystick button
+    //talk to ishan about button placement
   }
 
   /**
@@ -79,17 +86,37 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 7", "1"));
-    int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 8", "2"));
-    int thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 9", "3"));
+    elevatorArm.configurePID();
+    grabber.configurePID();
+    //arm.configurePID();
+    driveTrain.autoUpdateSpeed(0,0);
+    int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 7", "1")) - 1;
+    int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 8", "2")) - 1;
+    int thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 9", "3")) - 1;
+    //because it's from 0-11 instead of 1-12 with arrays
     int chosenPathNumbers[] = new int[]{firstPath, secondPath, thirdPath};
 
     for (int i = 0; i < selectedPaths.length; i++) {
-      selectedPaths[i] = new MotionProfiling(driveTrain, pathFiles[chosenPathNumbers[i]] + ".left.pf1.csv" , pathFiles[chosenPathNumbers[i]] + ".right.pf1.csv");
+      try {
+        selectedPaths[i] = new MotionProfiling(driveTrain, pathFiles[chosenPathNumbers[i]] + ".left",
+            pathFiles[chosenPathNumbers[i]] + ".right");
+      } catch (IOException e) {
+		e.printStackTrace();
+	}
     }
 
     currentPath = 0;
   }
+
+  @Override  
+  public void teleopInit(){
+    elevatorArm.configurePID();
+    grabber.configurePID();
+    //arm.configurePID();
+    driveTrain.autoUpdateSpeed(0,0);
+  }
+
+  
 
   /**
    * This function is called periodically during autonomous.
@@ -145,6 +172,5 @@ private void updateSmartDB(){
    */
   @Override
   public void testPeriodic() {
-   driveTrain.autoUpdateSpeed(0.25, -0.25);
   }
 }
