@@ -189,7 +189,7 @@ public class ElevatorArm {
     public void getToMediumHatch(){
         moveArm(mediumHatchRevolutions);
     }
-s
+
     public void getToMediumCargo(){
         moveArm(mediumCargoRevolutions);
     }
