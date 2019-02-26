@@ -123,15 +123,22 @@ public class Grabber {
 
     }
 
-    public void intake(){
-        leftFlywheel.set(flywheelSpeed);
+    public void output(){
+        leftFlywheel.set(flywheelSpeed); 
         rightFlywheel.set(-flywheelSpeed);
 
     }
 
-    public void output(){
+    public void intake(){
         leftFlywheel.set(-flywheelSpeed);
         rightFlywheel.set(flywheelSpeed);
+    }
+
+    public void updateSpeed(final LambdaJoystick.ThrottlePosition throttlePosition){
+        if(throttlePosition.y != 0) {
+            leftFlywheel.set(0.5*throttlePosition.y);
+            rightFlywheel.set(-0.5*throttlePosition.y);
+        }
     }
 
     public void stop(){

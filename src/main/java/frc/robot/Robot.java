@@ -16,6 +16,7 @@ import static frc.robot.Ports.*;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -33,11 +34,13 @@ public class Robot extends TimedRobot {
 
   private boolean isDriverControlling;  
   public final DriveTrain driveTrain = new DriveTrain(LEFT_DRIVETRAIN_1, LEFT_DRIVETRAIN_2 , RIGHT_DRIVETAIN_1 , RIGHT_DRIVETAIN_2 , GYRO_PORT);
-  private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
-  
   private final ElevatorArm elevatorArm = new ElevatorArm(ELEVATOR_PORT , ELEVATOR_ZERO_PORT , ARM_PORT , ARM_LIMIT_SWITCH_PORT);
   private final Grabber grabber = new Grabber(LEFT_FLYWHEEL_PORT , RIGHT_FLYWHEEL_PORT , CLAW_LEFT , CLAW_RIGHT , CLAW_LEFT_LIMIT_SWITCH , CLAW_RIGHT_LIMIT_SWITCH);
   //private final Arm arm = new Arm(ARM_PORT , ARM_LIMIT_SWITCH_PORT);
+
+  private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
+  private final LambdaJoystick joystick2 = new LambdaJoystick(1 , grabber::updateSpeed);
+
   private String filePath = "path%s"; 
   private int currentPath;
   private TalonSRX leftMotor = driveTrain.getLeftMotor(), rightMotor = driveTrain.getRightMotor();
@@ -53,6 +56,12 @@ public class Robot extends TimedRobot {
     updateSmartDB();
     elevatorArm.configurePID();
     grabber.configurePID();
+    joystick2.addButton(4 , grabber::closeClaw);
+    joystick2.addButton(5 , grabber::openClaw);
+    joystick1.addButton(1, driveTrain::cruiseControl);
+    joystick1.addButton(11 , this::changeDriverControl);
+    joystick1.addButton(12, imageRec::triggerImageRec);
+
     //arm.configurePID();
     driveTrain.autoUpdateSpeed(0,0);
     for (int i = 0; i < pathFiles.length; i++) {
@@ -93,6 +102,7 @@ public class Robot extends TimedRobot {
     grabber.configurePID();
     //arm.configurePID();
     driveTrain.autoUpdateSpeed(0,0);
+    isDriverControlling = false;
     int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 7", "1")) - 1;
     int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 8", "2")) - 1;
     int thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 9", "3")) - 1;
