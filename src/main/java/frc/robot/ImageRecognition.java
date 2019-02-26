@@ -1,6 +1,13 @@
 package frc.robot;
 
+import jaci.pathfinder.Pathfinder;
+import jaci.pathfinder.Trajectory;
+import jaci.pathfinder.Waypoint;
+import jaci.pathfinder.followers.EncoderFollower;
+import jaci.pathfinder.modifiers.TankModifier;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import frc.robot.Constants;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -13,14 +20,15 @@ public class ImageRecognition {
     private double currentRobotAngle;
     private double distanceToRobotInches;
     private double distanceRightToRobotInches;
-    private int stage = 0;
-    private int lastSensorPosition;
-    private double[] pathData = new double[4];
     private double[] cargoAndRocketAngles = new double[7];
-    private double tempTravelDistance = 0;
-    private double angleOfRobot;
-    private boolean isRocket = false;
     private boolean isImageRecTriggered;
+    private Trajectory trajectoryLeft;
+    private Trajectory trajectoryRight;
+    private EncoderFollower left;
+    private EncoderFollower right;
+    private final TalonSRX leftMotor;
+    private final TalonSRX rightMotor;
+    private final ElevatorArm elevatorArm;
 
     // Network Tables
     private NetworkTableInstance nwtInstance;
@@ -32,13 +40,7 @@ public class ImageRecognition {
 
     // Final Constants
     private final double STARTING_GYRO_ORIENTATION;
-    private static final int WIDTH_OF_CAMERA = 1920; //we need to change these!
-    private static final int HEIGHT_OF_CAMERA = 1080; 
-    private static final double ANGLE_TOLERANCE = 10; // 10 Degrees of tolerance
-    private static final double DISTANCE_TOLERANCE = 5; // inches
     private static final int CCW_IS_POSITIVE = 1; // 1 = true, -1 = false
-    private static final double WHEEL_DIAMETER_INCHES = 6;
-    private static final int ENCODER_TICKS_PER_REVOLUTION = 4096;
     private static final int LEFT_FACING_HORIZONTAL = 0;
     private static final int RIGHT_FACING_HORIZONTAL = 1;
     private static final int FORWARDS = 2;
@@ -49,11 +51,16 @@ public class ImageRecognition {
     private static final double ROCKET_ANGLE = 61.25; // Rocket angle in Radians
 
 
-    public ImageRecognition(DriveTrain driveTrain) {
+    public ImageRecognition(DriveTrain driveTrain, TalonSRX rightMotor, TalonSRX leftMotor, ElevatorArm elevatorArm) {
         this.driveTrain = driveTrain;
         isImageRecTriggered = false;
-        STARTING_GYRO_ORIENTATION = driveTrain.getGyro().getAngle();
+        STARTING_GYRO_ORIENTATION = driveTrain.getGyro().getAngleY();
         determineCargoAndRocketAngles(STARTING_GYRO_ORIENTATION);
+        left = new EncoderFollower(trajectoryLeft);
+        right = new EncoderFollower(trajectoryRight);
+        this.leftMotor = leftMotor;
+        this.rightMotor = rightMotor;
+        this.elevatorArm = elevatorArm;
 
         // Network Tables
         nwtInstance = NetworkTableInstance.getDefault();
@@ -66,9 +73,11 @@ public class ImageRecognition {
         isImageRecTriggered = !isImageRecTriggered;
         System.out.println("Image recognition activation set to " + isImageRecTriggered);
         if(isImageRecTriggered) {
+            elevatorArm.getToMediumHatch();
+            // update values
             getNetworkTablesValues();
-            determinePath(distanceToRobotInches, distanceRightToRobotInches);
-            lastSensorPosition = driveTrain.getLeftMotor().getSelectedSensorPosition();
+            currentRobotAngle = driveTrain.getGyro().getAngleY();
+            determinePath();
         }
     }
 
@@ -82,119 +91,45 @@ public class ImageRecognition {
         System.out.printf("Network Table Values:\tDistance to robot=%.2f\tDistance right of robot=%.2f", distanceToRobotInches, distanceRightToRobotInches);   
     }
 
-    // Does the next action in line 
-    public void startNextMove() {
-        switch(stage) {
-            case 0:
-                turnToAngle((pathData[stage] + angleOfRobot) % (360));
-            case 1:
-                travelDistanceInches(pathData[stage]);
-            case 2:
-                turnToAngle(pathData[stage]);
-            case 3:
-                if(!isPathCorrect()) {
-                    stage = 0;
-                    startNextMove();
-                }
-                travelDistanceInches(pathData[stage]);
-            case 4:
-                stage = 0;
-                isImageRecTriggered = false;
-        }
+    public void determinePath() {
+        Waypoint[] waypoints = {
+            new Waypoint(0, 0, currentRobotAngle),
+            new Waypoint(distanceRightToRobotInches, distanceToRobotInches, whatIsClosestAngle(currentRobotAngle))
+        };
+        Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_LOW, 0.2, Constants.MAX_VELOCITY_METERS, Constants.MAX_ACCELERATION_METERS, Constants.MAX_JERK_METERS);
+        Trajectory trajectory = Pathfinder.generate(waypoints, config);
+        TankModifier modifier = new TankModifier(trajectory);
+        trajectoryLeft = modifier.getLeftTrajectory();
+        trajectoryRight = modifier.getRightTrajectory();
     }
 
-    // Needs to be fixed if CCW is not positive
-    private void turnToAngle(double newAngle) {
-        currentRobotAngle = driveTrain.getGyro().getAngle();
-        if(Math.abs((currentRobotAngle - newAngle + 360) % (360)) < ANGLE_TOLERANCE) {
-            stage++;
-            startNextMove();
-        }
-        else if(closestAngle(currentRobotAngle, newAngle) * CCW_IS_POSITIVE > 0) {
-            // turn left
-            System.out.printf("Turning left, Currently %.2f degrees.", closestAngle(currentRobotAngle, newAngle) * CCW_IS_POSITIVE);
-            driveTrain.autoUpdateSpeed(0.3 , 0.3);
-        }
-        else {
-            // turn right
-            System.out.printf("Turning right, Currently %.2f degrees.", closestAngle(currentRobotAngle, newAngle) * CCW_IS_POSITIVE);
-            driveTrain.autoUpdateSpeed(-0.3, -0.3);
-        }
+    public void update() { 
+        double l = left.calculate(leftMotor.getSelectedSensorPosition());
+        double r = right.calculate(rightMotor.getSelectedSensorPosition());
+        double gyroHeading = driveTrain.getGyro().getAngleY();   // Assuming the gyro is giving a value in degrees
+        double desiredHeading = -Pathfinder.r2d(left.getHeading());  // Should also be in degrees
+
+        double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
+        double turn = 0.8 * (-1.0/80.0) * angleDifference;
+
+        driveTrain.autoUpdateSpeed(l + turn, r - turn);
     }
 
-    // Drives foward or backwards untill target distance is reached
-    private void travelDistanceInches(double travelDistance) {
-        tempTravelDistance += straightDistanceTraveled();
-        if(Math.abs(tempTravelDistance - travelDistance) < DISTANCE_TOLERANCE) {
-            tempTravelDistance = 0;
-            stage++;
-            startNextMove();
-        }
-        else if (tempTravelDistance < travelDistance) {
-            // Drive fowards
-            driveTrain.autoUpdateSpeed(0.3, -0.3);
-        } else {
-            // Drive backwords at slightly slower speed
-            driveTrain.autoUpdateSpeed(-0.2, 0.2);
-        }
-    }
-
-    // Gets the straight distance traveled using the left motor
-    private double straightDistanceTraveled() {
-        int tempSensorPosition = lastSensorPosition;
-        lastSensorPosition = driveTrain.getLeftMotor().getSelectedSensorPosition();
-        return (lastSensorPosition - tempSensorPosition) / ENCODER_TICKS_PER_REVOLUTION * 
-                (180 * WHEEL_DIAMETER_INCHES);
-    }
-
-    // Checks the current path to see if it still works
-    private boolean isPathCorrect() {
-        triggerImageRec();
-        if(pathData[1] == 0) {
+    public boolean isFinished() {
+        if (left.isFinished() && right.isFinished()) {
             return true;
-        }
-        else {
-            return false;
-        }
+        } else {
+            return false;       
+        }      
     }
 
-    
-    // Makes the path that the robot will take with the image recognition data
-    private void determinePath(double distanceTapeToRobotInches, double distanceToRightInches) {
-
-        currentRobotAngle = driveTrain.getGyro().getAngle();
-
-        if (distanceToRightInches < 5 && distanceToRightInches > -5) { 
-            // if the robot is not too far right or left (values need to be tested and updated)
-            // drive straight for x inches
-            pathData[0] = currentRobotAngle;
-            pathData[1] =  0;
-            pathData[2] = currentRobotAngle;
-            pathData[3] = distanceTapeToRobotInches;
-        }
-        else if(distanceToRightInches > 0) {
-            // Still needs to take into account original angle of robot
-            // make the robot turn right 
-            pathData[0] = (-180 / 2 * CCW_IS_POSITIVE + 180 * 2  + currentRobotAngle) % (360); 
-            // drive straight for x inches 
-            pathData[1] = distanceToRightInches;
-            // turn left
-            pathData[2] = (180 / 2 * CCW_IS_POSITIVE + 180 * 2  + currentRobotAngle) % (360);
-            // drive straight for x inches
-            pathData[3] = distanceTapeToRobotInches;
-        }
-        else {
-            // Still needs to take into account original angle of robot
-            // turn left
-            pathData[0] = (180 / 2 * CCW_IS_POSITIVE + 180 * 2  + currentRobotAngle) % (360);
-            // drive straight for x inches
-            pathData[1] = distanceToRightInches;
-            // make the robot turn right 
-            pathData[2] = (-180 / 2 * CCW_IS_POSITIVE + 180 * 2  + currentRobotAngle) % (360); 
-            // drive straight for x inches
-            pathData[3] = distanceTapeToRobotInches;
-        }        
+    public void reset(){
+        left.reset();
+        right.reset();
+        left.configureEncoder(leftMotor.getSelectedSensorPosition(), Constants.ENCODER_TICKS_PER_REVOLUTION, Constants.WHEEL_DIAMETER_INCHES); 
+        right.configureEncoder(rightMotor.getSelectedSensorPosition(), Constants.ENCODER_TICKS_PER_REVOLUTION, Constants.WHEEL_DIAMETER_INCHES);
     }
+
 
     private void determineCargoAndRocketAngles(double initialGyroAngle) {
         cargoAndRocketAngles[FORWARDS] = initialGyroAngle;
@@ -216,6 +151,7 @@ public class ImageRecognition {
         }
         return closestAngle;
     }
+
     private double closestAngle(double currentAngle, double newAngle) {   
         currentAngle %= 360;
         newAngle %= 360;                

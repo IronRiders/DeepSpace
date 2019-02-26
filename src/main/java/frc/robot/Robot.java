@@ -10,6 +10,8 @@ package frc.robot;
 import java.io.File;
 import java.io.IOException;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import static frc.robot.Ports.*;
 
 import edu.wpi.first.cameraserver.CameraServer;
@@ -37,8 +39,9 @@ public class Robot extends TimedRobot {
   private final Grabber grabber = new Grabber(LEFT_FLYWHEEL_PORT , RIGHT_FLYWHEEL_PORT , CLAW_LEFT , CLAW_RIGHT , CLAW_LEFT_LIMIT_SWITCH , CLAW_RIGHT_LIMIT_SWITCH);
   //private final Arm arm = new Arm(ARM_PORT , ARM_LIMIT_SWITCH_PORT);
   private String filePath = "path%s"; 
-  private final ImageRecognition imageRec = new ImageRecognition(driveTrain);
-  int currentPath;
+  private int currentPath;
+  private TalonSRX leftMotor = driveTrain.getLeftMotor(), rightMotor = driveTrain.getRightMotor();
+  private final ImageRecognition imageRec = new ImageRecognition(driveTrain, rightMotor, leftMotor, elevatorArm);
   
   /**
    * This function is run when the robot is first started up and should be
@@ -130,11 +133,11 @@ public class Robot extends TimedRobot {
         currentPath++;
         selectedPaths[currentPath].reset();
     }
-    if (selectedPaths[selectedPaths.length - 1].isFinished()){ // Assuming that the last path will only finished after it as occurred
+    if (selectedPaths[selectedPaths.length - 1].isFinished() && (imageRec.isImageRecTriggered() || !imageRec.isFinished())){ // Assuming that the last path will only finished after it as occurred
       if(!imageRec.isImageRecTriggered()) {
         imageRec.triggerImageRec();
       }
-      imageRec.startNextMove();
+      imageRec.update();
     } else if (isDriverControlling) { //had to remove driver control now that its path dependant
       joystick1.listen();
     } else {
@@ -149,7 +152,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     if(imageRec.isImageRecTriggered()){
       // the imageRec.triggerImageRec() must be called by joystick
-      imageRec.startNextMove();
+      imageRec.update();
     }
     else{
       joystick1.listen();  
