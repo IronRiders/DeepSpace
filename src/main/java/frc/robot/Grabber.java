@@ -49,8 +49,8 @@ public class Grabber {
         leftClaw.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
         leftClaw.setSensorPhase(true);
 
-        leftClaw.configMotionCruiseVelocity(2560);
-        leftClaw.configMotionAcceleration(5000);
+        leftClaw.configMotionCruiseVelocity(3000);
+        leftClaw.configMotionAcceleration(6000);
 
         rightClaw.setSelectedSensorPosition(0);
         leftClaw.setSelectedSensorPosition(0);

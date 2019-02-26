@@ -36,6 +36,8 @@ public class Elevator {
         talon = new TalonSRX(elevatorPort);
         talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
         talon.setSensorPhase(true);
+        talon.configMotionCruiseVelocity(1100);
+        talon.configMotionAcceleration(1100);
         talon.setSelectedSensorPosition(0);
         // talon.config_kD(0, dConstant);
         // talon.config_kP(0, pConstant);
@@ -58,9 +60,9 @@ public class Elevator {
     //@param distance is in inches
     public void move(double distance){
         talon.setIntegralAccumulator(0);
-        int talonPosition =  talon.getSelectedSensorPosition();
+        //int talonPosition =  talon.getSelectedSensorPosition();
         double totalPulses = (distance/(diameter*Math.PI)) * pulsesPerRevolution;
-        talon.set(ControlMode.Position, totalPulses);
+        talon.set(ControlMode.MotionMagic, totalPulses);
         double pulsesAfter = talon.getSelectedSensorPosition();
     }
 
