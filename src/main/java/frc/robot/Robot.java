@@ -119,6 +119,7 @@ public class Robot extends TimedRobot {
     elevator.configurePID();
     grabber.configurePID();
     arm.configurePID();
+    grabber.zeroPosition();
     //elevator.resetToFactorySettings();
     //grabber.resetToFactorySettings();
     grabber.initializeSettings();

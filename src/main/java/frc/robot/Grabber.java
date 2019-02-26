@@ -49,6 +49,9 @@ public class Grabber {
         leftClaw.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
         leftClaw.setSensorPhase(true);
 
+        leftClaw.configMotionCruiseVelocity(2560);
+        leftClaw.configMotionAcceleration(5000);
+
         rightClaw.setSelectedSensorPosition(0);
         leftClaw.setSelectedSensorPosition(0);
         leftLimitSwitch = new DigitalInput(leftLimitPort);
@@ -117,9 +120,11 @@ public class Grabber {
     public void move(double numRevolutions) throws InterruptedException {
         leftClaw.setIntegralAccumulator(0);
         rightClaw.setIntegralAccumulator(0);
+        leftClaw.setSelectedSensorPosition(0);
+        rightClaw.setSelectedSensorPosition(0);
         double totalPulses = numRevolutions * pulsesPerRevolution;
         System.out.println("About to move");
-        leftClaw.set(ControlMode.Position, totalPulses);
+        leftClaw.set(ControlMode.MotionMagic, totalPulses);
         //rightClaw.set(ControlMode.Position , totalPulses);
         System.out.println("Move complete");
 
@@ -171,6 +176,11 @@ public class Grabber {
     public void intake(){
         leftFlywheel.set(-flywheelSpeed);
         rightFlywheel.set(flywheelSpeed);
+    }
+
+    public void zeroPosition(){
+        leftClaw.setSelectedSensorPosition(0);
+        rightClaw.setSelectedSensorPosition(0);
     }
 
     public void stop(){
