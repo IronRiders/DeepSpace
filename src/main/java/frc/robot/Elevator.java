@@ -50,7 +50,7 @@ public class Elevator {
         this.pConstant = SmartDashboard.getNumber("pid/elevator/p", 0.2);
         this.iConstant = SmartDashboard.getNumber("pid/elevator/i", pConstant / 10000);
         this.dConstant = SmartDashboard.getNumber("pid/elevator/d", 0.0);
-        this.fConstant = SmartDashboard.getNumber("pid/elevator/f", 0.0);
+        this.fConstant = SmartDashboard.getNumber("pid/elevator/f", 0.4);
         talon.config_kD(0, dConstant);
         talon.config_kP(0, pConstant);
         talon.config_kI(0, iConstant);
