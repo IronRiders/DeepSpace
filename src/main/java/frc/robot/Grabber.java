@@ -91,13 +91,17 @@ public class Grabber {
     }
 
     public void openClaw(){
+        if(counter < 3){
         counter++;
         move(closedToOpenValues[counter]);
+        }
     }
 
     public void closeClaw(){
+        if(counter > 0){
         counter--;
         move(closedToOpenValues[counter]);
+        }
     }
     public void move(double numRevolutions){
             double totalPulses = numRevolutions * pulsesPerRevolution;
