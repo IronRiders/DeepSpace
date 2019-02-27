@@ -103,7 +103,7 @@ public class Grabber {
     }  
     public void hatch(){
         try {
-            move(hatchRevolutions);
+            move(testRevolution);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
