@@ -33,6 +33,7 @@ public class Arm{
         spark = new CANSparkMax(portNumber, MotorType.kBrushless);
         encoder = spark.getEncoder();
         pid = spark.getPIDController();
+        pid.setOutputRange(-0.7, 0.7); //only will go to 70% power 
         SmartDashboard.putNumber("pid/arm/p", 0.0);
         SmartDashboard.putNumber("pid/arm/i", 0.0);
         SmartDashboard.putNumber("pid/arm/d", 0.0);
