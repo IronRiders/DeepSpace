@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -43,14 +44,16 @@ public class Grabber {
         
         rightClaw.configPeakCurrentLimit(maxAmps);
         rightClaw.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-        rightClaw.setInverted(true);
+        //rightClaw.setInverted(true);
+        //rightClaw.follow(leftClaw);
+        rightClaw.setInverted(InvertType.OpposeMaster);
 
         leftClaw.configPeakCurrentLimit(maxAmps);
         leftClaw.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
         leftClaw.setSensorPhase(true);
 
-        leftClaw.configMotionCruiseVelocity(3500);
-        leftClaw.configMotionAcceleration(7000);
+        leftClaw.configMotionCruiseVelocity(2560);
+        leftClaw.configMotionAcceleration(5000);
 
         rightClaw.setSelectedSensorPosition(0);
         leftClaw.setSelectedSensorPosition(0);
@@ -103,7 +106,7 @@ public class Grabber {
     }  
     public void hatch(){
         try {
-            move(testRevolution);
+            move(hatchRevolutions);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -123,18 +126,20 @@ public class Grabber {
         double totalPulses = numRevolutions * pulsesPerRevolution;
         System.out.println("About to move");
         leftClaw.set(ControlMode.MotionMagic, totalPulses);
-        //rightClaw.set(ControlMode.Position , totalPulses);
+        rightClaw.set(ControlMode.Follower , totalPulses);
+        //rightClaw.follow(leftClaw);
         System.out.println("Move complete");
 
         double motorVoltage = leftClaw.getMotorOutputVoltage();
         
-       // double pulsesAfter = rightClaw.getSelectedSensorPosition();
-        //int closedLoopError = rightClaw.getClosedLoopError();
-        //double motorOutput = rightClaw.getMotorOutputPercent();
+        double pulsesAfter = rightClaw.getSelectedSensorPosition();
+        int closedLoopError = rightClaw.getClosedLoopError();
+        double motorOutput = rightClaw.getMotorOutputPercent();
+        double rightMotorVoltage = rightClaw.getMotorOutputVoltage();
         double leftPulsesAfter = leftClaw.getSelectedSensorPosition();
         double leftClosedLoopError = leftClaw.getClosedLoopError();
         double leftMotorVoltage = leftClaw.getMotorOutputVoltage();
-       // System.out.println("Right Voltage: " + motorVoltage + "Position after: " + pulsesAfter + "Closed Loop Error" + closedLoopError);
+        System.out.println("Right Voltage: " + motorVoltage + "Position after: " + pulsesAfter + "Closed Loop Error" + closedLoopError);
         System.out.println("Left Voltage: " + leftMotorVoltage + "Position after: " + leftPulsesAfter + "Closed Loop Error" + leftClosedLoopError);
     }
 
