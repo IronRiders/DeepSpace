@@ -26,7 +26,7 @@ public class Grabber {
     private final double openRevolutions = 12.5;
     private final double cargoRevolutions = 8.33;
     private final double hatchRevolutions = 1.389;
-    private final double testRevolution = 1.389*2;
+    private final double testRevolutions = 1.389*2;
     private final double closedRevolutions = 0;
 
 
@@ -44,16 +44,17 @@ public class Grabber {
         
         rightClaw.configPeakCurrentLimit(maxAmps);
         rightClaw.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-        //rightClaw.setInverted(true);
-        //rightClaw.follow(leftClaw);
-        rightClaw.setInverted(InvertType.OpposeMaster);
+        rightClaw.setInverted(true);
 
         leftClaw.configPeakCurrentLimit(maxAmps);
         leftClaw.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
         leftClaw.setSensorPhase(true);
 
-        leftClaw.configMotionCruiseVelocity(2560);
-        leftClaw.configMotionAcceleration(5000);
+        leftClaw.configMotionCruiseVelocity(3500);
+        leftClaw.configMotionAcceleration(7000);
+
+        rightClaw.configMotionCruiseVelocity(3500);
+        rightClaw.configMotionAcceleration(7000);
 
         rightClaw.setSelectedSensorPosition(0);
         leftClaw.setSelectedSensorPosition(0);
@@ -106,7 +107,7 @@ public class Grabber {
     }  
     public void hatch(){
         try {
-            move(hatchRevolutions);
+            move(testRevolutions);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -126,7 +127,7 @@ public class Grabber {
         double totalPulses = numRevolutions * pulsesPerRevolution;
         System.out.println("About to move");
         leftClaw.set(ControlMode.MotionMagic, totalPulses);
-        rightClaw.set(ControlMode.Follower , totalPulses);
+        //rightClaw.set(ControlMode.Follower , totalPulses);
         //rightClaw.follow(leftClaw);
         System.out.println("Move complete");
 
@@ -145,7 +146,7 @@ public class Grabber {
 
     public void testTenDegrees(){
         try {
-            move(testRevolution);
+            move(testRevolutions);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
