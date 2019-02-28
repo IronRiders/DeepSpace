@@ -10,10 +10,13 @@ package frc.robot;
 import java.io.File;
 import java.io.IOException;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import static frc.robot.Ports.*;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -31,7 +34,6 @@ public class Robot extends TimedRobot {
 
   private boolean isDriverControlling;  
   public final DriveTrain driveTrain = new DriveTrain(LEFT_DRIVETRAIN_1, LEFT_DRIVETRAIN_2 , RIGHT_DRIVETAIN_1 , RIGHT_DRIVETAIN_2 , GYRO_PORT);
-
   private final ElevatorArm elevatorArm = new ElevatorArm(ELEVATOR_PORT , ELEVATOR_ZERO_PORT , ARM_PORT , ARM_LIMIT_SWITCH_PORT);
   private final Grabber grabber = new Grabber(LEFT_FLYWHEEL_PORT , RIGHT_FLYWHEEL_PORT , CLAW_LEFT , CLAW_RIGHT , CLAW_LEFT_LIMIT_SWITCH , CLAW_RIGHT_LIMIT_SWITCH);
   //private final Arm arm = new Arm(ARM_PORT , ARM_LIMIT_SWITCH_PORT);
@@ -40,8 +42,9 @@ public class Robot extends TimedRobot {
   private final LambdaJoystick joystick2 = new LambdaJoystick(1 , grabber::updateSpeed);
 
   private String filePath = "path%s"; 
-  private final ImageRecognition imageRec = new ImageRecognition(driveTrain);
-  int currentPath;
+  private int currentPath;
+  private TalonSRX leftMotor = driveTrain.getLeftMotor(), rightMotor = driveTrain.getRightMotor();
+  private final ImageRecognition imageRec = new ImageRecognition(driveTrain, rightMotor, leftMotor, elevatorArm);
   
   /**
    * This function is run when the robot is first started up and should be
@@ -53,17 +56,18 @@ public class Robot extends TimedRobot {
     updateSmartDB();
     elevatorArm.configurePID();
     grabber.configurePID();
+    joystick2.addButton(4 , grabber::closeClaw);
+    joystick2.addButton(5 , grabber::openClaw);
     joystick1.addButton(1, driveTrain::cruiseControl);
     joystick1.addButton(11 , this::changeDriverControl);
-    joystick2.addButton(5 , grabber::openClaw);
-    joystick2.addButton(4 , grabber::closeClaw);
-
+    joystick1.addButton(12, imageRec::triggerImageRec);
 
     //arm.configurePID();
     driveTrain.autoUpdateSpeed(0,0);
     for (int i = 0; i < pathFiles.length; i++) {
       pathFiles[i] = String.format(filePath , i + 1);
     }
+    //joystick1.addButton(1, imageRec::triggerImageRec); // Random joystick button
     //talk to ishan about button placement
   }
 
@@ -139,9 +143,12 @@ public class Robot extends TimedRobot {
         currentPath++;
         selectedPaths[currentPath].reset();
     }
-    if (imageRec.isImageRecTriggered()){
-      //image rec code here
-    } else if (isDriverControlling) {
+    if (selectedPaths[selectedPaths.length - 1].isFinished() && (imageRec.isImageRecTriggered() || !imageRec.isFinished())){ // Assuming that the last path will only finished after it as occurred
+      if(!imageRec.isImageRecTriggered()) {
+        imageRec.triggerImageRec();
+      }
+      imageRec.update();
+    } else if (isDriverControlling) { //had to remove driver control now that its path dependant
       joystick1.listen();
     } else {
       selectedPaths[currentPath].update();
@@ -154,7 +161,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     if(imageRec.isImageRecTriggered()){
-      //image recognition code here
+      // the imageRec.triggerImageRec() must be called by joystick
+      imageRec.update();
     }
     else{
       joystick1.listen();  
