@@ -46,6 +46,7 @@ public class Robot extends TimedRobot {
    */ 
   @Override
   public void robotInit() {
+
     CameraServer.getInstance().startAutomaticCapture();
     updateSmartDB();
     elevator.configurePID();
@@ -59,14 +60,16 @@ public class Robot extends TimedRobot {
     }
     joystick1.addButton(2, grabber::hatch);
     joystick1.addButton(3, grabber::cargo);
-    joystick1.addButton(4, grabber::open);
+    joystick1.addButton(4, elevator::test);
     //joystick1.addButton(8 , grabber::intake , grabber::stop);
     //joystick1.addButton(9 , grabber::output , grabber:: stop);
     joystick1.addButton(8 , elevator::lowCargo);
     joystick1.addButton(9 , elevator::lowHatch);
-    joystick1.addButton(1, grabber::closed);
+    joystick1.addButton(1, elevator::zeroPid);
     
   }
+
+
 
   /**
    * This function is called every robot packet, no matter the mode. Use

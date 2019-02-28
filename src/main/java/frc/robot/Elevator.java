@@ -26,6 +26,7 @@ public class Elevator {
     private final int distanceLowHatch = 19; 
     private final int distanceLowCargo = 21;
     private final int distanceMediumHigh = 22;
+    private final double multiplier = 1.3;
 
     public Elevator(int elevatorPort , int limitSwitchPort){
         SmartDashboard.putNumber("pid/elevator/p", 0.0);
@@ -36,8 +37,8 @@ public class Elevator {
         talon = new TalonSRX(elevatorPort);
         talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
         talon.setSensorPhase(true);
-        //talon.configMotionCruiseVelocity(1100);
-        //talon.configMotionAcceleration(1100);
+        talon.configMotionCruiseVelocity(1100);
+        talon.configMotionAcceleration(1100);
         talon.setSelectedSensorPosition(0);
         // talon.config_kD(0, dConstant);
         // talon.config_kP(0, pConstant);
@@ -51,6 +52,7 @@ public class Elevator {
         this.iConstant = SmartDashboard.getNumber("pid/elevator/i", pConstant / 10000);
         this.dConstant = SmartDashboard.getNumber("pid/elevator/d", 0.0);
         this.fConstant = SmartDashboard.getNumber("pid/elevator/f", 0.4);
+        this.iConstant = (this.iConstant*this.pConstant)/1000;
         talon.config_kD(0, dConstant);
         talon.config_kP(0, pConstant);
         talon.config_kI(0, iConstant);
@@ -61,8 +63,8 @@ public class Elevator {
     public void move(double distance){
         talon.setIntegralAccumulator(0);
         //int talonPosition =  talon.getSelectedSensorPosition();
-        double totalPulses = (distance/(diameter*Math.PI)) * pulsesPerRevolution;
-        talon.set(ControlMode.Position, totalPulses);
+        double totalPulses = (distance/(diameter*Math.PI)) * pulsesPerRevolution * multiplier;
+        talon.set(ControlMode.MotionMagic, totalPulses);
         double pulsesAfter = talon.getSelectedSensorPosition();
     }
 
@@ -102,7 +104,7 @@ public class Elevator {
         talon.setSelectedSensorPosition(0);
         talon.setIntegralAccumulator(0);
         int initialPosition = talon.getSelectedSensorPosition();
-        talon.set(ControlMode.Position, 1000);
+        talon.set(ControlMode.MotionMagic, 4096);
         Faults fault = new Faults();
         talon.getFaults(fault);
         double motorVoltage = talon.getMotorOutputVoltage();
