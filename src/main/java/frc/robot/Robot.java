@@ -124,7 +124,8 @@ public class Robot extends TimedRobot {
     grabber.zeroPosition();
     //elevator.resetToFactorySettings();
     //grabber.resetToFactorySettings();
-    grabber.initializeSettings();
+    
+    //grabber.initializeSettings();
     driveTrain.autoUpdateSpeed(0,0);
 
   }
@@ -185,5 +186,6 @@ private void updateSmartDB(){
   @Override
   public void testPeriodic() {
     grabber.testEncoderPosition();
+
   }
 }

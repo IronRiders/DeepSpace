@@ -44,6 +44,7 @@ public class Grabber {
         rightClaw.configPeakCurrentLimit(maxAmps);
         rightClaw.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
         rightClaw.setInverted(true);
+        rightClaw.setSensorPhase(true);
 
         leftClaw.configPeakCurrentLimit(maxAmps);
         leftClaw.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
@@ -51,6 +52,9 @@ public class Grabber {
 
         leftClaw.configMotionCruiseVelocity(3000);
         leftClaw.configMotionAcceleration(6000);
+
+        rightClaw.configMotionCruiseVelocity(3000);
+        rightClaw.configMotionAcceleration(6000);
 
 
         rightClaw.setSelectedSensorPosition(0);
@@ -125,8 +129,8 @@ public class Grabber {
         rightClaw.setSelectedSensorPosition(0);
         double totalPulses = numRevolutions * pulsesPerRevolution;
         System.out.println("About to move");
-        leftClaw.set(ControlMode.MotionMagic, totalPulses);
-        //rightClaw.set(ControlMode.Position , totalPulses);
+        //leftClaw.set(ControlMode.MotionMagic, totalPulses);
+        rightClaw.set(ControlMode.MotionMagic , totalPulses);
         System.out.println("Move complete");
 
         double motorVoltage = leftClaw.getMotorOutputVoltage();
