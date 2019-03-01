@@ -40,7 +40,7 @@ public class Elevator {
         talon.configMotionCruiseVelocity(1100);
         talon.configMotionAcceleration(1100);
         talon.setSelectedSensorPosition(0);
-        talon.config_IntegralZone(0, 0);
+        //talon.config_IntegralZone(0, 0);
         // talon.config_kD(0, dConstant);
         // talon.config_kP(0, pConstant);
         // talon.config_kI(0, iConstant);
@@ -121,6 +121,7 @@ public class Elevator {
 
     public void getPosition(){
      int position = talon.getSelectedSensorPosition();
+     System.out.println(position);
     }
 
     public void resetToFactorySettings(){
