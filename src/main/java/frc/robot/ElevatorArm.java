@@ -65,6 +65,7 @@ public class ElevatorArm {
         spark = new CANSparkMax(armPort, MotorType.kBrushless);
         encoder = spark.getEncoder();
         pid = spark.getPIDController();
+
         SmartDashboard.putNumber("pid/arm/p", 0.0);
         SmartDashboard.putNumber("pid/arm/i", 0.0);
         SmartDashboard.putNumber("pid/arm/d", 0.0);
@@ -110,7 +111,7 @@ public class ElevatorArm {
         talon.setIntegralAccumulator(0);
         int talonPosition =  talon.getSelectedSensorPosition();
         double totalPulses = (distance/(diameter*Math.PI)) * pulsesPerRevolution;
-        talon.set(ControlMode.Position, totalPulses);
+        talon.set(ControlMode.MotionMagic, totalPulses);
         double pulsesAfter = talon.getSelectedSensorPosition();
     }
 

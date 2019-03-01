@@ -49,14 +49,18 @@ public class Grabber {
        // rightClaw.config_kF(0, fConstant);
         rightClaw.configPeakCurrentLimit(maxAmps);
         rightClaw.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+        rightClaw.setInverted(true);
+        rightClaw.setSelectedSensorPosition((int)hatchRevolutions*4096);
 
+       
         //leftClaw.config_kD(0, dConstant);
-        //leftClaw.config_kP(0, pConstant);
+        //leftClaw.config_kP(0, pConstant)S;
         //leftClaw.config_kI(0, iConstant);
         //leftClaw.config_kF(0, fConstant);
         leftClaw.configPeakCurrentLimit(maxAmps);
         leftClaw.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-
+        leftClaw.setSensorPhase(true); 
+        leftClaw.setSelectedSensorPosition((int)hatchRevolutions*4096);
         leftLimitSwitch = new DigitalInput(leftLimitPort);
         rightLimitSwitch = new DigitalInput(rightLimitPort);
     }
