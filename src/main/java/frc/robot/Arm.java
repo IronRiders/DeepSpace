@@ -45,13 +45,16 @@ public class Arm{
         spark.setSecondaryCurrentLimit(maxMotorAmps);
         limitSwitch = new DigitalInput(limitSwitchPort);
         pid.setOutputRange(-1, 1);
+        pid.setSmartMotionMaxVelocity(200 , 0);
+        pid.setSmartMotionMaxAccel(150, 0);
+
 
 
     }
 
     public void move(int numRevolutions){
         System.out.println(spark.getAppliedOutput());
-        pid.setReference(numRevolutions, ControlType.kPosition);
+        pid.setReference(numRevolutions, ControlType.kSmartMotion);
         System.out.println(spark.getAppliedOutput());
     }
 
