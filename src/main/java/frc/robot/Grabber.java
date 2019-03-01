@@ -193,10 +193,10 @@ public class Grabber {
     }
 
     public void testEncoderPosition(){
-        double rightBeginningPosition = rightClaw.getSelectedSensorPosition();
-        double leftBeginningPosition = leftClaw.getSelectedSensorPosition();
-        System.out.println("Left: " + leftBeginningPosition + " Right: " + rightBeginningPosition);
-        leftClaw.set(ControlMode.PercentOutput , 0.2);
+        //double rightBeginningPosition = rightClaw.getSelectedSensorPosition();
+        //double leftBeginningPosition = leftClaw.getSelectedSensorPosition();
+       // System.out.println("Left: " + leftBeginningPosition + " Right: " + rightBeginningPosition);
+        //leftClaw.set(ControlMode.PercentOutput , 0.2);
         double leftAfter = leftClaw.getSelectedSensorPosition();
         double rightAfter = rightClaw.getSelectedSensorPosition();
         System.out.println("Left: " + leftAfter + " Right: " + rightAfter);
