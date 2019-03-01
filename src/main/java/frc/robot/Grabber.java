@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Grabber {
+    //this worked
     private VictorSP leftFlywheel;
     private VictorSP rightFlywheel;
     private TalonSRX rightClaw;
