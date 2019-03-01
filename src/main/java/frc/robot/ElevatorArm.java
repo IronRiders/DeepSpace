@@ -39,13 +39,15 @@ public class ElevatorArm {
     //arm
     private final int mediumHatchRevolutions = 13;
     private final int mediumCargoRevolutions = 17;
-    private final int highHatchRevolutions = 29;
+    private final int highHatchRevolutions = 21;
+    private final int highCargoRevolutions = 25;
     private final int distancePickUp = 0; 
  
     //elevator
     private final int distanceLowHatch = 19; 
     private final int distanceLowCargo = 21;
     private final int distanceMediumHigh = 22;
+    private final int distanceBottom = 0;
 
     public ElevatorArm(int elevatorPort , int elevatorlimitSwitchPort , int armPort , int armLimitSwitchPort){
         SmartDashboard.putNumber("pid/elevator/p", 0.0);
@@ -128,24 +130,17 @@ public class ElevatorArm {
             talon.setSelectedSensorPosition(0);
         }
     }
-    
-
-    public void stop(){
-        talon.set(ControlMode.PercentOutput , 0);
-    }
 
     public void lowCargo(){
         moveElevator(distanceLowCargo);
+        moveArm(distancePickUp);
     }
     public void lowHatch(){
         moveElevator(distanceLowHatch);
+        moveArm(distancePickUp);
     }
 
-    public void mediumHigh(){
-        moveElevator(distanceMediumHigh);
-    }
-
-    public void lowerToZero(){
+    public void lowerElevatorToZero(){
         moveElevator(distancePickUp);
     }
 
@@ -186,19 +181,13 @@ public class ElevatorArm {
         moveArm(highHatchRevolutions);
     }
 
-    public void getToMediumHatch(){
-        moveArm(mediumHatchRevolutions);
-    }
-
-    public void getToMediumCargo(){
-        moveArm(mediumCargoRevolutions);
-    }
-
-    public void getToHighHatch(){
-        moveArm(highHatchRevolutions);
-    }
-
-    public void lowerArm(){
+    public void pickup(){
+        moveElevator(distanceBottom);
         moveArm(distancePickUp);
+    }
+
+    public void highCargo(){
+        moveElevator(distanceMediumHigh);
+        moveArm(highCargoRevolutions);
     }
 }

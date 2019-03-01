@@ -62,6 +62,15 @@ public class Robot extends TimedRobot {
     joystick1.addButton(11 , this::changeDriverControl);
     joystick1.addButton(12, imageRec::triggerImageRec);
 
+    joystick2.addButton(3 , elevatorArm::pickup);
+    joystick2.addButton(9, elevatorArm::lowCargo);
+    joystick2.addButton(8 , elevatorArm::lowHatch);
+    joystick2.addButton(10 , elevatorArm::mediumCargo);
+    joystick2.addButton(7 , elevatorArm::mediumHatch);
+    joystick2.addButton(6 , elevatorArm::highHatch);
+    joystick2.addButton(11 , elevatorArm::highCargo);
+
+
     //arm.configurePID();
     driveTrain.autoUpdateSpeed(0,0);
     for (int i = 0; i < pathFiles.length; i++) {

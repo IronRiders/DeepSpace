@@ -73,7 +73,6 @@ public class ImageRecognition {
         isImageRecTriggered = !isImageRecTriggered;
         System.out.println("Image recognition activation set to " + isImageRecTriggered);
         if(isImageRecTriggered) {
-            elevatorArm.getToMediumHatch();
             // update values
             getNetworkTablesValues();
             currentRobotAngle = driveTrain.getGyro().getAngleY();
