@@ -23,6 +23,7 @@ public class ElevatorArm {
     private final int maxAmpsElevator = 20;
     private final double diameter = 2.1875;
     private final int pulsesPerRevolution = 4096;
+    private final double multiplier = 1.3;
     DigitalInput limitSwitchElevator;
 
 
@@ -114,7 +115,7 @@ public class ElevatorArm {
     public void moveElevator(double distance){
         talon.setIntegralAccumulator(0);
         int talonPosition =  talon.getSelectedSensorPosition();
-        double totalPulses = (distance/(diameter*Math.PI)) * pulsesPerRevolution;
+        double totalPulses = (distance/(diameter*Math.PI)) * pulsesPerRevolution * multiplier;
         talon.set(ControlMode.MotionMagic, totalPulses);
         double pulsesAfter = talon.getSelectedSensorPosition();
     }
