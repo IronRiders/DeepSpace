@@ -51,7 +51,7 @@ public class Robot extends TimedRobot {
     updateSmartDB();
     elevator.configurePID();
     grabber.configurePID();
-    arm.configurePID();
+    //arm.configurePID();
     //elevator.resetToFactorySettings();
     //grabber.resetToFactorySettings();
     driveTrain.autoUpdateSpeed(0,0);
@@ -100,7 +100,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     elevator.configurePID();
     grabber.configurePID();
-    arm.configurePID();
+    //arm.configurePID();
     driveTrain.autoUpdateSpeed(0,0);
     int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 7", "1")) - 1;
     int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 8", "2")) - 1;
@@ -124,11 +124,11 @@ public class Robot extends TimedRobot {
   public void teleopInit(){
     elevator.configurePID();
     grabber.configurePID();
-    arm.configurePID();
+    //arm.configurePID();
     //grabber.zeroPosition();
     //elevator.resetToFactorySettings();
     //grabber.resetToFactorySettings();
-    grabber.initializeSettings();
+    //grabber.initializeSettings();
     driveTrain.autoUpdateSpeed(0,0);
 
   }

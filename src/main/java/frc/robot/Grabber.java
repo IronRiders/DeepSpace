@@ -127,7 +127,7 @@ public class Grabber {
         double totalPulses = numRevolutions * pulsesPerRevolution;
         System.out.println("About to move");
         leftClaw.set(ControlMode.MotionMagic, totalPulses);
-        //rightClaw.set(ControlMode.Follower , totalPulses);
+        rightClaw.set(ControlMode.MotionMagic , totalPulses);
         //rightClaw.follow(leftClaw);
         System.out.println("Move complete");
 
