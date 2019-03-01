@@ -16,7 +16,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 public class MotionProfiling {
     private DriveTrain driveTrain;
     private final double wheelBaseWidth = 2.25; // Width in feet  
-    private final double wheelDiameter = 0.1524; //meters
+    private final double wheelDiameter = 6; //meters
     private final TalonSRX leftMotor;
     private final TalonSRX rightMotor;
     private final int encoderTicksPerRevolution = 4096;
