@@ -105,8 +105,8 @@ public class Grabber {
     }
     public void move(double numRevolutions){
             double totalPulses = numRevolutions * pulsesPerRevolution;
-            leftClaw.set(ControlMode.Position, totalPulses);
-            rightClaw.set(ControlMode.Position , totalPulses);
+            leftClaw.set(ControlMode.MotionMagic, totalPulses);
+            rightClaw.set(ControlMode.MotionMagic , totalPulses);
     }
     
     public void toLimitSwitches(){
