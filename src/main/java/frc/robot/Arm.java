@@ -44,13 +44,15 @@ public class Arm{
         pid.setFF(fConstant);
         spark.setSecondaryCurrentLimit(maxMotorAmps);
         limitSwitch = new DigitalInput(limitSwitchPort);
+        pid.setOutputRange(-1, 1);
 
 
     }
 
     public void move(int numRevolutions){
+        System.out.println(spark.getAppliedOutput());
         pid.setReference(numRevolutions, ControlType.kPosition);
-
+        System.out.println(spark.getAppliedOutput());
     }
 
     public void configurePID() {
