@@ -16,10 +16,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ElevatorArm {
     private TalonSRX talon;
-    private  double pConstantElevator = 0.1; //we need to change these
-    private  double iConstantElevator = (1.6 * pConstantElevator) / 10000;
-    private  double dConstantElevator = 0;
-    private  double fConstantElevator = 0.4;
+    private final double pConstantElevator = 0.1; //don't change these 
+    private final double iConstantElevator = (1.6 * pConstantElevator) / 1000;
+    private final double dConstantElevator = 0;
+    private final double fConstantElevator = 0.4;
     private final int maxAmpsElevator = 20;
     private final double diameter = 2.1875;
     private final int pulsesPerRevolution = 4096;
