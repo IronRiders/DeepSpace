@@ -58,9 +58,10 @@ public class Grabber {
 
        
         leftClaw.config_kD(0, dConstant);
-        leftClaw.config_kP(0, pConstant)S;
+        leftClaw.config_kP(0, pConstant);
         leftClaw.config_kI(0, iConstant);
         leftClaw.config_kF(0, fConstant);
+        
         leftClaw.configPeakCurrentLimit(maxAmps);
         leftClaw.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
         leftClaw.setSensorPhase(true); 

@@ -55,6 +55,11 @@ public class ElevatorArm {
         SmartDashboard.putNumber("pid/elevator/i", 0.0);
         SmartDashboard.putNumber("pid/elevator/d", 0.0);
         SmartDashboard.putNumber("pid/elevator/f", 0.0);
+
+        SmartDashboard.putNumber("pid/arm/p", 0.0);
+        SmartDashboard.putNumber("pid/arm/i", 0.0);
+        SmartDashboard.putNumber("pid/arm/d", 0.0);
+        SmartDashboard.putNumber("pid/arm/f", 0.0);
         
         talon = new TalonSRX(elevatorPort);
         talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
@@ -63,6 +68,7 @@ public class ElevatorArm {
         talon.configMotionAcceleration(1100);
         talon.setSelectedSensorPosition(0);
         talon.configPeakCurrentLimit(maxAmpsElevator);
+
         talon.config_kD(0, dConstantElevator);
         talon.config_kP(0, pConstantElevator);
         talon.config_kI(0, iConstantElevator);
@@ -72,11 +78,6 @@ public class ElevatorArm {
         spark = new CANSparkMax(armPort, MotorType.kBrushless);
         encoder = spark.getEncoder();
         pid = spark.getPIDController();
-
-        SmartDashboard.putNumber("pid/arm/p", 0.0);
-        SmartDashboard.putNumber("pid/arm/i", 0.0);
-        SmartDashboard.putNumber("pid/arm/d", 0.0);
-        SmartDashboard.putNumber("pid/arm/f", 0.0);
         spark.setSecondaryCurrentLimit(maxAmpsArm);
         //limitSwitchArm = new DigitalInput(armLimitSwitchPort);
 

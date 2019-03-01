@@ -79,39 +79,12 @@ public class DriveTrain {
         leftMotor2.follow(leftMotor1);
         rightMotor1.set(ControlMode.PercentOutput, right);
         rightMotor2.follow(rightMotor1);
-
-        counter++;
-        if(counter % 10 == 0){
-            double left1Current = leftMotor1.getOutputCurrent();
-            double left1Voltage = leftMotor1.getMotorOutputVoltage();
-            double right1Current = rightMotor1.getOutputCurrent();
-            double right1Voltage = rightMotor1.getMotorOutputVoltage();
-            double left2Voltage = leftMotor2.getMotorOutputVoltage();
-            double right2Voltage = rightMotor2.getMotorOutputVoltage();
-            System.out.print(String.format("Currents: R: %.2f L: %.2f ", right1Current, left1Current));
-            System.out.print(String.format("Voltage: L1: %.2f R1: %.2f L2: %.2f R2: %.2f\n", left1Voltage, right1Voltage, left2Voltage, right2Voltage));
-
-        }
-        //makeVictorsFollowers();
     }
     public void autoUpdateSpeed(double left, double right) {
         leftMotor1.set(ControlMode.PercentOutput, left);
         rightMotor1.set(ControlMode.PercentOutput, right);
         leftMotor2.follow(leftMotor1);
         rightMotor2.follow(rightMotor1);
-
-        counter++;
-        if(counter % 10 == 0){
-           double left1Current = leftMotor1.getOutputCurrent();
-           double left1Voltage = leftMotor1.getMotorOutputVoltage();
-           double right1Current = rightMotor1.getOutputCurrent();
-           double right1Voltage = rightMotor1.getMotorOutputVoltage();
-           double left2Voltage = leftMotor2.getMotorOutputVoltage();
-           double right2Voltage = rightMotor2.getMotorOutputVoltage();
-           System.out.print(String.format("Currents: R: %.2f L: %.2f ", right1Current, left1Current));
-           System.out.print(String.format("Voltage: L1: %.2f R1: %.2f L2: %.2f R2: %.2f\n", left1Voltage, right1Voltage, left2Voltage, right2Voltage));
-
-        }
     }
     public TalonSRX getLeftMotor() {
         return leftMotor1;
