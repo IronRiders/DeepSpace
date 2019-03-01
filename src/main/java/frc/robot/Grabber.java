@@ -52,6 +52,7 @@ public class Grabber {
         leftClaw.configMotionCruiseVelocity(3000);
         leftClaw.configMotionAcceleration(6000);
 
+
         rightClaw.setSelectedSensorPosition(0);
         leftClaw.setSelectedSensorPosition(0);
         leftLimitSwitch = new DigitalInput(leftLimitPort);
@@ -192,7 +193,7 @@ public class Grabber {
         double rightBeginningPosition = rightClaw.getSelectedSensorPosition();
         double leftBeginningPosition = leftClaw.getSelectedSensorPosition();
         System.out.println("Left: " + leftBeginningPosition + " Right: " + rightBeginningPosition);
-        leftClaw.set(ControlMode.PercentOutput , 0.2);
+        //leftClaw.set(ControlMode.PercentOutput , 0.2);
         double leftAfter = leftClaw.getSelectedSensorPosition();
         double rightAfter = rightClaw.getSelectedSensorPosition();
         System.out.println("Left: " + leftAfter + " Right: " + rightAfter);
