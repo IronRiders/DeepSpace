@@ -16,10 +16,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ElevatorArm {
     private TalonSRX talon;
-    private  double pConstantElevator = 0.2; //we need to change these
-    private  double iConstantElevator = pConstantElevator / 10000;
-    private  double dConstantElevator = 2;
-    private  double fConstantElevator = 0.0;
+    private  double pConstantElevator = 0.1; //we need to change these
+    private  double iConstantElevator = (1.6 * pConstantElevator) / 10000;
+    private  double dConstantElevator = 0;
+    private  double fConstantElevator = 0.4;
     private final int maxAmpsElevator = 20;
     private final double diameter = 2.1875;
     private final int pulsesPerRevolution = 4096;
@@ -49,6 +49,7 @@ public class ElevatorArm {
     private final int distanceMediumHigh = 22;
     private final int distanceBottom = 0;
 
+
     public ElevatorArm(int elevatorPort , int elevatorlimitSwitchPort , int armPort , int armLimitSwitchPort){
         SmartDashboard.putNumber("pid/elevator/p", 0.0);
         SmartDashboard.putNumber("pid/elevator/i", 0.0);
@@ -58,8 +59,14 @@ public class ElevatorArm {
         talon = new TalonSRX(elevatorPort);
         talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
         talon.setSensorPhase(true);
+        talon.configMotionCruiseVelocity(1100);
+        talon.configMotionAcceleration(1100);
         talon.setSelectedSensorPosition(0);
         talon.configPeakCurrentLimit(maxAmpsElevator);
+        talon.config_kD(0, dConstantElevator);
+        talon.config_kP(0, pConstantElevator);
+        talon.config_kI(0, iConstantElevator);
+        talon.config_kF(0, fConstantElevator);  
         //limitSwitchElevator = new DigitalInput(elevatorlimitSwitchPort);
 
         spark = new CANSparkMax(armPort, MotorType.kBrushless);
@@ -76,14 +83,10 @@ public class ElevatorArm {
 
     }
     public void configurePID() {
-        this.pConstantElevator = SmartDashboard.getNumber("pid/elevator/p", 0.2);
-        this.iConstantElevator = SmartDashboard.getNumber("pid/elevator/i", (0.2 / 10000));
-        this.dConstantElevator = SmartDashboard.getNumber("pid/elevator/d", 2.0);
-        this.fConstantElevator = SmartDashboard.getNumber("pid/elevator/f", 0.0);
-        talon.config_kD(0, dConstantElevator);
-        talon.config_kP(0, pConstantElevator);
-        talon.config_kI(0, iConstantElevator);
-        talon.config_kF(0, fConstantElevator);  
+        //this.pConstantElevator = SmartDashboard.getNumber("pid/elevator/p", 0.2);
+        //this.iConstantElevator = SmartDashboard.getNumber("pid/elevator/i", (0.2 / 10000));
+        //this.dConstantElevator = SmartDashboard.getNumber("pid/elevator/d", 2.0);
+        //this.fConstantElevator = SmartDashboard.getNumber("pid/elevator/f", 0.0);
 
         this.pConstantArm = SmartDashboard.getNumber("pid/elevator/p", 0.2);
         this.iConstantArm = SmartDashboard.getNumber("pid/elevator/i",(0.2/ 10000));
