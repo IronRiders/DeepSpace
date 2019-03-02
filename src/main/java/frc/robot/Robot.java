@@ -166,7 +166,7 @@ public class Robot extends TimedRobot {
     grabber.configurePID();
     //arm.configurePID();
     driveTrain.autoUpdateSpeed(0,0);
-    isDriverControlling = true;
+   // isDriverControlling = true;
 
     int firstPath, secondPath, thirdPath;
 
