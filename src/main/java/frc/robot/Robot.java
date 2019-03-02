@@ -66,6 +66,13 @@ public class Robot extends TimedRobot {
     joystick1.addButton(11 , this::changeDriverControl);
     joystick1.addButton(12, imageRec::triggerImageRec);
 
+    //for testing
+    joystick1.addButton(4 , grabber::hatch);
+    joystick1.addButton(3 , grabber::cargo);
+    joystick1.addButton(5 , grabber::open);
+    joystick1.addButton(2, grabber::closed);
+
+
     joystick2.addButton(3 , elevatorArm::pickup);
     joystick2.addButton(9, elevatorArm::lowCargo);
     joystick2.addButton(8 , elevatorArm::lowHatch);
@@ -200,7 +207,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
 
-    if(selectedPaths[currentPath].isFinished()){
+   /* if(selectedPaths[currentPath].isFinished()){
         isDriverControlling = !isDriverControlling;
         if(currentPath < 2) //prevents indexOutOfBoundsException
         currentPath++;
@@ -216,6 +223,9 @@ public class Robot extends TimedRobot {
     } else {
       selectedPaths[currentPath].update();
     }
+    */
+    joystick1.listen();
+    joystick2.listen();
   }
 
   /**
@@ -229,6 +239,7 @@ public class Robot extends TimedRobot {
     }
     else{
       joystick1.listen();  
+      joystick2.listen();
     }
   }
 
