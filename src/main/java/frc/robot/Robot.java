@@ -63,14 +63,15 @@ public class Robot extends TimedRobot {
     joystick2.addButton(4 , grabber::closeClaw);
     joystick2.addButton(5 , grabber::openClaw);
     joystick1.addButton(1, driveTrain::cruiseControl);
-    joystick1.addButton(11 , this::changeDriverControl);
-    joystick1.addButton(12, imageRec::triggerImageRec);
+    //joystick1.addButton(11 , this::changeDriverControl);
+    //joystick1.addButton(12, imageRec::triggerImageRec);
 
     //for testing
-    joystick1.addButton(4 , grabber::hatch);
-    joystick1.addButton(3 , grabber::cargo);
-    joystick1.addButton(5 , grabber::open);
-    joystick1.addButton(2, grabber::closed);
+    //joystick1.addButton(4 , grabber::hatch);
+    //joystick1.addButton(3 , grabber::cargo);
+    //joystick1.addButton(5 , grabber::open);
+    //joystick1.addButton(2, grabber::closed);
+
 
 
     joystick2.addButton(3 , elevatorArm::pickup);
@@ -79,7 +80,7 @@ public class Robot extends TimedRobot {
     joystick2.addButton(10 , elevatorArm::mediumCargo);
     joystick2.addButton(7 , elevatorArm::mediumHatch);
     joystick2.addButton(6 , elevatorArm::highHatch);
-    joystick2.addButton(11 , elevatorArm::highCargo);
+   // joystick2.addButton(11 , elevatorArm::highCargo);
 
 
     //arm.configurePID();
@@ -165,7 +166,7 @@ public class Robot extends TimedRobot {
     grabber.configurePID();
     //arm.configurePID();
     driveTrain.autoUpdateSpeed(0,0);
-    isDriverControlling = false;
+    isDriverControlling = true;
 
     int firstPath, secondPath, thirdPath;
 
@@ -196,7 +197,7 @@ public class Robot extends TimedRobot {
     elevatorArm.configurePID();
     grabber.configurePID();
     //arm.configurePID();
-    driveTrain.autoUpdateSpeed(0,0);
+    //driveTrain.autoUpdateSpeed(0,0);
   }
 
   
@@ -206,6 +207,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+    joystick1.listen();
+    joystick2.listen();
 
    /* if(selectedPaths[currentPath].isFinished()){
         isDriverControlling = !isDriverControlling;
@@ -224,8 +227,6 @@ public class Robot extends TimedRobot {
       selectedPaths[currentPath].update();
     }
     */
-    joystick1.listen();
-    joystick2.listen();
   }
 
   /**
@@ -259,5 +260,7 @@ private void updateSmartDB(){
    */
   @Override
   public void testPeriodic() {
+    elevatorArm.testArm();
+    
   }
 }

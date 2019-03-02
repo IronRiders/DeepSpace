@@ -23,7 +23,7 @@ public class Grabber {
     private int pulsesPerRevolution = 4096;
     private int maxAmps = 3; 
     private final double openRevolutions = 12.5;
-    private final double cargoRevolutions = 8.33;
+    private final double cargoRevolutions = 4.0;
     private final double hatchRevolutions = 1.389;
     private final double closedRevolutions = 0;
     private final double closedRevolutionsLeft = -7500;
@@ -109,14 +109,24 @@ public class Grabber {
     public void openClaw(){
         if(counter < 3){
         counter++;
-        move(closedToOpenValues[counter]);
+            if(counter == 0){
+                closed();
+            }
+            else{
+                move(closedToOpenValues[counter]);
+            }
         }
     }
 
     public void closeClaw(){
         if(counter > 0){
         counter--;
-        move(closedToOpenValues[counter]);
+        if(counter == 0){
+            closed();
+        }
+        else{
+            move(closedToOpenValues[counter]);
+        }
         }
     }
     public void move(double numRevolutions){
@@ -158,8 +168,8 @@ public class Grabber {
 
     public void updateSpeed(final LambdaJoystick.ThrottlePosition throttlePosition){
         if(throttlePosition.y != 0) {
-            leftFlywheel.set(0.5*throttlePosition.y);
-            rightFlywheel.set(-0.5*throttlePosition.y);
+            leftFlywheel.set(-0.75*throttlePosition.y);
+            rightFlywheel.set(throttlePosition.y);
         }
     }
 

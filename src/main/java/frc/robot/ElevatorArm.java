@@ -196,4 +196,8 @@ public class ElevatorArm {
         moveElevator(distanceMediumHigh);
         //moveArm(highCargoRevolutions);
     }
+
+    public void testArm(){
+        spark.set(0.4);
+    }
 }

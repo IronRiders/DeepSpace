@@ -70,7 +70,8 @@ public class DriveTrain {
         if(throttlePosition.y < 0){
             scaledY = -scaledY;
         }
-        scaledX*=0.5;
+        scaledX= scaledX * 0.5;
+        scaledY= scaledY * 0.7;
         
         final double right = (-scaledX - scaledY)*-1;
         final double left = (scaledY - scaledX)*-1;
