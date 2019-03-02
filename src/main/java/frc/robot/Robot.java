@@ -45,6 +45,10 @@ public class Robot extends TimedRobot {
   private int currentPath;
   private TalonSRX leftMotor = driveTrain.getLeftMotor(), rightMotor = driveTrain.getRightMotor();
   private final ImageRecognition imageRec = new ImageRecognition(driveTrain, rightMotor, leftMotor, elevatorArm);
+
+  SendableChooser autoChooser1 = new SendableChooser();
+  SendableChooser autoChooser2 = new SendableChooser();
+  SendableChooser autoChooser3 = new SendableChooser();
   
   /**
    * This function is run when the robot is first started up and should be
@@ -78,6 +82,49 @@ public class Robot extends TimedRobot {
     }
     //joystick1.addButton(1, imageRec::triggerImageRec); // Random joystick button
     //talk to ishan about button placement
+
+    autoChooser1.addDefault("path 1", "1");
+    autoChooser1.addOption("path 2", "2");
+    autoChooser1.addOption("path 3", "3");
+    autoChooser1.addOption("path 4", "4");
+    autoChooser1.addOption("path 5", "5");
+    autoChooser1.addOption("path 6", "6");
+    autoChooser1.addOption("path 7", "7");
+    autoChooser1.addOption("path 8", "8");
+    autoChooser1.addOption("path 9", "9");
+    autoChooser1.addOption("path 10", "10");
+    autoChooser1.addOption("path 11", "11");
+    autoChooser1.addOption("path 12", "12");
+
+    autoChooser2.addOption("path 1", "1");
+    autoChooser2.addDefault("path 2", "2");
+    autoChooser2.addOption("path 3", "3");
+    autoChooser2.addOption("path 4", "4");
+    autoChooser2.addOption("path 5", "5");
+    autoChooser2.addOption("path 6", "6");
+    autoChooser2.addOption("path 7", "7");
+    autoChooser2.addOption("path 8", "8");
+    autoChooser2.addOption("path 9", "9");
+    autoChooser2.addOption("path 10", "10");
+    autoChooser2.addOption("path 11", "11");
+    autoChooser2.addOption("path 12", "12");
+
+    autoChooser3.addOption("path 1", "1");
+    autoChooser3.addOption("path 2", "2");
+    autoChooser3.addDefault("path 3", "3");
+    autoChooser3.addOption("path 4", "4");
+    autoChooser3.addOption("path 5", "5");
+    autoChooser3.addOption("path 6", "6");
+    autoChooser3.addOption("path 7", "7");
+    autoChooser3.addOption("path 8", "8");
+    autoChooser3.addOption("path 9", "9");
+    autoChooser3.addOption("path 10", "10");
+    autoChooser3.addOption("path 11", "11");
+    autoChooser3.addOption("path 12", "12");
+
+    SmartDashboard.putData("autoChooser/path1", autoChooser1);
+    SmartDashboard.putData("autoChooser/path2", autoChooser2);
+    SmartDashboard.putData("autoChooser/path3", autoChooser3);
   }
 
   /**
@@ -112,9 +159,16 @@ public class Robot extends TimedRobot {
     //arm.configurePID();
     driveTrain.autoUpdateSpeed(0,0);
     isDriverControlling = false;
-    int firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 7", "1")) - 1;
-    int secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 8", "2")) - 1;
-    int thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 9", "3")) - 1;
+
+    int firstPath, secondPath, thirdPath;
+
+    // firstPath = Integer.parseInt((String) autoChooser1.getSelected());
+    // secondPath = Integer.parseInt((String) autoChooser2.getSelected());
+    // thirdPath = Integer.parseInt((String) autoChooser3.getSelected());
+
+    firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 7", "1")) - 1;
+    secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 8", "2")) - 1;
+    thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 9", "3")) - 1;
     //because it's from 0-11 instead of 1-12 with arrays
     int chosenPathNumbers[] = new int[]{firstPath, secondPath, thirdPath};
 
