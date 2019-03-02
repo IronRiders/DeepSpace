@@ -26,6 +26,7 @@ public class Grabber {
     private final double cargoRevolutions = 8.33;
     private final double hatchRevolutions = 1.389;
     private final double closedRevolutions = 0;
+    private final double closedRevolutionsLeft = -7500;
     private final double[] closedToOpenValues = {closedRevolutions, hatchRevolutions , cargoRevolutions , openRevolutions};
     private int counter; 
 
@@ -52,7 +53,8 @@ public class Grabber {
         rightClaw.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
         rightClaw.setInverted(true);
         rightClaw.setSensorPhase(true);
-        rightClaw.setSelectedSensorPosition((int)hatchRevolutions*4096);
+        //rightClaw.setSelectedSensorPosition((int)hatchRevolutions*4096);
+        rightClaw.setSelectedSensorPosition(0);
         rightClaw.configMotionCruiseVelocity(3000);
         rightClaw.configMotionAcceleration(6000);
 
@@ -67,7 +69,8 @@ public class Grabber {
         leftClaw.setSensorPhase(true); 
         leftClaw.configMotionCruiseVelocity(3000);
         leftClaw.configMotionAcceleration(6000);
-        leftClaw.setSelectedSensorPosition((int)hatchRevolutions*4096);
+        //leftClaw.setSelectedSensorPosition((int)hatchRevolutions*4096);
+        leftClaw.setSelectedSensorPosition(0);
         leftLimitSwitch = new DigitalInput(leftLimitPort);
         rightLimitSwitch = new DigitalInput(rightLimitPort);
     }
@@ -99,7 +102,8 @@ public class Grabber {
         move(hatchRevolutions);
     }
     public void closed(){
-        move(closedRevolutions);
+        leftClaw.set(ControlMode.MotionMagic, closedRevolutionsLeft);
+        rightClaw.set(ControlMode.MotionMagic, closedRevolutions);
     }
 
     public void openClaw(){
