@@ -135,6 +135,7 @@ public class Robot extends TimedRobot {
     elevatorArm.configurePID();
     grabber.configurePID();
     //arm.configurePID();
+    isDriverControlling = true; 
     driveTrain.autoUpdateSpeed(0,0);
   }
 
