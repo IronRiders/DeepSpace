@@ -24,7 +24,7 @@ public class Grabber {
     private int maxAmps = 3; 
     private final double openRevolutions = 12.5;
     private final double cargoRevolutions = 4.0;
-    private final double hatchRevolutions = 1.389;
+    private final double hatchRevolutions = 1.389 * 3;
     private final double closedRevolutions = 0;
     private final double closedRevolutionsLeft = -7500;
     private final double[] closedToOpenValues = {closedRevolutions, hatchRevolutions , cargoRevolutions , openRevolutions};
@@ -39,10 +39,10 @@ public class Grabber {
         leftClaw = new TalonSRX(leftClawPort);
         counter = 0;
 
-        SmartDashboard.putNumber("pid/claw/p", 0.0);
-        SmartDashboard.putNumber("pid/claw/i", 0.0);
-        SmartDashboard.putNumber("pid/claw/d", 0.0);
-        SmartDashboard.putNumber("pid/claw/f", 0.0);
+        //SmartDashboard.putNumber("pid/claw/p", 0.0);
+        //SmartDashboard.putNumber("pid/claw/i", 0.0);
+        //SmartDashboard.putNumber("pid/claw/d", 0.0);
+        //SmartDashboard.putNumber("pid/claw/f", 0.0);
         
         rightClaw.config_kD(0, dConstant);
         rightClaw.config_kP(0, pConstant);
@@ -71,8 +71,8 @@ public class Grabber {
         leftClaw.configMotionAcceleration(6000);
         //leftClaw.setSelectedSensorPosition((int)hatchRevolutions*4096);
         leftClaw.setSelectedSensorPosition(0);
-        leftLimitSwitch = new DigitalInput(leftLimitPort);
-        rightLimitSwitch = new DigitalInput(rightLimitPort);
+        //leftLimitSwitch = new DigitalInput(leftLimitPort);
+        //rightLimitSwitch = new DigitalInput(rightLimitPort);
     }
     public void configurePID() {
         //this.pConstant = SmartDashboard.getNumber("pid/claw/p", 0.2);
@@ -102,8 +102,8 @@ public class Grabber {
         move(hatchRevolutions);
     }
     public void closed(){
-        leftClaw.set(ControlMode.MotionMagic, closedRevolutionsLeft);
-        rightClaw.set(ControlMode.MotionMagic, closedRevolutions);
+  //      leftClaw.set(ControlMode.MotionMagic, closedRevolutionsLeft);
+  //      rightClaw.set(ControlMode.MotionMagic, closedRevolutions);
     }
 
     public void openClaw(){
@@ -130,11 +130,11 @@ public class Grabber {
         }
     }
     public void move(double numRevolutions){
-            leftClaw.setIntegralAccumulator(0);
-            rightClaw.setIntegralAccumulator(0);
-            double totalPulses = numRevolutions * pulsesPerRevolution;
-            leftClaw.set(ControlMode.MotionMagic, totalPulses);
-            rightClaw.set(ControlMode.MotionMagic , totalPulses);
+    //        leftClaw.setIntegralAccumulator(0);
+    //        rightClaw.setIntegralAccumulator(0);
+    //        double totalPulses = numRevolutions * pulsesPerRevolution;
+    //        leftClaw.set(ControlMode.MotionMagic, totalPulses);
+    //        rightClaw.set(ControlMode.MotionMagic , totalPulses);
     }
     
     public void toLimitSwitches(){
@@ -156,21 +156,21 @@ public class Grabber {
     }
 
     public void output(){
-        leftFlywheel.set(flywheelSpeed); 
-        rightFlywheel.set(-flywheelSpeed);
+     //   leftFlywheel.set(flywheelSpeed); 
+     //   rightFlywheel.set(-flywheelSpeed);
 
     }
 
     public void intake(){
-        leftFlywheel.set(-flywheelSpeed);
-        rightFlywheel.set(flywheelSpeed);
+       // leftFlywheel.set(-flywheelSpeed);
+       // rightFlywheel.set(flywheelSpeed);
     }
 
     public void updateSpeed(final LambdaJoystick.ThrottlePosition throttlePosition){
-        if(throttlePosition.y != 0) {
-            leftFlywheel.set(-0.75*throttlePosition.y);
-            rightFlywheel.set(throttlePosition.y);
-        }
+       // if(throttlePosition.y != 0) {
+         //   leftFlywheel.set(-0.75*throttlePosition.y);
+           // rightFlywheel.set(throttlePosition.y);
+       // }
     }
 
     public void stop(){

@@ -52,15 +52,15 @@ public class ElevatorArm {
 
 
     public ElevatorArm(int elevatorPort , int elevatorlimitSwitchPort , int armPort , int armLimitSwitchPort){
-        SmartDashboard.putNumber("pid/elevator/p", 0.0);
-        SmartDashboard.putNumber("pid/elevator/i", 0.0);
-        SmartDashboard.putNumber("pid/elevator/d", 0.0);
-        SmartDashboard.putNumber("pid/elevator/f", 0.0);
+        // SmartDashboard.putNumber("pid/elevator/p", 0.0);
+        // SmartDashboard.putNumber("pid/elevator/i", 0.0);
+        // SmartDashboard.putNumber("pid/elevator/d", 0.0);
+        // SmartDashboard.putNumber("pid/elevator/f", 0.0);
 
-        SmartDashboard.putNumber("pid/arm/p", 0.0);
-        SmartDashboard.putNumber("pid/arm/i", 0.0);
-        SmartDashboard.putNumber("pid/arm/d", 0.0);
-        SmartDashboard.putNumber("pid/arm/f", 0.0);
+        // SmartDashboard.putNumber("pid/arm/p", 0.0);
+        // SmartDashboard.putNumber("pid/arm/i", 0.0);
+        // SmartDashboard.putNumber("pid/arm/d", 0.0);
+        // SmartDashboard.putNumber("pid/arm/f", 0.0);
         
         talon = new TalonSRX(elevatorPort);
         talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
@@ -113,11 +113,11 @@ public class ElevatorArm {
 
     //@param distance is in inches
     public void moveElevator(double distance){
-        talon.setIntegralAccumulator(0);
-        int talonPosition =  talon.getSelectedSensorPosition();
-        double totalPulses = (distance/(diameter*Math.PI)) * pulsesPerRevolution * multiplier;
-        talon.set(ControlMode.MotionMagic, totalPulses);
-        double pulsesAfter = talon.getSelectedSensorPosition();
+      //  talon.setIntegralAccumulator(0);
+      //  int talonPosition =  talon.getSelectedSensorPosition();
+      //  double totalPulses = (distance/(diameter*Math.PI)) * pulsesPerRevolution;
+       // talon.set(ControlMode.MotionMagic, totalPulses);
+       // double pulsesAfter = talon.getSelectedSensorPosition();
     }
 
    // public void moveArm(int numRevolutions){

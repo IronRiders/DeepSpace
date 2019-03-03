@@ -29,8 +29,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  private String pathFiles[] = new String[12];
-  private MotionProfiling selectedPaths[] = new MotionProfiling[3];
+  //private String pathFiles[] = new String[12];
+  //private MotionProfiling selectedPaths[] = new MotionProfiling[3];
 
   private boolean isDriverControlling;  
   public final DriveTrain driveTrain = new DriveTrain(LEFT_DRIVETRAIN_1, LEFT_DRIVETRAIN_2 , RIGHT_DRIVETAIN_1 , RIGHT_DRIVETAIN_2 , GYRO_PORT);
@@ -41,14 +41,14 @@ public class Robot extends TimedRobot {
   private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
   private final LambdaJoystick joystick2 = new LambdaJoystick(1 , grabber::updateSpeed);
 
-  private String filePath = "path%s"; 
-  private int currentPath;
-  private TalonSRX leftMotor = driveTrain.getLeftMotor(), rightMotor = driveTrain.getRightMotor();
-  private final ImageRecognition imageRec = new ImageRecognition(driveTrain, rightMotor, leftMotor, elevatorArm);
+  //private String filePath = "path%s"; 
+  //private int currentPath;
+  //private TalonSRX leftMotor = driveTrain.getLeftMotor(), rightMotor = driveTrain.getRightMotor();
+  //private final ImageRecognition imageRec = new ImageRecognition(driveTrain, rightMotor, leftMotor, elevatorArm);
 
-  SendableChooser autoChooser1 = new SendableChooser();
-  SendableChooser autoChooser2 = new SendableChooser();
-  SendableChooser autoChooser3 = new SendableChooser();
+  //SendableChooser autoChooser1 = new SendableChooser();
+  //SendableChooser autoChooser2 = new SendableChooser();
+  //SendableChooser autoChooser3 = new SendableChooser();
   
   /**
    * This function is run when the robot is first started up and should be
@@ -57,20 +57,12 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     CameraServer.getInstance().startAutomaticCapture();
-    updateSmartDB();
-    elevatorArm.configurePID();
-    grabber.configurePID();
+   // updateSmartDB();
     joystick2.addButton(4 , grabber::closeClaw);
     joystick2.addButton(5 , grabber::openClaw);
     joystick1.addButton(1, driveTrain::cruiseControl);
     //joystick1.addButton(11 , this::changeDriverControl);
     //joystick1.addButton(12, imageRec::triggerImageRec);
-
-    //for testing
-    //joystick1.addButton(4 , grabber::hatch);
-    //joystick1.addButton(3 , grabber::cargo);
-    //joystick1.addButton(5 , grabber::open);
-    //joystick1.addButton(2, grabber::closed);
 
 
 
@@ -84,14 +76,13 @@ public class Robot extends TimedRobot {
 
 
     //arm.configurePID();
-    driveTrain.autoUpdateSpeed(0,0);
-    for (int i = 0; i < pathFiles.length; i++) {
-      pathFiles[i] = String.format(filePath , i + 1);
-    }
+  //  for (int i = 0; i < pathFiles.length; i++) {
+    //  pathFiles[i] = String.format(filePath , i + 1);
+   // }
     //joystick1.addButton(1, imageRec::triggerImageRec); // Random joystick button
     //talk to ishan about button placement
 
-    autoChooser1.addDefault("path 1", "1");
+/*    autoChooser1.addDefault("path 1", "1");
     autoChooser1.addOption("path 2", "2");
     autoChooser1.addOption("path 3", "3");
     autoChooser1.addOption("path 4", "4");
@@ -133,6 +124,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("autoChooser/path1", autoChooser1);
     SmartDashboard.putData("autoChooser/path2", autoChooser2);
     SmartDashboard.putData("autoChooser/path3", autoChooser3);
+    */
   }
 
   /**
@@ -162,25 +154,26 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    elevatorArm.configurePID();
-    grabber.configurePID();
+    //elevatorArm.configurePID();
+    //grabber.configurePID();
     //arm.configurePID();
-    driveTrain.autoUpdateSpeed(0,0);
    // isDriverControlling = true;
+   //grabber.openClaw();
+   //elevatorArm.lowHatch();
 
-    int firstPath, secondPath, thirdPath;
+    //int firstPath, secondPath, thirdPath;
 
     // firstPath = Integer.parseInt((String) autoChooser1.getSelected());
     // secondPath = Integer.parseInt((String) autoChooser2.getSelected());
     // thirdPath = Integer.parseInt((String) autoChooser3.getSelected());
 
-    firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 7", "1")) - 1;
-    secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 8", "2")) - 1;
-    thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 9", "3")) - 1;
+    //firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 7", "1")) - 1;
+    //secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 8", "2")) - 1;
+    //thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 9", "3")) - 1;
     //because it's from 0-11 instead of 1-12 with arrays
-    int chosenPathNumbers[] = new int[]{firstPath, secondPath, thirdPath};
+    //int chosenPathNumbers[] = new int[]{firstPath, secondPath, thirdPath};
 
-    for (int i = 0; i < selectedPaths.length; i++) {
+   /* for (int i = 0; i < selectedPaths.length; i++) {
       try {
         selectedPaths[i] = new MotionProfiling(driveTrain, pathFiles[chosenPathNumbers[i]] + ".left",
             pathFiles[chosenPathNumbers[i]] + ".right");
@@ -190,12 +183,11 @@ public class Robot extends TimedRobot {
     }
 
     currentPath = 0;
+    */
   }
 
   @Override  
   public void teleopInit(){
-    elevatorArm.configurePID();
-    grabber.configurePID();
     //arm.configurePID();
     //driveTrain.autoUpdateSpeed(0,0);
   }
@@ -234,14 +226,16 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    if(imageRec.isImageRecTriggered()){
+    joystick1.listen();
+    joystick2.listen();
+   // if(imageRec.isImageRecTriggered()){
       // the imageRec.triggerImageRec() must be called by joystick
-      imageRec.update();
-    }
-    else{
-      joystick1.listen();  
-      joystick2.listen();
-    }
+     // imageRec.update();
+   // }
+    //else{
+      //joystick1.listen();  
+      //joystick2.listen();
+    //}
   }
 
 public void changeDriverControl(){  
@@ -260,7 +254,7 @@ private void updateSmartDB(){
    */
   @Override
   public void testPeriodic() {
-    elevatorArm.testArm();
+    //elevatorArm.testArm();
     
   }
 }
