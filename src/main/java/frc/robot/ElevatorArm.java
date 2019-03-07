@@ -113,17 +113,17 @@ public class ElevatorArm {
 
     //@param distance is in inches
     public void moveElevator(double distance){
-      talon.setIntegralAccumulator(0);
-       int talonPosition =  talon.getSelectedSensorPosition();
-       double totalPulses = (distance/(diameter*Math.PI)) * pulsesPerRevolution;
-       talon.set(ControlMode.MotionMagic, totalPulses);
-       double pulsesAfter = talon.getSelectedSensorPosition();
+      //  talon.setIntegralAccumulator(0);
+      //  int talonPosition =  talon.getSelectedSensorPosition();
+      //  double totalPulses = (distance/(diameter*Math.PI)) * pulsesPerRevolution;
+       // talon.set(ControlMode.MotionMagic, totalPulses);
+       // double pulsesAfter = talon.getSelectedSensorPosition();
     }
 
-   public void moveArm(int numRevolutions){
-        pid.setReference(numRevolutions, ControlType.kPosition);
+   // public void moveArm(int numRevolutions){
+     //   pid.setReference(numRevolutions, ControlType.kPosition);
 
-    }
+    //}
 
 
     public void zero(){
@@ -139,11 +139,11 @@ public class ElevatorArm {
 
     public void lowCargo(){
         moveElevator(distanceLowCargo);
-      moveArm(distancePickUp);
+      //  moveArm(distancePickUp);
     }
     public void lowHatch(){
         moveElevator(distanceLowHatch);
-        moveArm(distancePickUp);
+        //moveArm(distancePickUp);
     }
 
     public void lowerElevatorToZero(){
@@ -174,27 +174,27 @@ public class ElevatorArm {
 
     public void mediumCargo(){
         moveElevator(distanceMediumHigh);
-     moveArm(mediumCargoRevolutions);
+     //   moveArm(mediumCargoRevolutions);
     }
 
     public void mediumHatch(){
         moveElevator(distanceMediumHigh);
-       moveArm(mediumHatchRevolutions);
+       // moveArm(mediumHatchRevolutions);
     }
 
     public void highHatch(){
         moveElevator(distanceMediumHigh);
-        moveArm(highHatchRevolutions);
+        //moveArm(highHatchRevolutions);
     }
 
     public void pickup(){
         moveElevator(distanceBottom);
-        moveArm(distancePickUp);
+        //moveArm(distancePickUp);
     }
 
     public void highCargo(){
         moveElevator(distanceMediumHigh);
-        moveArm(highCargoRevolutions);
+        //moveArm(highCargoRevolutions);
     }
 
     public void testArm(){

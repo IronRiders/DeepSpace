@@ -56,13 +56,11 @@ public class DriveTrain {
     public void updateSpeed(final ThrottlePosition throttlePosition) {
         double scaledX = throttlePosition.x;
         double scaledY = throttlePosition.y;
-
-        // driveteam says everything is good, it would be better if it was a little faster
-        double scaleFactorA = 0.3;
-        double scaleFactorB = 0.7;
+        double scaleFactorA = 0.5;
+        double scaleFactorB = 0.5;
         //Top is X scale bottem is Y
-        double scaleFactorC = 0.3 ;
-        double scaleFactorD = 0.7;
+        double scaleFactorC = .5 ;
+        double scaleFactorD = .5;
         scaledY = (scaleFactorC * Math.abs(throttlePosition.y)) + (scaleFactorD * throttlePosition.y * throttlePosition.y);
         scaledX = (scaleFactorA * Math.abs(throttlePosition.x)) + (scaleFactorB * throttlePosition.x * throttlePosition.x);
         if(throttlePosition.x < 0){
@@ -82,7 +80,6 @@ public class DriveTrain {
         leftMotor2.follow(leftMotor1);
         rightMotor1.set(ControlMode.PercentOutput, right);
         rightMotor2.follow(rightMotor1);
-        getEncoderPosition();
     }
 
     public void testGyro(){
@@ -95,7 +92,6 @@ public class DriveTrain {
         rightMotor1.set(ControlMode.PercentOutput, right);
         leftMotor2.follow(leftMotor1);
         rightMotor2.follow(rightMotor1);
-
     }
     public TalonSRX getLeftMotor() {
         return leftMotor1;
@@ -109,9 +105,9 @@ public class DriveTrain {
 
     public void getEncoderPosition(){
         int encoderPositionLeft = leftMotor1.getSelectedSensorPosition();
-        System.out.println("Left: " +  encoderPositionLeft);
+        System.out.println(encoderPositionLeft);
         int encoderPositionRight = rightMotor1.getSelectedSensorPosition();
-        System.out.println("Right: " +encoderPositionRight);
+        System.out.println(encoderPositionRight);
     }
 
     public void cruiseControl(){

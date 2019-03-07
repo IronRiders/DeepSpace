@@ -47,8 +47,7 @@ public class MotionProfiling {
         double r = right.calculate(rightMotor.getSelectedSensorPosition());
         double gyroHeading = driveTrain.getGyro().getAngleY();   // Assuming the gyro is giving a value in degrees
         double desiredHeading = -Pathfinder.r2d(left.getHeading());  // Should also be in degrees
-        System.out.println("Gyro: " + gyroHeading);
-        System.out.println("Encoder: " + l +" " + r);
+
         double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
         double turn = 0.8 * (-1.0/80.0) * angleDifference;
 
