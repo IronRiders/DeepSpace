@@ -196,8 +196,7 @@ public class Robot extends TimedRobot {
   public void teleopInit(){
     elevatorArm.configurePID();
     grabber.configurePID();
-    //arm.configurePID();
-    //driveTrain.autoUpdateSpeed(0,0);
+    isDriverControlling = true; 
   }
 
   
