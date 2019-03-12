@@ -83,6 +83,15 @@ public class DriveTrain {
         rightMotor1.set(ControlMode.PercentOutput, right);
         rightMotor2.follow(rightMotor1);
         getEncoderPosition();
+        SmartDashboard.putNumber("/diagnostics/gryo/x", getGyro().getAngleX());
+        SmartDashboard.putNumber("/diagnostics/gryo/y", getGyro().getAngleY());
+        SmartDashboard.putNumber("/diagnostics/gryo/z", getGyro().getAngleZ());
+    }
+
+    public void testGyro(){
+        SmartDashboard.putNumber("/diagnostics/gryo/x", getGyro().getAngleX());
+        SmartDashboard.putNumber("/diagnostics/gryo/y", getGyro().getAngleY());
+        SmartDashboard.putNumber("/diagnostics/gryo/z", getGyro().getAngleZ());
     }
     public void autoUpdateSpeed(double left, double right) {
         leftMotor1.set(ControlMode.PercentOutput, left);
