@@ -54,7 +54,8 @@ public class ImageRecognition {
     public ImageRecognition(DriveTrain driveTrain, TalonSRX rightMotor, TalonSRX leftMotor, ElevatorArm elevatorArm) {
         this.driveTrain = driveTrain;
         isImageRecTriggered = false;
-        STARTING_GYRO_ORIENTATION = driveTrain.getGyro().getAngleY();
+        //STARTING_GYRO_ORIENTATION = driveTrain.getGyro().getAngleY();
+        STARTING_GYRO_ORIENTATION = driveTrain.getAdjustedAngle('z'); //should be z if angle adjusted correctly
         determineCargoAndRocketAngles(STARTING_GYRO_ORIENTATION);
         left = new EncoderFollower(trajectoryLeft);
         right = new EncoderFollower(trajectoryRight);
@@ -75,7 +76,8 @@ public class ImageRecognition {
         if(isImageRecTriggered) {
             // update values
             getNetworkTablesValues();
-            currentRobotAngle = driveTrain.getGyro().getAngleY();
+            //currentRobotAngle = driveTrain.getGyro().getAngleY(); 
+            currentRobotAngle = driveTrain.getAdjustedAngle('z'); //should be z if angle adjusted correctly
             determinePath();
         }
     }
@@ -105,7 +107,8 @@ public class ImageRecognition {
     public void update() { 
         double l = left.calculate(leftMotor.getSelectedSensorPosition());
         double r = right.calculate(rightMotor.getSelectedSensorPosition());
-        double gyroHeading = driveTrain.getGyro().getAngleY();   // Assuming the gyro is giving a value in degrees
+        //double gyroHeading = driveTrain.getGyro().getAngleY();   // Assuming the gyro is giving a value in degrees
+        double gyroHeading = driveTrain.getAdjustedAngle('z');
         double desiredHeading = -Pathfinder.r2d(left.getHeading());  // Should also be in degrees
 
         double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);

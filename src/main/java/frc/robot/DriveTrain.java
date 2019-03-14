@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.can.*;
 import frc.robot.LambdaJoystick.ThrottlePosition;
+import java.util.Math;
 
 public class DriveTrain {
 
@@ -83,9 +84,13 @@ public class DriveTrain {
     }
 
     public void testGyro(){
-        SmartDashboard.putNumber("/diagnostics/gryo/x", getGyro().getAngleX());
-        SmartDashboard.putNumber("/diagnostics/gryo/y", getGyro().getAngleY());
-        SmartDashboard.putNumber("/diagnostics/gryo/z", getGyro().getAngleZ());
+        // SmartDashboard.putNumber("/diagnostics/gryo/x", getGyro().getAngleX());
+        // SmartDashboard.putNumber("/diagnostics/gryo/y", getGyro().getAngleY());
+        // SmartDashboard.putNumber("/diagnostics/gryo/z", getGyro().getAngleZ());
+
+        SmartDashboard.putNumber("/diagnostics/gryo/x", getAdjustedAngle('x'));
+        SmartDashboard.putNumber("/diagnostics/gryo/y", getAdjustedAngle('y'));
+        SmartDashboard.putNumber("/diagnostics/gryo/z", getAdjustedAngle('z'));
     }
     public void autoUpdateSpeed(double left, double right) {
         leftMotor1.set(ControlMode.PercentOutput, left);
@@ -112,5 +117,24 @@ public class DriveTrain {
 
     public void cruiseControl(){
         autoUpdateSpeed(0.4, -0.4);
+    }
+
+    public double getAdjustedAngle(char c) { //Could easily not work at all 
+        double x = Math.toRadians(gyro.getAngleX());
+        double y = Math.toRadians(gyro.getAngleY());
+        double z = Math.toRadians(gyro.getAngleZ());
+        double angle = 70; // Random filler number 
+
+        z = Math.toDegrees(z * Math.cos(Math.toRadians(angle)) - (x * Math.sin(Math.toRadians(angle)));
+        x = Math.toDegrees(z * Math.sin(Math.toRadians(angle)) + (x * Math.cos(Math.toRadians(angle)));
+        y = Math.toDegrees(y);
+
+        if (c == 'x') {
+            return x;
+        } else if (c == 'y') {
+            return y;
+        } else if (c == 'z') {
+            return z;
+        }
     }
 }
