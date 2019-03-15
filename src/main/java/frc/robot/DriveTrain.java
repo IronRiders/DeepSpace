@@ -24,6 +24,7 @@ public class DriveTrain {
     private final int rightPort2;
     public final ADIS16448_IMU gyro = new ADIS16448_IMU();
 
+    private boolean slowSpeed;
     private int counter = 0;
 
 
@@ -43,6 +44,7 @@ public class DriveTrain {
             leftMotor1.setNeutralMode(NeutralMode.Brake);
             leftMotor2.setNeutralMode(NeutralMode.Brake);
             gyro.reset();
+            slowSpeed = false;
             //gyroPortNumber should be analong 0 or 1
 
     }
@@ -70,8 +72,8 @@ public class DriveTrain {
         if(throttlePosition.y < 0){
             scaledY = -scaledY;
         }
-        scaledX= scaledX * 0.5;
-        scaledY= scaledY * 0.7;
+        scaledX= scaledX * 0.5 * (slowSpeed ? 0.75 : 1);
+        scaledY= scaledY * (slowSpeed ? 0.75 : 1);
         
         final double right = (-scaledX - scaledY)*-1;
         final double left = (scaledY - scaledX)*-1;
@@ -108,6 +110,10 @@ public class DriveTrain {
         System.out.println(encoderPositionLeft);
         int encoderPositionRight = rightMotor1.getSelectedSensorPosition();
         System.out.println(encoderPositionRight);
+    }
+
+    public void toggleSlowSpeed(){
+        slowSpeed = !slowSpeed;
     }
 
     public void cruiseControl(){
