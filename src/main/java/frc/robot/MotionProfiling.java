@@ -23,15 +23,23 @@ public class MotionProfiling {
     private final double maxVelocity = 13; //ft/s
     private EncoderFollower left;
     private EncoderFollower right;
+    private String[] pathFiles;
+    int index;
 
 
-    public MotionProfiling(DriveTrain driveTrain, String setupLeft , String setupRight) throws IOException {
+    public MotionProfiling(DriveTrain driveTrain, String setup1 , String setup2 , String setup3) throws IOException {
         this.driveTrain = driveTrain;
         leftMotor = driveTrain.getLeftMotor();
         rightMotor = driveTrain.getRightMotor();
+        pathFiles = new String[] {setup1, setup2 , setup3};
+        index = 0;
+        
         //pathweaver has an error with mixing up left and right
-        Trajectory trajectoryLeft = PathfinderFRC.getTrajectory(setupRight);
-        Trajectory trajectoryRight = PathfinderFRC.getTrajectory(setupLeft);
+    }
+
+    public void initializePath() throws IOException {
+        Trajectory trajectoryLeft = PathfinderFRC.getTrajectory(pathFiles[index] + ".right");
+        Trajectory trajectoryRight = PathfinderFRC.getTrajectory(pathFiles[index] + ".left");
 
         left = new EncoderFollower(trajectoryLeft);
         right = new EncoderFollower(trajectoryRight);
@@ -43,24 +51,36 @@ public class MotionProfiling {
         right.configurePIDVA(0.9, 0.0, 0.0, 1 / maxVelocity, 0);
     }
     public void update() { 
-        double l = left.calculate(leftMotor.getSelectedSensorPosition());
-        double r = right.calculate(rightMotor.getSelectedSensorPosition());
-        //double gyroHeading = driveTrain.getGyro().getAngleY();
-        double gyroHeading = driveTrain.getAdjustedAngle(z));   // Assuming the gyro is giving a value in degrees
-        double desiredHeading = -Pathfinder.r2d(left.getHeading());  // Should also be in degrees
-
-        double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
-        double turn = 0.8 * (-1.0/80.0) * angleDifference;
-
-        driveTrain.autoUpdateSpeed(l + turn, r - turn);
+        if(left.isFinished() && right.isFinished()){
+            if(index < pathFiles.length){
+                index++;
+                try {
+                    initializePath();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        else{
+            double l = left.calculate(leftMotor.getSelectedSensorPosition());
+            double r = right.calculate(rightMotor.getSelectedSensorPosition());
+            //double gyroHeading = driveTrain.getGyro().getAngleX();
+            double gyroHeading = driveTrain.getAdjustedAngle('x');   // Assuming the gyro is giving a value in degrees
+            double desiredHeading = -Pathfinder.r2d(left.getHeading());  // Should also be in degrees
+    
+            double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
+            double turn = 0.8 * (-1.0/80.0) * angleDifference;
+    
+            driveTrain.autoUpdateSpeed(l + turn, r - turn);
+        }
     }
 
-    public boolean isFinished() {
-        if (left.isFinished() && right.isFinished()) {
-            return true;
-        } else {
-            return false;       
-        }      
+    public boolean isFinished(){
+        return (left.isFinished() && right.isFinished());
+    }
+
+    public int getPathIndex(){
+        return index;
     }
 
     public void reset(){
