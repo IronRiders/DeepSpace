@@ -135,15 +135,15 @@ public class DriveTrain {
         //z = z*cos(angle) - x*sin(angle)
         //x = z*sin(angle) + x*cos(angle)
         //y = y
-        z = Math.toDegrees(z * Math.cos(Math.toRadians(angle)) - (x * Math.sin(Math.toRadians(angle))); 
-        x = Math.toDegrees(z * Math.sin(Math.toRadians(angle)) + (x * Math.cos(Math.toRadians(angle)));
+        z = Math.toDegrees(z * Math.cos(Math.toRadians(angle)) - (x * Math.sin(Math.toRadians(angle)))); 
+        x = Math.toDegrees(z * Math.sin(Math.toRadians(angle)) + (x * Math.cos(Math.toRadians(angle))));
         y = Math.toDegrees(y);
 
         if (c == 'x') {
             return x;
         } else if (c == 'y') {
             return y;
-        } else if (c == 'z') {
+        } else  {
             return z;
         }
     }
