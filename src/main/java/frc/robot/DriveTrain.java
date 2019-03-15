@@ -123,9 +123,13 @@ public class DriveTrain {
         double x = Math.toRadians(gyro.getAngleX());
         double y = Math.toRadians(gyro.getAngleY());
         double z = Math.toRadians(gyro.getAngleZ());
-        double angle = 70; // Random filler number 
+        double angle = 70; // Random filler number . offset from vertical/horizontal?
 
-        z = Math.toDegrees(z * Math.cos(Math.toRadians(angle)) - (x * Math.sin(Math.toRadians(angle)));
+        //had to do lots of converting Radians to degrees bc Math.cos takes radians
+        //z = z*cos(angle) - x*sin(angle)
+        //x = z*sin(angle) + x*cos(angle)
+        //y = y
+        z = Math.toDegrees(z * Math.cos(Math.toRadians(angle)) - (x * Math.sin(Math.toRadians(angle))); 
         x = Math.toDegrees(z * Math.sin(Math.toRadians(angle)) + (x * Math.cos(Math.toRadians(angle)));
         y = Math.toDegrees(y);
 
