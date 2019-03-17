@@ -26,6 +26,7 @@ public class DriveTrain {
 
     private boolean slowSpeed;
     private int counter = 0;
+    private int throttleDirectionConstant = 1;
 
 
     public DriveTrain(final int leftPort1, final int leftPort2, final int rightPort1, final int rightPort2, final int gyroPortNumber) {
@@ -75,8 +76,8 @@ public class DriveTrain {
         scaledX= scaledX * 0.5 * (slowSpeed ? 0.75 : 1);
         scaledY= scaledY * (slowSpeed ? 0.75 : 1);
         
-        final double right = (-scaledX - scaledY)*-1;
-        final double left = (scaledY - scaledX)*-1;
+        final double right = throttleDirectionConstant * (-scaledX - scaledY)*-1;
+        final double left = throttleDirectionConstant * (scaledY - scaledX)*-1;
         leftMotor1.set(ControlMode.PercentOutput, left);
 
         leftMotor2.follow(leftMotor1);
@@ -145,5 +146,9 @@ public class DriveTrain {
         } else  {
             return z;
         }
+    }
+
+    public void setThrottleDirectionConstant() {
+        throttleDirectionConstant *= -1;
     }
 }

@@ -16,7 +16,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 public class MotionProfiling {
     private DriveTrain driveTrain;
     private final double wheelBaseWidth = 2.25; // Width in feet  
-    private final double wheelDiameter = 6; //meters
+    private final double wheelDiameter = 0.5; //inches
     private final TalonSRX leftMotor;
     private final TalonSRX rightMotor;
     private final int encoderTicksPerRevolution = 4096;
@@ -33,6 +33,7 @@ public class MotionProfiling {
         rightMotor = driveTrain.getRightMotor();
         pathFiles = new String[] {setup1, setup2 , setup3};
         index = 0;
+        initializePath();
         
         //pathweaver has an error with mixing up left and right
     }
@@ -51,17 +52,6 @@ public class MotionProfiling {
         right.configurePIDVA(0.9, 0.0, 0.0, 1 / maxVelocity, 0);
     }
     public void update() { 
-        if(left.isFinished() && right.isFinished()){
-            if(index < pathFiles.length){
-                index++;
-                try {
-                    initializePath();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        else{
             double l = left.calculate(leftMotor.getSelectedSensorPosition());
             double r = right.calculate(rightMotor.getSelectedSensorPosition());
             //double gyroHeading = driveTrain.getGyro().getAngleX();
@@ -72,11 +62,16 @@ public class MotionProfiling {
             double turn = 0.8 * (-1.0/80.0) * angleDifference;
     
             driveTrain.autoUpdateSpeed(l + turn, r - turn);
-        }
     }
 
     public boolean isFinished(){
         return (left.isFinished() && right.isFinished());
+    }
+
+    public void increasePathIndex(){
+        if(index < pathFiles.length){
+            index++;
+        }
     }
 
     public int getPathIndex(){

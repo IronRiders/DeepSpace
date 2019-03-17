@@ -58,20 +58,12 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     CameraServer.getInstance().startAutomaticCapture();
-    updateSmartDB();
-    elevatorArm.configurePID();
-    grabber.configurePID();
+    //updateSmartDB();
     joystick2.addButton(4, grabber::closeClaw);
     joystick2.addButton(5, grabber::openClaw);
     joystick1.addButton(1, driveTrain::cruiseControl);
      joystick1.addButton(11 , this::changeDriverControl);
     // joystick1.addButton(12, imageRec::triggerImageRec);
-
-    // for testing
-    // joystick1.addButton(4 , grabber::hatch);
-    // joystick1.addButton(3 , grabber::cargo);
-    // joystick1.addButton(5 , grabber::open);
-    // joystick1.addButton(2, grabber::closed);
 
     joystick2.addButton(3, elevatorArm::pickup);
     joystick2.addButton(9, elevatorArm::lowCargo);
@@ -81,52 +73,48 @@ public class Robot extends TimedRobot {
     joystick2.addButton(6, elevatorArm::highHatch);
     // joystick2.addButton(11 , elevatorArm::highCargo);
 
-    // arm.configurePID();
-    driveTrain.autoUpdateSpeed(0, 0);
     for (int i = 0; i < pathFiles.length; i++) {
       pathFiles[i] = String.format(filePath, i + 1);
     }
-    // joystick1.addButton(1, imageRec::triggerImageRec); // Random joystick button
-    // talk to ishan about button placement
 
-    autoChooser1.addDefault("path 1", "1");
-    autoChooser1.addOption("path 2", "2");
-    autoChooser1.addOption("path 3", "3");
-    autoChooser1.addOption("path 4", "4");
-    autoChooser1.addOption("path 5", "5");
-    autoChooser1.addOption("path 6", "6");
-    autoChooser1.addOption("path 7", "7");
-    autoChooser1.addOption("path 8", "8");
-    autoChooser1.addOption("path 9", "9");
-    autoChooser1.addOption("path 10", "10");
-    autoChooser1.addOption("path 11", "11");
-    autoChooser1.addOption("path 12", "12");
+    autoChooser1.addDefault("path 1", "0");
+    autoChooser1.addOption("path 2", "1");
+    autoChooser1.addOption("path 3", "2");
+    autoChooser1.addOption("path 4", "3");
+    autoChooser1.addOption("path 5", "4");
+    autoChooser1.addOption("path 6", "5");
+    autoChooser1.addOption("path 7", "6");
+    autoChooser1.addOption("path 8", "7");
+    autoChooser1.addOption("path 9", "8");
+    autoChooser1.addOption("path 10", "9");
+    autoChooser1.addOption("path 11", "10");
+    autoChooser1.addOption("path 12", "11");
 
-    autoChooser2.addOption("path 1", "1");
-    autoChooser2.addDefault("path 2", "2");
-    autoChooser2.addOption("path 3", "3");
-    autoChooser2.addOption("path 4", "4");
-    autoChooser2.addOption("path 5", "5");
-    autoChooser2.addOption("path 6", "6");
-    autoChooser2.addOption("path 7", "7");
-    autoChooser2.addOption("path 8", "8");
-    autoChooser2.addOption("path 9", "9");
-    autoChooser2.addOption("path 10", "10");
-    autoChooser2.addOption("path 11", "11");
-    autoChooser2.addOption("path 12", "12");
+    autoChooser2.addOption("path 1", "0");
+    autoChooser2.addDefault("path 2", "1");
+    autoChooser2.addOption("path 3", "2");
+    autoChooser2.addOption("path 4", "3");
+    autoChooser2.addOption("path 5", "4");
+    autoChooser2.addOption("path 6", "5");
+    autoChooser2.addOption("path 7", "6");
+    autoChooser2.addOption("path 8", "7");
+    autoChooser2.addOption("path 9", "8");
+    autoChooser2.addOption("path 10", "9");
+    autoChooser2.addOption("path 11", "10");
+    autoChooser2.addOption("path 12", "11");
 
-    autoChooser3.addOption("path 1", "1");
-    autoChooser3.addOption("path 2", "2");
-    autoChooser3.addDefault("path 3", "3");
-    autoChooser3.addOption("path 4", "4");
-    autoChooser3.addOption("path 5", "5");
-    autoChooser3.addOption("path 6", "6");
-    autoChooser3.addOption("path 7", "7");
-    autoChooser3.addOption("path 8", "8");
-    autoChooser3.addOption("path 9", "9");
-    autoChooser3.addOption("path 10", "10");
-    autoChooser3.addOption("path 11", "11");
-    autoChooser3.addOption("path 12", "12");
+    autoChooser3.addOption("path 1", "0");
+    autoChooser3.addOption("path 2", "1");
+    autoChooser3.addDefault("path 3", "2");
+    autoChooser3.addOption("path 4", "3");
+    autoChooser3.addOption("path 5", "4");
+    autoChooser3.addOption("path 6", "5");
+    autoChooser3.addOption("path 7", "6");
+    autoChooser3.addOption("path 8", "7");
+    autoChooser3.addOption("path 9", "8");
+    autoChooser3.addOption("path 10", "9");
+    autoChooser3.addOption("path 11", "10");
+    autoChooser3.addOption("path 12", "11");
 
     SmartDashboard.putData("autoChooser/path1", autoChooser1);
     SmartDashboard.putData("autoChooser/path2", autoChooser2);
@@ -198,11 +186,17 @@ public class Robot extends TimedRobot {
       joystick1.listen();
       joystick2.listen();
     } else if (path.isFinished()) {
+      path.increasePathIndex();
       elevatorArm.lowHatch();
       if (path.getPathIndex() % 2 == 0) {
         grabber.closed();
       } else {
         grabber.hatch();
+      }
+      try {
+        path.initializePath();
+      } catch (IOException e) {
+        e.printStackTrace();
       }
     } else {
       path.update();
