@@ -74,10 +74,10 @@ public class DriveTrain {
             scaledY = -scaledY;
         }
         scaledX= scaledX * 0.5 * (slowSpeed ? 0.75 : 1);
-        scaledY= scaledY * (slowSpeed ? 0.75 : 1);
+        scaledY= scaledY * throttleDirectionConstant * (slowSpeed ? 0.75 : 1);
         
-        final double right = throttleDirectionConstant * (-scaledX - scaledY)*-1;
-        final double left = throttleDirectionConstant * (scaledY - scaledX)*-1;
+        final double right = (-scaledX - scaledY)*-1;
+        final double left =  (scaledY - scaledX)*-1;
         leftMotor1.set(ControlMode.PercentOutput, left);
 
         leftMotor2.follow(leftMotor1);

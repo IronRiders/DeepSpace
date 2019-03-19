@@ -61,7 +61,7 @@ public class Robot extends TimedRobot {
     //updateSmartDB();
     joystick2.addButton(4, grabber::closeClaw);
     joystick2.addButton(5, grabber::openClaw);
-    joystick1.addButton(1, driveTrain::cruiseControl);
+    joystick1.addButton(2, driveTrain::cruiseControl);
     joystick1.addButton(11 , this::changeDriverControl);
     joystick1.addButton(3 , driveTrain::toggleSlowSpeed);
     joystick1.addButton(1 , driveTrain::setThrottleDirectionConstant);

@@ -49,7 +49,8 @@ public class ElevatorArm {
     private final int distanceLowCargo = 21;
     private final int distanceMediumHigh = 22;
     private final int distanceBottom = 0;
-
+    private final int[] elevatorDistances = {distanceBottom , distanceLowHatch , distanceLowCargo , distanceMediumHigh};
+    private int counter;
 
     public ElevatorArm(int elevatorPort , int elevatorlimitSwitchPort , int armPort , int armLimitSwitchPort){
         SmartDashboard.putNumber("pid/elevator/p", 0.0);
@@ -69,6 +70,8 @@ public class ElevatorArm {
         talon.configMotionAcceleration(1100);
         talon.setSelectedSensorPosition(0);
         talon.configPeakCurrentLimit(maxAmpsElevator);
+
+        counter = 0;
 
         talon.config_kD(0, dConstantElevator);
         talon.config_kP(0, pConstantElevator);
@@ -199,5 +202,19 @@ public class ElevatorArm {
 
     public void testArm(){
         spark.set(0.4);
+    }
+
+    public void elevatorUp(){
+        if(counter < 3){
+        counter++;
+            moveElevator(elevatorDistances[counter]);
+        }
+    }
+
+    public void elevatorDown(){
+        if(counter > 0){
+        counter--;
+            moveElevator(elevatorDistances[counter]);
+        }
     }
 }
