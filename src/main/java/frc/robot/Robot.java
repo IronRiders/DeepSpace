@@ -60,20 +60,25 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     CameraServer.getInstance().startAutomaticCapture();
     //updateSmartDB();
+
     joystick2.addButton(4, grabber::closeClaw);
     joystick2.addButton(5, grabber::openClaw);
     joystick1.addButton(2, driveTrain::cruiseControl);
     joystick1.addButton(11 , this::changeDriverControl);
     joystick1.addButton(3 , driveTrain::toggleSlowSpeed);
     joystick1.addButton(1 , driveTrain::setThrottleDirectionConstant);
-   // joystick1.addButton(12, imageRec::triggerImageRec);
+    //joystick1.addButton(12, imageRec::triggerImageRec);
+
+
+
 
     joystick2.addButton(3, elevatorArm::pickup);
     joystick2.addButton(9, elevatorArm::lowCargo);
     joystick2.addButton(8, elevatorArm::lowHatch);
     joystick2.addButton(10, elevatorArm::mediumCargo);
-    joystick2.addButton(7, elevatorArm::mediumHatch);
-    joystick2.addButton(6, elevatorArm::highHatch);
+    joystick2.addButton(1 , grabber::stop);
+    //joystick2.addButton(7, elevatorArm::mediumHatch);
+    //joystick2.addButton(6, elevatorArm::highHatch);
     // joystick2.addButton(11 , elevatorArm::highCargo);
 
     autoChooser1.addDefault("path 1", "1");
@@ -148,8 +153,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    elevatorArm.configurePID();
-    grabber.configurePID();
+    elevatorArm.updateSmartDB();
+    //elevatorArm.configurePID();
+    //grabber.configurePID();
     isDriverControlling = false;
 
     int firstPath, secondPath, thirdPath;
@@ -175,8 +181,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    elevatorArm.configurePID();
-    grabber.configurePID();
+    //elevatorArm.configurePID();
+    //grabber.configurePID();
+    elevatorArm.updateSmartDB();
     isDriverControlling = true;
   }
 
@@ -185,6 +192,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+    elevatorArm.updateSmartDB();
     if (isDriverControlling) {
       joystick1.listen();
       joystick2.listen();
@@ -211,6 +219,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    elevatorArm.updateSmartDB();
     joystick1.listen();
     joystick2.listen();
   }

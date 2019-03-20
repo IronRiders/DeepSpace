@@ -16,14 +16,14 @@ public class Grabber {
     private DigitalInput leftLimitSwitch;
     private DigitalInput rightLimitSwitch;
     private final double flywheelSpeed = 0.5;
-    private double pConstant = 0.4;
+    private double pConstant = 0.3; //0.4 is what it was before the last updated testing
     private double iConstant = 0.0;
     private double dConstant = 0.0;
     private double fConstant = 0.2;
     private int pulsesPerRevolution = 4096;
     private int maxAmps = 3; 
-    private final double openRevolutions = 12.5;
-    private final double cargoRevolutions = 6.5;
+    private final double openRevolutions = 9.2;
+    private final double cargoRevolutions = 7.5;
     private final double hatchRevolutions = 1.389 * 2;
     private final double closedRevolutions = 0;
     private final double closedRevolutionsLeft = -7500;
@@ -168,7 +168,7 @@ public class Grabber {
 
     public void updateSpeed(final LambdaJoystick.ThrottlePosition throttlePosition){
         if(throttlePosition.y != 0) {
-            leftFlywheel.set(-0.75*throttlePosition.y);
+            leftFlywheel.set(-1*throttlePosition.y);
             rightFlywheel.set(throttlePosition.y);
         }
     }

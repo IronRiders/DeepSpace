@@ -21,7 +21,7 @@ public class ElevatorArm {
     private final double dConstantElevator = 0;
     private final double fConstantElevator = 0.4;
     private final int maxAmpsElevator = 20;
-    private final double diameter = 2.1875;
+    private final double diameter = 2.25;
     private final int pulsesPerRevolution = 4096;
     private final double multiplier = 1.3;
     DigitalInput limitSwitchElevator;
@@ -103,7 +103,10 @@ public class ElevatorArm {
         pid.setFF(fConstantArm);
     }
 
-
+    public void updateSmartDB(){
+        boolean elevatorUp = talon.getSelectedSensorPosition() > 100;
+        SmartDashboard.putBoolean("/diagnostics/elevator/position" , elevatorUp);
+    }
     public void pushySwitch(){
         // 1 is true(open) , zero is false(closed)
         if (limitSwitchArm.get()) {
