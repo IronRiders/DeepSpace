@@ -23,8 +23,8 @@ public class Grabber {
     private int pulsesPerRevolution = 4096;
     private int maxAmps = 3; 
     private final double openRevolutions = 12.5;
-    private final double cargoRevolutions = 4.0;
-    private final double hatchRevolutions = 1.389;
+    private final double cargoRevolutions = 6.5;
+    private final double hatchRevolutions = 1.389 * 2;
     private final double closedRevolutions = 0;
     private final double closedRevolutionsLeft = -7500;
     private final double[] closedToOpenValues = {closedRevolutions, hatchRevolutions , cargoRevolutions , openRevolutions};
@@ -75,20 +75,20 @@ public class Grabber {
         rightLimitSwitch = new DigitalInput(rightLimitPort);
     }
     public void configurePID() {
-        //this.pConstant = SmartDashboard.getNumber("pid/claw/p", 0.2);
-        //this.iConstant = SmartDashboard.getNumber("pid/claw/i", pConstant / 10000);
-        //this.dConstant = SmartDashboard.getNumber("pid/claw/d", 0.0);
-        //this.fConstant = SmartDashboard.getNumber("pid/claw/f", 0.0);
-        //this.iConstant = (this.iConstant*this.pConstant)/1000;
-        //leftClaw.config_kD(0, dConstant);
-        //leftClaw.config_kP(0, pConstant);
-        //leftClaw.config_kI(0, iConstant);
-        //leftClaw.config_kF(0, fConstant);  
+        this.pConstant = SmartDashboard.getNumber("pid/claw/p", 0.2);
+        this.iConstant = SmartDashboard.getNumber("pid/claw/i", pConstant / 10000);
+        this.dConstant = SmartDashboard.getNumber("pid/claw/d", 0.0);
+        this.fConstant = SmartDashboard.getNumber("pid/claw/f", 0.0);
+        this.iConstant = (this.iConstant*this.pConstant)/1000;
+        leftClaw.config_kD(0, dConstant);
+        leftClaw.config_kP(0, pConstant);
+        leftClaw.config_kI(0, iConstant);
+        leftClaw.config_kF(0, fConstant);  
 
-        //rightClaw.config_kD(0, dConstant);
-        //rightClaw.config_kP(0, pConstant);
-        //rightClaw.config_kI(0, iConstant);
-        //rightClaw.config_kF(0, fConstant);
+        rightClaw.config_kD(0, dConstant);
+        rightClaw.config_kP(0, pConstant);
+        rightClaw.config_kI(0, iConstant);
+        rightClaw.config_kF(0, fConstant);
     }
     public void open(){
         move(openRevolutions);
@@ -102,7 +102,7 @@ public class Grabber {
         move(hatchRevolutions);
     }
     public void closed(){
-        leftClaw.set(ControlMode.MotionMagic, closedRevolutionsLeft);
+        leftClaw.set(ControlMode.MotionMagic, closedRevolutions);
         rightClaw.set(ControlMode.MotionMagic, closedRevolutions);
     }
 
@@ -188,6 +188,11 @@ public class Grabber {
         System.out.println(rightPosition);
         double leftPosition = leftClaw.getSelectedSensorPosition();
         System.out.println(leftPosition);
+    }
+
+    public void resetEncoders(){
+        rightClaw.setSelectedSensorPosition(0);
+        leftClaw.setSelectedSensorPosition(0);
     }
 
 }
