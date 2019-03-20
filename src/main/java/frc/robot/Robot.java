@@ -45,8 +45,8 @@ public class Robot extends TimedRobot {
   private final LambdaJoystick joystick2 = new LambdaJoystick(1, grabber::updateSpeed);
 
   private String filePath = "path%s";
-  private TalonSRX leftMotor = driveTrain.getLeftMotor(), rightMotor = driveTrain.getRightMotor();
-  private final ImageRecognition imageRec = new ImageRecognition(driveTrain, rightMotor, leftMotor, elevatorArm);
+  //private TalonSRX leftMotor = driveTrain.getLeftMotor(), rightMotor = driveTrain.getRightMotor();
+  //private final ImageRecognition imageRec = new ImageRecognition(driveTrain, rightMotor, leftMotor, elevatorArm);
 
   SendableChooser autoChooser1 = new SendableChooser();
   SendableChooser autoChooser2 = new SendableChooser();
@@ -211,13 +211,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    if (imageRec.isImageRecTriggered()) {
-      // the imageRec.triggerImageRec() must be called by joystick
-      imageRec.update();
-    } else {
-      joystick1.listen();
-      joystick2.listen();
-    }
+    joystick1.listen();
+    joystick2.listen();
   }
 
   public void changeDriverControl() {
