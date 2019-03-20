@@ -60,20 +60,13 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     CameraServer.getInstance().startAutomaticCapture();
     //updateSmartDB();
-    //joystick2.addButton(4, grabber::closeClaw);
-    //joystick2.addButton(5, grabber::openClaw);
-    //joystick1.addButton(2, driveTrain::cruiseControl);
-    //joystick1.addButton(11 , this::changeDriverControl);
-    //joystick1.addButton(3 , driveTrain::toggleSlowSpeed);
-    //joystick1.addButton(1 , driveTrain::setThrottleDirectionConstant);
-    // joystick1.addButton(12, imageRec::triggerImageRec);
-
-
-    //for testing
-    joystick1.addButton(2, grabber::hatch);
-    joystick1.addButton(4 , grabber::cargo);
-    joystick1.addButton(3 , grabber::open);
-    joystick1.addButton(5 , grabber::closed);
+    joystick2.addButton(4, grabber::closeClaw);
+    joystick2.addButton(5, grabber::openClaw);
+    joystick1.addButton(2, driveTrain::cruiseControl);
+    joystick1.addButton(11 , this::changeDriverControl);
+    joystick1.addButton(3 , driveTrain::toggleSlowSpeed);
+    joystick1.addButton(1 , driveTrain::setThrottleDirectionConstant);
+   // joystick1.addButton(12, imageRec::triggerImageRec);
 
     joystick2.addButton(3, elevatorArm::pickup);
     joystick2.addButton(9, elevatorArm::lowCargo);
@@ -184,7 +177,6 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     elevatorArm.configurePID();
     grabber.configurePID();
-    grabber.resetEncoders();
     isDriverControlling = true;
   }
 
