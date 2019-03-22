@@ -69,18 +69,11 @@ public class Robot extends TimedRobot {
     joystick1.addButton(1 , driveTrain::setThrottleDirectionConstant);
     //joystick1.addButton(12, imageRec::triggerImageRec);
 
-
-
-
-    joystick2.addButton(3, elevatorArm::pickup);
-    joystick2.addButton(9, elevatorArm::lowCargo);
-    joystick2.addButton(8, elevatorArm::lowHatch);
-    joystick2.addButton(10, elevatorArm::mediumCargo);
-    joystick2.addButton(1 , grabber::stop);
-    //joystick2.addButton(7, elevatorArm::mediumHatch);
-    //joystick2.addButton(6, elevatorArm::highHatch);
-    // joystick2.addButton(11 , elevatorArm::highCargo);
-
+    joystick2.addButton(9, elevatorArm::lowHatch);
+    joystick2.addButton(8, elevatorArm::cargoRocket);
+    joystick2.addButton(7, elevatorArm::cargoCargoShip);
+    joystick2.addButton(6, elevatorArm::mediumHatch);
+ 
     autoChooser1.addDefault("path 1", "1");
     autoChooser1.addOption("path 2", "2");
     autoChooser1.addOption("path 3", "3");

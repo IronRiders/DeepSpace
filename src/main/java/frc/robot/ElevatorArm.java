@@ -28,11 +28,12 @@ public class ElevatorArm {
     private final int distancePickUp = 0; 
  
     //elevator
-    private final int distanceLowHatch = 0; 
-    private final int distanceLowCargo = 9;
-    private final int distanceMediumHigh = 22;
+    private final double distanceLowHatch = 0; 
+    private final double distanceCargoCargoShip = 20;
+    private final double distanceCargoRocket = 8.5;
+    private final double distanceMediumHatch = 24;
    // private final int distanceBottom = 0;
-    private final int[] elevatorDistances = {distanceBottom , distanceLowHatch , distanceLowCargo , distanceMediumHigh};
+    private final double[] elevatorDistances = {distanceLowHatch, distanceCargoRocket , distanceCargoCargoShip, distanceMediumHatch};
     private int counter;
 
     public ElevatorArm(int elevatorPort , int elevatorlimitSwitchPort , int armPort , int armLimitSwitchPort){
@@ -83,19 +84,20 @@ public class ElevatorArm {
     //}
 
 
-    public void lowCargo(){
-        moveElevator(distanceLowCargo);
-      //  moveArm(distancePickUp);
+    public void cargoCargoShip(){
+        moveElevator(distanceCargoCargoShip);
     }
     public void lowHatch(){
         moveElevator(distanceLowHatch);
-        //moveArm(distancePickUp);
     }
 
-    public void lowerElevatorToZero(){
-        moveElevator(distancePickUp);
+    public void cargoRocket(){
+        moveElevator(distanceCargoRocket);
     }
 
+    public void mediumHatch(){
+        moveElevator(distanceMediumHatch);
+    }
     public void test(){
         talon.setSelectedSensorPosition(0);
         talon.setIntegralAccumulator(0);
@@ -116,31 +118,6 @@ public class ElevatorArm {
 
     public void getPosition(){
      int position = talon.getSelectedSensorPosition();
-    }
-
-    public void mediumCargo(){
-        moveElevator(distanceMediumHigh);
-     //   moveArm(mediumCargoRevolutions);
-    }
-
-    public void mediumHatch(){
-        moveElevator(distanceMediumHigh);
-       // moveArm(mediumHatchRevolutions);
-    }
-
-    public void highHatch(){
-        moveElevator(distanceMediumHigh);
-        //moveArm(highHatchRevolutions);
-    }
-
-    public void pickup(){
-        moveElevator(distanceBottom);
-        //moveArm(distancePickUp);
-    }
-
-    public void highCargo(){
-        moveElevator(distanceMediumHigh);
-        //moveArm(highCargoRevolutions);
     }
 
     public void elevatorUp(){
