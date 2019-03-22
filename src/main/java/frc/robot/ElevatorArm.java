@@ -24,44 +24,22 @@ public class ElevatorArm {
     private final double diameter = 2.25;
     private final int pulsesPerRevolution = 4096;
     private final double multiplier = 1.3;
-    DigitalInput limitSwitchElevator;
 
-
-    private CANSparkMax spark;
-    private CANEncoder encoder;
-    private CANPIDController pid;
-    private double pConstantArm = 0.2;
-    private double iConstantArm = 0.001;
-    private double dConstantArm = 0.0;
-    private double fConstantArm = 0.0;
-    private int maxAmpsArm = 6;
-    DigitalInput limitSwitchArm;
-
-    //arm
-    private final int mediumHatchRevolutions = 13;
-    private final int mediumCargoRevolutions = 17;
-    private final int highHatchRevolutions = 21;
-    private final int highCargoRevolutions = 25;
     private final int distancePickUp = 0; 
  
     //elevator
-    private final int distanceLowHatch = 19; 
-    private final int distanceLowCargo = 21;
+    private final int distanceLowHatch = 0; 
+    private final int distanceLowCargo = 9;
     private final int distanceMediumHigh = 22;
-    private final int distanceBottom = 0;
+   // private final int distanceBottom = 0;
     private final int[] elevatorDistances = {distanceBottom , distanceLowHatch , distanceLowCargo , distanceMediumHigh};
     private int counter;
 
     public ElevatorArm(int elevatorPort , int elevatorlimitSwitchPort , int armPort , int armLimitSwitchPort){
-        SmartDashboard.putNumber("pid/elevator/p", 0.0);
-        SmartDashboard.putNumber("pid/elevator/i", 0.0);
-        SmartDashboard.putNumber("pid/elevator/d", 0.0);
-        SmartDashboard.putNumber("pid/elevator/f", 0.0);
-
-        SmartDashboard.putNumber("pid/arm/p", 0.0);
-        SmartDashboard.putNumber("pid/arm/i", 0.0);
-        SmartDashboard.putNumber("pid/arm/d", 0.0);
-        SmartDashboard.putNumber("pid/arm/f", 0.0);
+       // SmartDashboard.putNumber("pid/elevator/p", 0.0);
+       // SmartDashboard.putNumber("pid/elevator/i", 0.0);
+       // SmartDashboard.putNumber("pid/elevator/d", 0.0);
+       // SmartDashboard.putNumber("pid/elevator/f", 0.0);
         
         talon = new TalonSRX(elevatorPort);
         talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
@@ -77,44 +55,17 @@ public class ElevatorArm {
         talon.config_kP(0, pConstantElevator);
         talon.config_kI(0, iConstantElevator);
         talon.config_kF(0, fConstantElevator);  
-        //limitSwitchElevator = new DigitalInput(elevatorlimitSwitchPort);
-
-        spark = new CANSparkMax(armPort, MotorType.kBrushless);
-        encoder = spark.getEncoder();
-        pid = spark.getPIDController();
-        spark.setSecondaryCurrentLimit(maxAmpsArm);
-        //limitSwitchArm = new DigitalInput(armLimitSwitchPort);
-
-
     }
     public void configurePID() {
         //this.pConstantElevator = SmartDashboard.getNumber("pid/elevator/p", 0.2);
         //this.iConstantElevator = SmartDashboard.getNumber("pid/elevator/i", (0.2 / 10000));
         //this.dConstantElevator = SmartDashboard.getNumber("pid/elevator/d", 2.0);
         //this.fConstantElevator = SmartDashboard.getNumber("pid/elevator/f", 0.0);
-
-        this.pConstantArm = SmartDashboard.getNumber("pid/elevator/p", 0.2);
-        this.iConstantArm = SmartDashboard.getNumber("pid/elevator/i",(0.2/ 10000));
-        this.dConstantArm = SmartDashboard.getNumber("pid/elevator/d", 2.0);
-        this.fConstantArm = SmartDashboard.getNumber("pid/elevator/f", 0.0);
-        pid.setD(dConstantArm);
-        pid.setP(pConstantArm);
-        pid.setI(iConstantArm);
-        pid.setFF(fConstantArm);
     }
 
     public void updateSmartDB(){
         boolean elevatorUp = talon.getSelectedSensorPosition() > 100;
         SmartDashboard.putBoolean("/diagnostics/elevator/position" , elevatorUp);
-    }
-    public void pushySwitch(){
-        // 1 is true(open) , zero is false(closed)
-        if (limitSwitchArm.get()) {
-            spark.set( -0.3);
-        }   
-        else {
-            spark.set(0);
-        }
     }
 
     //@param distance is in inches
@@ -131,17 +82,6 @@ public class ElevatorArm {
 
     //}
 
-
-    public void zero(){
-        // 1 is true(open) , zero is false(closed)
-        if (limitSwitchElevator.get()) {
-            talon.set(ControlMode.PercentOutput, -0.3);
-        }
-        else {
-            talon.set(ControlMode.PercentOutput, 0);
-            talon.setSelectedSensorPosition(0);
-        }
-    }
 
     public void lowCargo(){
         moveElevator(distanceLowCargo);
@@ -201,10 +141,6 @@ public class ElevatorArm {
     public void highCargo(){
         moveElevator(distanceMediumHigh);
         //moveArm(highCargoRevolutions);
-    }
-
-    public void testArm(){
-        spark.set(0.4);
     }
 
     public void elevatorUp(){
