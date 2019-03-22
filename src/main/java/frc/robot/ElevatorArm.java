@@ -29,11 +29,10 @@ public class ElevatorArm {
  
     //elevator
     private final double distanceLowHatch = 0; 
-    private final double distanceCargoCargoShip = 18;
+    private final double distanceHigh = 18;
     private final double distanceCargoRocket = 8.5;
-    private final double distanceMediumHatch = 24;
    // private final int distanceBottom = 0;
-    private final double[] elevatorDistances = {distanceLowHatch, distanceCargoRocket , distanceCargoCargoShip, distanceMediumHatch};
+    private final double[] elevatorDistances = {distanceLowHatch, distanceCargoRocket , distanceHigh};
     private int counter;
 
     public ElevatorArm(int elevatorPort , int elevatorlimitSwitchPort , int armPort , int armLimitSwitchPort){
@@ -85,8 +84,8 @@ public class ElevatorArm {
     //}
 
 
-    public void cargoCargoShip(){
-        moveElevator(distanceCargoCargoShip);
+    public void distanceHigh(){
+        moveElevator(distanceHigh);
     }
     public void lowHatch(){
         moveElevator(distanceLowHatch);
@@ -96,9 +95,6 @@ public class ElevatorArm {
         moveElevator(distanceCargoRocket);
     }
 
-    public void mediumHatch(){
-        moveElevator(distanceMediumHatch);
-    }
     public void test(){
         talon.setSelectedSensorPosition(0);
         talon.setIntegralAccumulator(0);

@@ -71,8 +71,7 @@ public class Robot extends TimedRobot {
 
     joystick2.addButton(9, elevatorArm::lowHatch);
     joystick2.addButton(8, elevatorArm::cargoRocket);
-    joystick2.addButton(7, elevatorArm::cargoCargoShip);
-    joystick2.addButton(6, elevatorArm::mediumHatch);
+    joystick2.addButton(7, elevatorArm::distanceHigh);
  
     autoChooser1.addDefault("path 1", "1");
     autoChooser1.addOption("path 2", "2");
