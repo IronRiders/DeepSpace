@@ -174,7 +174,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    //elevatorArm.configurePID();
+    elevatorArm.configurePID();
+    elevatorArm.zeroPosition();
     //grabber.configurePID();
     elevatorArm.updateSmartDB();
     isDriverControlling = true;
@@ -192,11 +193,11 @@ public class Robot extends TimedRobot {
     } else if (path.isFinished()) {
       path.increasePathIndex();
       elevatorArm.lowHatch();
-      if (path.getPathIndex() % 2 == 0) {
-        grabber.closed();
-      } else {
-        grabber.hatch();
-      }
+     // if (path.getPathIndex() % 2 == 0) {
+       // grabber.closed();
+      //} else {
+       // grabber.hatch();
+      //}
       try {
         path.initializePath();
       } catch (IOException e) {
@@ -232,7 +233,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    grabber.testEncoderPosition();
+    elevatorArm.getPosition();
 
   }
 }

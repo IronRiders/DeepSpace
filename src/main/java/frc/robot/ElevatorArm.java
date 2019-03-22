@@ -16,10 +16,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ElevatorArm {
     private TalonSRX talon;
-    private final double pConstantElevator = 0.1; //don't change these 
-    private final double iConstantElevator = (1.6 * pConstantElevator) / 1000;
-    private final double dConstantElevator = 0;
-    private final double fConstantElevator = 0.4;
+    private double pConstantElevator = 0.1; //don't change these 
+    private double iConstantElevator = (1.6 * pConstantElevator) / 1000;
+    private double dConstantElevator = 0;
+    private double fConstantElevator = 0.4;
     private final int maxAmpsElevator = 20;
     private final double diameter = 2.25;
     private final int pulsesPerRevolution = 4096;
@@ -29,7 +29,7 @@ public class ElevatorArm {
  
     //elevator
     private final double distanceLowHatch = 0; 
-    private final double distanceCargoCargoShip = 20;
+    private final double distanceCargoCargoShip = 18;
     private final double distanceCargoRocket = 8.5;
     private final double distanceMediumHatch = 24;
    // private final int distanceBottom = 0;
@@ -37,10 +37,10 @@ public class ElevatorArm {
     private int counter;
 
     public ElevatorArm(int elevatorPort , int elevatorlimitSwitchPort , int armPort , int armLimitSwitchPort){
-       // SmartDashboard.putNumber("pid/elevator/p", 0.0);
-       // SmartDashboard.putNumber("pid/elevator/i", 0.0);
-       // SmartDashboard.putNumber("pid/elevator/d", 0.0);
-       // SmartDashboard.putNumber("pid/elevator/f", 0.0);
+        SmartDashboard.putNumber("pid/elevator/p", 0.0);
+        SmartDashboard.putNumber("pid/elevator/i", 0.0);
+        SmartDashboard.putNumber("pid/elevator/d", 0.0);
+        SmartDashboard.putNumber("pid/elevator/f", 0.0);
         
         talon = new TalonSRX(elevatorPort);
         talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
@@ -58,10 +58,11 @@ public class ElevatorArm {
         talon.config_kF(0, fConstantElevator);  
     }
     public void configurePID() {
-        //this.pConstantElevator = SmartDashboard.getNumber("pid/elevator/p", 0.2);
-        //this.iConstantElevator = SmartDashboard.getNumber("pid/elevator/i", (0.2 / 10000));
-        //this.dConstantElevator = SmartDashboard.getNumber("pid/elevator/d", 2.0);
-        //this.fConstantElevator = SmartDashboard.getNumber("pid/elevator/f", 0.0);
+        this.pConstantElevator = SmartDashboard.getNumber("pid/elevator/p", 0.2);
+        this.iConstantElevator = SmartDashboard.getNumber("pid/elevator/i", (0.2 / 10000));
+        this.iConstantElevator = (this.iConstantElevator * this.pConstantElevator) / 1000;
+        this.dConstantElevator = SmartDashboard.getNumber("pid/elevator/d", 2.0);
+        this.fConstantElevator = SmartDashboard.getNumber("pid/elevator/f", 0.0);
     }
 
     public void updateSmartDB(){
@@ -132,5 +133,8 @@ public class ElevatorArm {
         counter--;
             moveElevator(elevatorDistances[counter]);
         }
+    }
+    public void zeroPosition(){
+        talon.setSelectedSensorPosition(0);
     }
 }
