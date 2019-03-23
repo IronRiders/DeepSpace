@@ -28,7 +28,7 @@ public class ElevatorArm {
     private final int distancePickUp = 0; 
  
     //elevator
-    private final double distanceLowHatch = 0; 
+    private final double distanceLowHatch = 2;
     private final double distanceHigh = 18;
     private final double distanceCargoRocket = 8.5;
    // private final int distanceBottom = 0;

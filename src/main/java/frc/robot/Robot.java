@@ -146,8 +146,11 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     elevatorArm.updateSmartDB();
+    grabber.openClaw();
+
     //elevatorArm.configurePID();
     //grabber.configurePID();
+    /*
     isDriverControlling = false;
 
     int firstPath, secondPath, thirdPath;
@@ -169,12 +172,11 @@ public class Robot extends TimedRobot {
     } catch (IOException e) {
       e.printStackTrace();
     }
+    */
   }
 
   @Override
   public void teleopInit() {
-    elevatorArm.configurePID();
-    elevatorArm.zeroPosition();
     //grabber.configurePID();
     elevatorArm.updateSmartDB();
     isDriverControlling = true;
@@ -185,7 +187,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    elevatorArm.updateSmartDB();
+    joystick1.listen();
+    joystick2.listen();
+ /*   elevatorArm.updateSmartDB();
     if (isDriverControlling) {
       joystick1.listen();
       joystick2.listen();
@@ -205,6 +209,7 @@ public class Robot extends TimedRobot {
     } else {
       path.update();
     }
+    */
   }
 
   /**
@@ -233,6 +238,7 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     elevatorArm.getPosition();
+    grabber.testEncoderPosition();
 
   }
 }
