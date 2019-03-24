@@ -26,8 +26,9 @@ public class DriveTrain {
 
     private boolean slowSpeed;
     private int counter = 0;
+    private boolean drivingOffSpeed;
     private int throttleDirectionConstant = 1;
-
+    private boolean throttleForward = true;
 
     public DriveTrain(final int leftPort1, final int leftPort2, final int rightPort1, final int rightPort2, final int gyroPortNumber) {
             leftMotor1 = new TalonSRX(leftPort1);
@@ -45,7 +46,10 @@ public class DriveTrain {
             leftMotor1.setNeutralMode(NeutralMode.Brake);
             leftMotor2.setNeutralMode(NeutralMode.Brake);
             gyro.reset();
-            slowSpeed = false;
+            slowSpeed = true;
+            drivingOffSpeed = false;
+            SmartDashboard.putBoolean("status/slowSpeedEnabled", slowSpeed);
+            SmartDashboard.putBoolean("status/foward", throttleForward);
             //gyroPortNumber should be analong 0 or 1
 
     }
@@ -59,11 +63,11 @@ public class DriveTrain {
     public void updateSpeed(final ThrottlePosition throttlePosition) {
         double scaledX = throttlePosition.x;
         double scaledY = throttlePosition.y;
-        double scaleFactorA = 0.5;
-        double scaleFactorB = 0.5;
+        double scaleFactorA = 0.3;
+        double scaleFactorB = 0.7;
         //Top is X scale bottem is Y
-        double scaleFactorC = .5 ;
-        double scaleFactorD = .5;
+        double scaleFactorC = 0.3 ;
+        double scaleFactorD = 0.7;
         scaledY = (scaleFactorC * Math.abs(throttlePosition.y)) + (scaleFactorD * throttlePosition.y * throttlePosition.y);
         scaledX = (scaleFactorA * Math.abs(throttlePosition.x)) + (scaleFactorB * throttlePosition.x * throttlePosition.x);
         if(throttlePosition.x < 0){
@@ -75,6 +79,10 @@ public class DriveTrain {
         }
         scaledX= scaledX * 0.5 * (slowSpeed ? 0.75 : 1);
         scaledY= scaledY * throttleDirectionConstant * (slowSpeed ? 0.75 : 1);
+        if(slowSpeed == false){
+            scaledX= scaledX * (drivingOffSpeed ? 0.5 : 1);
+            scaledY= scaledY * (drivingOffSpeed ? 0.75 : 1);
+        }
         
         final double right = (-scaledX - scaledY)*-1;
         final double left =  (scaledY - scaledX)*-1;
@@ -119,6 +127,7 @@ public class DriveTrain {
 
     public void toggleSlowSpeed(){
         slowSpeed = !slowSpeed;
+        SmartDashboard.putBoolean("status/slowSpeedEnabled", slowSpeed);
     }
 
     public void cruiseControl(){
@@ -150,5 +159,19 @@ public class DriveTrain {
 
     public void setThrottleDirectionConstant() {
         throttleDirectionConstant *= -1;
+        throttleForward = !throttleForward;
+        SmartDashboard.putBoolean("status/foward", throttleForward);
+    }
+
+    public void stopDriveMotors(){
+        leftMotor1.set(ControlMode.PercentOutput , 0);
+        leftMotor2.set(ControlMode.PercentOutput , 0);
+        rightMotor1.set(ControlMode.PercentOutput , 0);
+        rightMotor2.set(ControlMode.PercentOutput , 0);    
+    }
+
+    public void setDrivingOffSpeed(){
+        drivingOffSpeed = !drivingOffSpeed;
+        //SmartDashboard.putBoolean("DB/String 7", drivingOffSpeed);
     }
 }

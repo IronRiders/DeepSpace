@@ -59,13 +59,16 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     CameraServer.getInstance().startAutomaticCapture();
+    CameraServer.getInstance().startAutomaticCapture();
+
     //updateSmartDB();
 
     joystick2.addButton(4, grabber::closeClaw);
     joystick2.addButton(5, grabber::openClaw);
-    joystick1.addButton(2, driveTrain::cruiseControl);
+    joystick1.addButton(2, driveTrain::cruiseControl , driveTrain::stopDriveMotors);
     joystick1.addButton(11 , this::changeDriverControl);
     joystick1.addButton(3 , driveTrain::toggleSlowSpeed);
+    joystick1.addButton(4 , driveTrain::setDrivingOffSpeed);
     joystick1.addButton(1 , driveTrain::setThrottleDirectionConstant);
     //joystick1.addButton(12, imageRec::triggerImageRec);
 
@@ -145,7 +148,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    elevatorArm.updateSmartDB();
+    //elevatorArm.updateSmartDB();
     grabber.openClaw();
 
     //elevatorArm.configurePID();
@@ -178,7 +181,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     //grabber.configurePID();
-    elevatorArm.updateSmartDB();
+    //elevatorArm.updateSmartDB();
     isDriverControlling = true;
   }
 
@@ -217,7 +220,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    elevatorArm.updateSmartDB();
+   // elevatorArm.updateSmartDB();
     joystick1.listen();
     joystick2.listen();
   }
@@ -226,11 +229,11 @@ public class Robot extends TimedRobot {
     this.isDriverControlling = !isDriverControlling;
   }
 
-  private void updateSmartDB() {
-    SmartDashboard.putString("DB/String 2", "1st Path --->");
-    SmartDashboard.putString("DB/String 3", "2nd Path --->");
-    SmartDashboard.putString("DB/String 4", "3rd Path --->");
+ /* private void updateSmartDB() {
+    SmartDashboard.putString("DB/String 2", "75% speed enabled?");
+    SmartDashboard.putString("DB/String 3", "50% speed enabled?");
   }
+  */
 
   /**
    * This function is called periodically during test mode.

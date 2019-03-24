@@ -24,10 +24,11 @@ public class Grabber {
     private int maxAmps = 3; 
     private final double openRevolutions = 9.2;
     private final double cargoRevolutions = 7.5;
-    private final double hatchRevolutions = 1.389 * 2;
+    private final double hatchRevolutions = 4;
     private final double closedRevolutions = -1.6;
+    private final double grabCargoTightRevolutions = cargoRevolutions - 1.5;
     //private final double closedRevolutionsLeft = -7500;
-    private final double[] closedToOpenValues = {closedRevolutions, hatchRevolutions , cargoRevolutions , openRevolutions};
+    private final double[] closedToOpenValues = {closedRevolutions, hatchRevolutions , grabCargoTightRevolutions , cargoRevolutions , openRevolutions};
     private int counter; 
 
 
@@ -37,12 +38,13 @@ public class Grabber {
         rightFlywheel = new VictorSP(rightFlywheelPort);
         rightClaw = new TalonSRX(rightClawPort);
         leftClaw = new TalonSRX(leftClawPort);
+        SmartDashboard.putNumber("status/claw/position", 1);
         counter = 0;
 
-        SmartDashboard.putNumber("pid/claw/p", 0.0);
-        SmartDashboard.putNumber("pid/claw/i", 0.0);
-        SmartDashboard.putNumber("pid/claw/d", 0.0);
-        SmartDashboard.putNumber("pid/claw/f", 0.0);
+       // SmartDashboard.putNumber("pid/claw/p", 0.0);
+       // SmartDashboard.putNumber("pid/claw/i", 0.0);
+       // SmartDashboard.putNumber("pid/claw/d", 0.0);
+       // SmartDashboard.putNumber("pid/claw/f", 0.0);
         
         rightClaw.config_kD(0, dConstant);
         rightClaw.config_kP(0, pConstant);
@@ -92,7 +94,6 @@ public class Grabber {
     }
     public void open(){
         move(openRevolutions);
-
     }  
 
     public void cargo(){
@@ -107,7 +108,7 @@ public class Grabber {
     }
 
     public void openClaw(){
-        if(counter < 3){
+        if(counter < 4){
             counter++;
             move(closedToOpenValues[counter]);
         }
@@ -125,6 +126,8 @@ public class Grabber {
             double totalPulses = numRevolutions * pulsesPerRevolution;
             leftClaw.set(ControlMode.MotionMagic, totalPulses);
             rightClaw.set(ControlMode.MotionMagic , totalPulses);
+            SmartDashboard.putNumber("status/claw/position", counter + 1);
+            
     }
     
     public void toLimitSwitches(){
@@ -188,5 +191,4 @@ public class Grabber {
         rightClaw.setSelectedSensorPosition(0);
         leftClaw.setSelectedSensorPosition(0);
     }
-
 }

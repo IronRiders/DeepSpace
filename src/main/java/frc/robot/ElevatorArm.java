@@ -28,18 +28,20 @@ public class ElevatorArm {
     private final int distancePickUp = 0; 
  
     //elevator
-    private final double distanceLowHatch = 2;
+    private final double distanceLowHatch = 0;
     private final double distanceHigh = 18;
     private final double distanceCargoRocket = 8.5;
    // private final int distanceBottom = 0;
     private final double[] elevatorDistances = {distanceLowHatch, distanceCargoRocket , distanceHigh};
-    private int counter;
+    private int position;
 
     public ElevatorArm(int elevatorPort , int elevatorlimitSwitchPort , int armPort , int armLimitSwitchPort){
-        SmartDashboard.putNumber("pid/elevator/p", 0.0);
-        SmartDashboard.putNumber("pid/elevator/i", 0.0);
-        SmartDashboard.putNumber("pid/elevator/d", 0.0);
-        SmartDashboard.putNumber("pid/elevator/f", 0.0);
+        //SmartDashboard.putNumber("pid/elevator/p", 0.0);
+        //SmartDashboard.putNumber("pid/elevator/i", 0.0);
+        //SmartDashboard.putNumber("pid/elevator/d", 0.0);
+        //SmartDashboard.putNumber("pid/elevator/f", 0.0);
+        SmartDashboard.putNumber("status/elevator/position", 1);
+
         
         talon = new TalonSRX(elevatorPort);
         talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
@@ -49,7 +51,7 @@ public class ElevatorArm {
         talon.setSelectedSensorPosition(0);
         talon.configPeakCurrentLimit(maxAmpsElevator);
 
-        counter = 0;
+        position = 1;
 
         talon.config_kD(0, dConstantElevator);
         talon.config_kP(0, pConstantElevator);
@@ -65,8 +67,7 @@ public class ElevatorArm {
     }
 
     public void updateSmartDB(){
-        boolean elevatorUp = talon.getSelectedSensorPosition() > 100;
-        SmartDashboard.putBoolean("/diagnostics/elevator/position" , elevatorUp);
+        SmartDashboard.putNumber("status/elevator/position" , position);
     }
 
     //@param distance is in inches
@@ -76,6 +77,7 @@ public class ElevatorArm {
         double totalPulses = (distance/(diameter*Math.PI)) * pulsesPerRevolution * multiplier;
         talon.set(ControlMode.MotionMagic, totalPulses);
         double pulsesAfter = talon.getSelectedSensorPosition();
+        updateSmartDB();
     }
 
    // public void moveArm(int numRevolutions){
@@ -85,13 +87,17 @@ public class ElevatorArm {
 
 
     public void distanceHigh(){
+        position = 3;
         moveElevator(distanceHigh);
+    
     }
     public void lowHatch(){
+        position = 1;
         moveElevator(distanceLowHatch);
     }
 
     public void cargoRocket(){
+        position = 2;
         moveElevator(distanceCargoRocket);
     }
 
@@ -117,7 +123,7 @@ public class ElevatorArm {
      int position = talon.getSelectedSensorPosition();
     }
 
-    public void elevatorUp(){
+   /* public void elevatorUp(){
         if(counter < 3){
         counter++;
             moveElevator(elevatorDistances[counter]);
@@ -130,6 +136,7 @@ public class ElevatorArm {
             moveElevator(elevatorDistances[counter]);
         }
     }
+    */
     public void zeroPosition(){
         talon.setSelectedSensorPosition(0);
     }
