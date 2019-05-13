@@ -63,19 +63,24 @@ public class Robot extends TimedRobot {
 
     //updateSmartDB();
 
-    joystick2.addButton(4, grabber::closeClaw);
-    joystick2.addButton(5, grabber::openClaw);
-    joystick1.addButton(2, driveTrain::cruiseControl , driveTrain::stopDriveMotors);
-    joystick1.addButton(11 , this::changeDriverControl);
-    joystick1.addButton(3 , driveTrain::toggleSlowSpeed);
-    joystick1.addButton(4 , driveTrain::setDrivingOffSpeed);
-    joystick1.addButton(1 , driveTrain::setThrottleDirectionConstant);
+    joystick1.addButton(1, driveTrain::setThrottleDirectionConstant);//Cruise 
+    joystick1.addButton(2, driveTrain::cruiseControl , driveTrain::stopDriveMotors);//Hold Line
+    joystick1.addButton(3, driveTrain::toggleSlowSpeed);//Switches Max Speed
+    joystick1.addButton(4, driveTrain::setDrivingOffSpeed);//I don't know what this does
+    joystick1.addButton(11, this::changeDriverControl);//I also have no idea what this does
     //joystick1.addButton(12, imageRec::triggerImageRec);
 
-    joystick2.addButton(9, elevatorArm::lowHatch);
-    joystick2.addButton(8, elevatorArm::cargoRocket);
-    joystick2.addButton(7, elevatorArm::distanceHigh);
- 
+    joystick2.addButton(4, grabber::closeClaw);//each press cycles through to states to make it closes
+    joystick2.addButton(5, grabber::openClaw);//
+    joystick2.addButton(6, elevatorArm::distanceHigh);
+    joystick2.addButton(7, elevatorArm::cargoRocket);
+    joystick2.addButton(8, elevatorArm::lowHatch);
+  
+    joystick2.addButton(10, driveTrain::leftControl); 
+    joystick2.addButton(11, driveTrain::rightControl);
+    
+    
+    
     autoChooser1.addDefault("path 1", "1");
     autoChooser1.addOption("path 2", "2");
     autoChooser1.addOption("path 3", "3");

@@ -23,69 +23,80 @@ public class DriveTrain {
     private final int leftPort2;
     private final int rightPort2;
     public final ADIS16448_IMU gyro = new ADIS16448_IMU();
-
     private boolean slowSpeed;
     private int counter = 0;
     private boolean drivingOffSpeed;
     private int throttleDirectionConstant = 1;
     private boolean throttleForward = true;
+    // private double scaledZ = throttlePosition.z;
+    // private double throttle1 = joystick2.scaledZ
 
-    public DriveTrain(final int leftPort1, final int leftPort2, final int rightPort1, final int rightPort2, final int gyroPortNumber) {
-            leftMotor1 = new TalonSRX(leftPort1);
-            leftMotor2 = new VictorSPX(leftPort2);
-            rightMotor1 = new TalonSRX(rightPort1);
-            rightMotor2 = new VictorSPX(rightPort2);
-            leftMotor1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-            rightMotor1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-            this.leftPort1 = leftPort1;
-            this.leftPort2 = leftPort2;
-            this.rightPort1 = rightPort1;
-            this.rightPort2 = rightPort2;
-            rightMotor1.setNeutralMode(NeutralMode.Brake);
-            rightMotor2.setNeutralMode(NeutralMode.Brake);
-            leftMotor1.setNeutralMode(NeutralMode.Brake);
-            leftMotor2.setNeutralMode(NeutralMode.Brake);
-            gyro.reset();
-            slowSpeed = true;
-            drivingOffSpeed = false;
-            SmartDashboard.putBoolean("status/slowSpeedEnabled", slowSpeed);
-            SmartDashboard.putBoolean("status/foward", throttleForward);
-            //gyroPortNumber should be analong 0 or 1
+    public DriveTrain(final int leftPort1, final int leftPort2, final int rightPort1, final int rightPort2,
+            final int gyroPortNumber) {
+        leftMotor1 = new TalonSRX(leftPort1);
+        leftMotor2 = new VictorSPX(leftPort2);
+        rightMotor1 = new TalonSRX(rightPort1);
+        rightMotor2 = new VictorSPX(rightPort2);
+        leftMotor1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+        rightMotor1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+        this.leftPort1 = leftPort1;
+        this.leftPort2 = leftPort2;
+        this.rightPort1 = rightPort1;
+        this.rightPort2 = rightPort2;
+        rightMotor1.setNeutralMode(NeutralMode.Brake);
+        rightMotor2.setNeutralMode(NeutralMode.Brake);
+        leftMotor1.setNeutralMode(NeutralMode.Brake);
+        leftMotor2.setNeutralMode(NeutralMode.Brake);
+        gyro.reset();
+        slowSpeed = true;
+        drivingOffSpeed = false;
+        SmartDashboard.putBoolean("status/slowSpeedEnabled", slowSpeed);
+        SmartDashboard.putBoolean("status/foward", throttleForward);
+        SmartDashboard.putNumber("status/throttle", 0);
+        // gyroPortNumber should be analong 0 or 1
 
     }
 
-    public void makeVictorsFollowers(){
-        leftMotor2.set(ControlMode.Follower , leftMotor1.getDeviceID());
+    public void makeVictorsFollowers() {
+        leftMotor2.set(ControlMode.Follower, leftMotor1.getDeviceID());
         leftMotor2.setInverted(InvertType.FollowMaster);
         rightMotor2.set(ControlMode.Follower, rightMotor2.getDeviceID());
         rightMotor2.setInverted(InvertType.FollowMaster);
     }
+
     public void updateSpeed(final ThrottlePosition throttlePosition) {
         double scaledX = throttlePosition.x;
         double scaledY = throttlePosition.y;
+        double scaledZ = throttlePosition.z;
         double scaleFactorA = 0.3;
         double scaleFactorB = 0.7;
-        //Top is X scale bottem is Y
-        double scaleFactorC = 0.3 ;
+        // Top is X scale bottem is Y
+        double scaleFactorC = 0.3;
         double scaleFactorD = 0.7;
-        scaledY = (scaleFactorC * Math.abs(throttlePosition.y)) + (scaleFactorD * throttlePosition.y * throttlePosition.y);
-        scaledX = (scaleFactorA * Math.abs(throttlePosition.x)) + (scaleFactorB * throttlePosition.x * throttlePosition.x);
-        if(throttlePosition.x < 0){
+        scaledY = (scaleFactorC * Math.abs(throttlePosition.y))
+                + (scaleFactorD * throttlePosition.y * throttlePosition.y);
+        scaledX = (scaleFactorA * Math.abs(throttlePosition.x))
+                + (scaleFactorB * throttlePosition.x * throttlePosition.x);
+        if (throttlePosition.x < 0) {
             scaledX = -scaledX;
         }
 
-        if(throttlePosition.y < 0){
+        if (throttlePosition.y < 0) {
             scaledY = -scaledY;
         }
-        scaledX= scaledX * 0.5 * (slowSpeed ? 0.75 : 1);
-        scaledY= scaledY * throttleDirectionConstant * (slowSpeed ? 0.75 : 1);
-        if(slowSpeed == false){
-            scaledX= scaledX * (drivingOffSpeed ? 0.5 : 1);
-            scaledY= scaledY * (drivingOffSpeed ? 0.75 : 1);
+
+        double throttle1 = throttlePosition.z * -1.0; //isacc helped fix the broken code (ishan messd up the sig figs)
+        SmartDashboard.putNumber("status/throttle", ((throttle1+1.00)/(2.00))*100   );
+        scaledX = scaledX * 0.5 * (slowSpeed ? 0.75 : ((throttle1+1.00)/2.00));
+        scaledY = scaledY * throttleDirectionConstant * (slowSpeed ? 0.75 : ((throttle1+1.00)/2.00));
+
+        if (slowSpeed == false) {
+            scaledX = scaledX * (drivingOffSpeed ? 0.5 : (throttle1+1.00));
+            scaledY = scaledY * (drivingOffSpeed ? 0.75 : (throttle1+1.00));
         }
-        
-        final double right = (-scaledX - scaledY)*-1;
-        final double left =  (scaledY - scaledX)*-1;
+
+        final double right = (-scaledX - scaledY) * -1;
+        final double left = (scaledY - scaledX) * -1;
         leftMotor1.set(ControlMode.PercentOutput, left);
 
         leftMotor2.follow(leftMotor1);
@@ -93,7 +104,7 @@ public class DriveTrain {
         rightMotor2.follow(rightMotor1);
     }
 
-    public void testGyro(){
+    public void testGyro() {
         // SmartDashboard.putNumber("/diagnostics/gryo/x", getGyro().getAngleX());
         // SmartDashboard.putNumber("/diagnostics/gryo/y", getGyro().getAngleY());
         // SmartDashboard.putNumber("/diagnostics/gryo/z", getGyro().getAngleZ());
@@ -102,49 +113,53 @@ public class DriveTrain {
         SmartDashboard.putNumber("/diagnostics/gryo/y", getAdjustedAngle('y'));
         SmartDashboard.putNumber("/diagnostics/gryo/z", getAdjustedAngle('z'));
     }
+
     public void autoUpdateSpeed(double left, double right) {
         leftMotor1.set(ControlMode.PercentOutput, left);
         rightMotor1.set(ControlMode.PercentOutput, right);
         leftMotor2.follow(leftMotor1);
         rightMotor2.follow(rightMotor1);
     }
+
     public TalonSRX getLeftMotor() {
         return leftMotor1;
     }
+
     public TalonSRX getRightMotor() {
         return rightMotor1;
     }
+
     public ADIS16448_IMU getGyro() {
         return gyro;
     }
 
-    public void getEncoderPosition(){
+    public void getEncoderPosition() {
         int encoderPositionLeft = leftMotor1.getSelectedSensorPosition();
         System.out.println(encoderPositionLeft);
         int encoderPositionRight = rightMotor1.getSelectedSensorPosition();
         System.out.println(encoderPositionRight);
     }
 
-    public void toggleSlowSpeed(){
+    public void toggleSlowSpeed() {
         slowSpeed = !slowSpeed;
         SmartDashboard.putBoolean("status/slowSpeedEnabled", slowSpeed);
     }
 
-    public void cruiseControl(){
+    public void cruiseControl() {
         autoUpdateSpeed(0.4, -0.4);
     }
 
-    public double getAdjustedAngle(char c) { //Could easily not work at all 
+    public double getAdjustedAngle(char c) { // Could easily not work at all
         double x = Math.toRadians(gyro.getAngleX());
         double y = Math.toRadians(gyro.getAngleY());
         double z = Math.toRadians(gyro.getAngleZ());
         double angle = 70; // Random filler number . offset from vertical/horizontal?
 
-        //had to do lots of converting Radians to degrees bc Math.cos takes radians
-        //z = z*cos(angle) - x*sin(angle)
-        //x = z*sin(angle) + x*cos(angle)
-        //y = y
-        z = Math.toDegrees(z * Math.cos(Math.toRadians(angle)) - (x * Math.sin(Math.toRadians(angle)))); 
+        // had to do lots of converting Radians to degrees bc Math.cos takes radians
+        // z = z*cos(angle) - x*sin(angle)
+        // x = z*sin(angle) + x*cos(angle)
+        // y = y
+        z = Math.toDegrees(z * Math.cos(Math.toRadians(angle)) - (x * Math.sin(Math.toRadians(angle))));
         x = Math.toDegrees(z * Math.sin(Math.toRadians(angle)) + (x * Math.cos(Math.toRadians(angle))));
         y = Math.toDegrees(y);
 
@@ -152,7 +167,7 @@ public class DriveTrain {
             return x;
         } else if (c == 'y') {
             return y;
-        } else  {
+        } else {
             return z;
         }
     }
@@ -163,15 +178,67 @@ public class DriveTrain {
         SmartDashboard.putBoolean("status/foward", throttleForward);
     }
 
-    public void stopDriveMotors(){
-        leftMotor1.set(ControlMode.PercentOutput , 0);
-        leftMotor2.set(ControlMode.PercentOutput , 0);
-        rightMotor1.set(ControlMode.PercentOutput , 0);
-        rightMotor2.set(ControlMode.PercentOutput , 0);    
+    public void stopDriveMotors() {
+        leftMotor1.set(ControlMode.PercentOutput, 0);
+        leftMotor2.set(ControlMode.PercentOutput, 0);
+        rightMotor1.set(ControlMode.PercentOutput, 0);
+        rightMotor2.set(ControlMode.PercentOutput, 0);
     }
 
-    public void setDrivingOffSpeed(){
+    public void setDrivingOffSpeed() {
         drivingOffSpeed = !drivingOffSpeed;
-        //SmartDashboard.putBoolean("DB/String 7", drivingOffSpeed);
+        // SmartDashboard.putBoolean("DB/String 7", drivingOffSpeed);
+    }
+
+
+    public void updateRightSpeed() {
+        rightMotor1.set(ControlMode.PercentOutput, -0.5);
+        rightMotor2.follow(rightMotor1);
+    }
+
+    public void stopRightSpeed() {
+        rightMotor1.set(ControlMode.PercentOutput, 0);
+        rightMotor2.follow(rightMotor1);
+    }
+
+    public void updateLeftSpeed()   {
+        leftMotor1.set(ControlMode.PercentOutput, 0.5);
+        leftMotor2.follow(leftMotor1);
+    }
+
+    public void stopLeftSpeed() {
+        leftMotor1.set(ControlMode.PercentOutput, 0);
+        leftMotor2.follow(leftMotor1);
+    }
+
+    /*public void athenaDoesAnAgena() {
+        leftMotor1.set(ControlMode.PercentOutput, -100);
+        leftMotor2.follow(leftMotor1);
+        rightMotor1.set(ControlMode.PercentOutput, 100);
+        rightMotor2.follow(rightMotor1);
+    }*/
+
+    int leftControlCount = 0;
+    public void leftControl() {
+        if (leftControlCount%3==0) {
+            updateLeftSpeed();
+        } else if (leftControlCount%3==1) {
+            stopLeftSpeed();
+        } else {
+
+        }
+        leftControlCount++;
+    }
+
+    int rightControlCount = 0;
+    public void rightControl() {
+        if (rightControlCount%3==0) {
+            updateRightSpeed();
+        } else if (rightControlCount%3==1) {
+            stopRightSpeed();
+        } else {
+
+        }
+        leftControlCount++;
     }
 }
