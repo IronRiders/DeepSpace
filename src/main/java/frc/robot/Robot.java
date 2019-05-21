@@ -62,11 +62,12 @@ public class Robot extends TimedRobot {
     CameraServer.getInstance().startAutomaticCapture();
 
     //updateSmartDB();
-
-    joystick1.addButton(1, driveTrain::setThrottleDirectionConstant);//Cruise 
+    //normallry for J1 Button 1 changes toogles what the front of the robot is defiend as, in this version we're trying to see if we can set cruise contorl to buton one and exchae the buttons for cruiuse control and toggle direction
+    joystick1.addButton(1, driveTrain::setThrottleDirectionConstant);//flips heading
     joystick1.addButton(2, driveTrain::cruiseControl , driveTrain::stopDriveMotors);//Hold Line
     joystick1.addButton(3, driveTrain::toggleSlowSpeed);//Switches Max Speed
     joystick1.addButton(4, driveTrain::setDrivingOffSpeed);//I don't know what this does
+   // joystick1.addButton(5, driveTrain::);
     joystick1.addButton(11, this::changeDriverControl);//I also have no idea what this does
     //joystick1.addButton(12, imageRec::triggerImageRec);
 
@@ -123,6 +124,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("autoChooser/path1", autoChooser1);
     SmartDashboard.putData("autoChooser/path2", autoChooser2);
     SmartDashboard.putData("autoChooser/path3", autoChooser3);
+
+    driveTrain.getGyroValues();
   }
 
   /**
@@ -228,6 +231,7 @@ public class Robot extends TimedRobot {
    // elevatorArm.updateSmartDB();
     joystick1.listen();
     joystick2.listen();
+    driveTrain.getGyroValues();
   }
 
   public void changeDriverControl() {

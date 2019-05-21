@@ -86,6 +86,7 @@ public class DriveTrain {
         }
 
         double throttle1 = throttlePosition.z * -1.0; //isacc helped fix the broken code (ishan messd up the sig figs)
+    
         SmartDashboard.putNumber("status/throttle", ((throttle1+1.00)/(2.00))*100   );
         scaledX = scaledX * 0.5 * (slowSpeed ? 0.75 : ((throttle1+1.00)/2.00));
         scaledY = scaledY * throttleDirectionConstant * (slowSpeed ? 0.75 : ((throttle1+1.00)/2.00));
@@ -104,14 +105,14 @@ public class DriveTrain {
         rightMotor2.follow(rightMotor1);
     }
 
-    public void testGyro() {
-        // SmartDashboard.putNumber("/diagnostics/gryo/x", getGyro().getAngleX());
-        // SmartDashboard.putNumber("/diagnostics/gryo/y", getGyro().getAngleY());
-        // SmartDashboard.putNumber("/diagnostics/gryo/z", getGyro().getAngleZ());
+    public void getGyroValues() {
+        SmartDashboard.putNumber("/diagnostics/gryo/x", getGyro().getAngleX());
+        SmartDashboard.putNumber("/diagnostics/gryo/y", getGyro().getAngleY());
+        SmartDashboard.putNumber("/diagnostics/gryo/z", getGyro().getAngleZ()%360);
 
-        SmartDashboard.putNumber("/diagnostics/gryo/x", getAdjustedAngle('x'));
-        SmartDashboard.putNumber("/diagnostics/gryo/y", getAdjustedAngle('y'));
-        SmartDashboard.putNumber("/diagnostics/gryo/z", getAdjustedAngle('z'));
+        // SmartDashboard.putNumber("diagnostics/gryo/x", getAdjustedAngle('x'));
+        // SmartDashboard.putNumber("diagnostics/gryo/y", getAdjustedAngle('y'));
+        // SmartDashboard.putNumber("diagnostics/gryo/z", getAdjustedAngle('z'));
     }
 
     public void autoUpdateSpeed(double left, double right) {
