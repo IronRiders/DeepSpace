@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.GyroBase;
 import edu.wpi.first.wpilibj.AnalogGyro;
+//ovbiusly not all of this is used, i just dumped all the imports from DrivTrain.Java to be safe. I plan to remove the unnescary ones at some point
+
 
 public class PowerDistributionPanel {
 
@@ -42,13 +44,14 @@ public class PowerDistributionPanel {
         .getEntry();
 
 }
-//    // .withProperties(Map.of("min", 0, "max", 360))
-    
 
+//Below are additonal methods that can be employe in this class
 
+//    .withProperties(Map.of("min", 0, "max", 360)) // sets the range of the display 
 //     public void	clearStickyFaults()	//Clear all PDP sticky faults.
-//     public double getCurrent​(1 channel);	//Query the current of a single channel of the PDP.
-//     public double getTemperature();	//Query the temperature of the PDP. //Query the current of all monitored PDP channels (0-15).
+//     public double getCurrent​(1 channel);	 //Query the current of a single channel of the PDP.
+//     public double getTemperature();	//Query the temperature of the PDP.    
+//     public double getTotalCurrent    //Query the current of all monitored PDP channels (0-15).
 //     public double getTotalEnergy()	//Query the total energy drawn from the monitored PDP channels.
 //     public double getTotalPower()	//Query the total power drawn from the monitored PDP channels.
 //     public double getVoltage()	//Query the input voltage of the PDP.
