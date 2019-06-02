@@ -1,16 +1,24 @@
 package frc.robot;
-
 import com.analog.adis16448.frc.ADIS16448_IMU;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.can.*;
 import frc.robot.LambdaJoystick.ThrottlePosition;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.SendableBase;
+import edu.wpi.first.wpilibj.shuffleboard.*;
+import edu.wpi.first.wpilibj.GyroBase;
+import edu.wpi.first.wpilibj.AnalogGyro;
+//import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets.kGyro;
+
 
 public class DriveTrain {
 
@@ -23,11 +31,18 @@ public class DriveTrain {
     private final int leftPort2;
     private final int rightPort2;
     public final ADIS16448_IMU gyro = new ADIS16448_IMU();
-    private boolean slowSpeed;
+    private boolean throttleMode = true;//formally slowSpeed, side not we're calling the default spped baby mode, outreach mode, or rookie mode
     private int counter = 0;
     private boolean drivingOffSpeed;
     private int throttleDirectionConstant = 1;
     private boolean throttleForward = true;
+    public boolean masteralarm = false;
+    public boolean velocityNeverToExcede = false;
+    public boolean revrSpeedWarn = false;
+    public double throttleInput;
+    public boolean velocityOne;
+
+
     // private double scaledZ = throttlePosition.z;
     // private double throttle1 = joystick2.scaledZ
 
@@ -48,9 +63,8 @@ public class DriveTrain {
         leftMotor1.setNeutralMode(NeutralMode.Brake);
         leftMotor2.setNeutralMode(NeutralMode.Brake);
         gyro.reset();
-        slowSpeed = true;
         drivingOffSpeed = false;
-        SmartDashboard.putBoolean("status/slowSpeedEnabled", slowSpeed);
+        SmartDashboard.putBoolean("status/throttleModeEnabled", throttleMode);
         SmartDashboard.putBoolean("status/foward", throttleForward);
         SmartDashboard.putNumber("status/throttle", 0);
         // gyroPortNumber should be analong 0 or 1
@@ -85,16 +99,37 @@ public class DriveTrain {
             scaledY = -scaledY;
         }
 
-        double throttle1 = throttlePosition.z * -1.0; //isacc helped fix the broken code (ishan messd up the sig figs)
-    
-        SmartDashboard.putNumber("status/throttle", ((throttle1+1.00)/(2.00))*100   );
-        scaledX = scaledX * 0.5 * (slowSpeed ? 0.75 : ((throttle1+1.00)/2.00));
-        scaledY = scaledY * throttleDirectionConstant * (slowSpeed ? 0.75 : ((throttle1+1.00)/2.00));
+        double throttle1 = throttlePosition.z * -1.00; //isaac helped fix the broken code (ishan messed up the sig figs)
+        double throttle2 = (throttleMode == true)?((throttle1+1.00)/2.00):0.40; //Throttle as a value between 1 and 2
+        double throttle3 =  throttle2*100.00;
+        double thrust1 = (java.lang.Math.abs((throttlePosition.y*1.00)*throttle3)); //Thrust as a value between 1 and 100
 
-        if (slowSpeed == false) {
-            scaledX = scaledX * (drivingOffSpeed ? 0.5 : (throttle1+1.00));
-            scaledY = scaledY * (drivingOffSpeed ? 0.75 : (throttle1+1.00));
-        }
+        /*in theory creates a value double trust which gives a value between 0 and 1 
+        for the y input and should Give proportion thrust out put when throtle is enabled)*/
+        
+        velocityNeverToExcede = (thrust1 > 70.00)? true:false;
+        velocityOne = (thrust1 > 35.00)? true:false;
+        masteralarm = ((velocityNeverToExcede == true)||(revrSpeedWarn==true)|| ((throttleForward==false) && (throttleMode==true)));
+        
+        revrSpeedWarn = ((throttle3>=85.00) && (throttleForward == false) ? (revrSpeedWarn= true) : (revrSpeedWarn = false));
+        SmartDashboard.putBoolean("status/RvsOverSpeed", revrSpeedWarn);
+        SmartDashboard.putBoolean("status/masteralarm", masteralarm);     
+        SmartDashboard.putNumber("status/throttlePrime", (throttle3));
+        SmartDashboard.putNumber("status/throttle1",(throttle1));
+        SmartDashboard.putNumber("status/throttle2",(throttle2));
+        SmartDashboard.putNumber("status/thrust", ((thrust1)));
+        SmartDashboard.putBoolean("status/VNE",velocityNeverToExcede);
+        SmartDashboard.putBoolean("status/V1",velocityOne);
+        SmartDashboard.putNumber("status/throttle1",(throttle1));
+      
+        
+        scaledX = scaledX * 0.5 * (throttleMode ? (throttle2) : 0.40 ); 
+        scaledY = scaledY * throttleDirectionConstant * (throttleMode ?(throttle2) : 0.40 );
+
+        // if (throttleMode == false) {
+        //     scaledX = scaledX * (drivingOffSpeed ? 0.27 : (throttle1+1.00));//note to self: default is .5 , .75 I assumed the they were proportinal so sclaed it by a factor of 40/7
+        //     scaledY = scaledY * (drivingOffSpeed ? 0.40 : (throttle1+1.00));
+        // }
 
         final double right = (-scaledX - scaledY) * -1;
         final double left = (scaledY - scaledX) * -1;
@@ -109,11 +144,35 @@ public class DriveTrain {
         SmartDashboard.putNumber("/diagnostics/gryo/x", getGyro().getAngleX());
         SmartDashboard.putNumber("/diagnostics/gryo/y", getGyro().getAngleY());
         SmartDashboard.putNumber("/diagnostics/gryo/z", getGyro().getAngleZ()%360);
+       // SmartDashboard.putData(Sendable Gyro);//sends gyro data
 
         // SmartDashboard.putNumber("diagnostics/gryo/x", getAdjustedAngle('x'));
         // SmartDashboard.putNumber("diagnostics/gryo/y", getAdjustedAngle('y'));
         // SmartDashboard.putNumber("diagnostics/gryo/z", getAdjustedAngle('z'));
     }
+ // A bunch of Ishan's crazy code to display PDP that will either help everyone or cre everything up is here. best not to touch it   
+    NetworkTableEntry gyroExample = Shuffleboard.getTab("My Tab2")
+        .add("My Gyro Number", getGyro().getAngleY())
+        .withWidget(BuiltInWidgets.kGyro)
+        //.withProperties(Map.of("min", 0, "max", 360))
+        .getEntry();
+    NetworkTableEntry example1 = Shuffleboard.getTab("My Tab2") //(test of number display)
+        .add("My Number2", 7)
+        .withWidget(BuiltInWidgets.kNumberSlider)
+        .getEntry();
+
+    // void	clearStickyFaults();	//Clear all PDP sticky faults.
+    // double	getCurrent​(int channel);	//Query the current of a single channel of the PDP.
+    // double	getTemperature();	//Query the temperature of the PDP.
+    // double	getTotalCurrent();	//Query the current of all monitored PDP channels (0-15).
+    // double	getTotalEnergy();	//Query the total energy drawn from the monitored PDP channels.
+    // double	getTotalPower();	//Query the total power drawn from the monitored PDP channels.
+    // double	getVoltage();	//Query the input voltage of the PDP.
+    // void	initSendable​(SendableBuilder builder);	//Initializes this Sendable object.
+    // void	resetTotalEnergy();	//Reset the total energy to 0.
+    
+  // it is now safe to touch stuff  
+    
 
     public void autoUpdateSpeed(double left, double right) {
         leftMotor1.set(ControlMode.PercentOutput, left);
@@ -141,9 +200,9 @@ public class DriveTrain {
         System.out.println(encoderPositionRight);
     }
 
-    public void toggleSlowSpeed() {
-        slowSpeed = !slowSpeed;
-        SmartDashboard.putBoolean("status/slowSpeedEnabled", slowSpeed);
+    public void togglethrottleMode() {
+        throttleMode = !throttleMode;
+        SmartDashboard.putBoolean("status/throttleModeEnabled", throttleMode);
     }
 
     public void cruiseControl() {
