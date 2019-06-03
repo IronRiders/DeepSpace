@@ -5,8 +5,12 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.MotorSafety;
+import edu.wpi.first.wpilibj.PWM;
+import edu.wpi.first.wpilibj.PWMSpeedController;
+import edu.wpi.first.wpilibj.PWMTalonSRX;
 import edu.wpi.first.hal.sim.mockdata.PDPDataJNI;
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -24,24 +28,32 @@ import edu.wpi.first.wpilibj.MotorSafety;
 import edu.wpi.first.wpilibj.drive.RobotDriveBase;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent.*;
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
+import java.util.Map;
+import edu.wpi.first.networktables.NetworkTable;
 
 public class RobotDifferentialDriveDisplay {    
-    TalonSRX m_frontLeft = new TalonSRX(1);
-    VictorSPX m_rearLeft = new VictorSPX(4);
+    PWMTalonSRX m_frontLeft = new PWMTalonSRX(1);
+    PWMVictorSPX m_rearLeft = new PWMVictorSPX(4);
    
     SpeedControllerGroup m_left = new SpeedControllerGroup(m_frontLeft, m_rearLeft);
  
-    TalonSRX m_frontRight = new TalonSRX(2);
-    VictorSPX m_rearRight = new VictorSPX(3);
+    PWMTalonSRX m_frontRight = new PWMTalonSRX(2);
+    PWMVictorSPX m_rearRight = new PWMVictorSPX(3);
 
     SpeedControllerGroup m_right = new SpeedControllerGroup(m_frontRight, m_rearRight);
  
     DifferentialDrive m_drive = new DifferentialDrive(m_left, m_right);
 
+   public DifferentialDrive getDifferentialDrive(){
     
-    NetworkTableEntry example = Shuffleboard.getTab("My Tab2")
-        .add("DiffDrive", m_drive)
-        .withProperties(Map.of("Number of wheels", 6, "Wheel diameter", 50))
+    }
+
+            
+     NetworkTableEntry DiffDrive = Shuffleboard.getTab("My Tab2")
+        .add(getDifferentialDrive())
         .withWidget(BuiltInWidgets.kDifferentialDrive)
+        .withProperties(Map.of("Number of wheels", 6, "Wheel diameter", 50))
         .getEntry();
 }
