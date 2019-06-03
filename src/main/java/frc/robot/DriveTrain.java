@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.GyroBase;
 import edu.wpi.first.wpilibj.AnalogGyro;
+
 //import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets.kGyro;
 
 
@@ -40,7 +41,11 @@ public class DriveTrain {
     public boolean velocityNeverToExcede = false;
     public boolean revrSpeedWarn = false;
     public double throttleInput;
+    public boolean RvsThrottleWarn;
     public boolean velocityOne;
+
+//Check Number
+    
 
 
     // private double scaledZ = throttlePosition.z;
@@ -109,8 +114,8 @@ public class DriveTrain {
         
         velocityNeverToExcede = (thrust1 > 70.00)? true:false;
         velocityOne = (thrust1 > 35.00)? true:false;
-        masteralarm = ((velocityNeverToExcede == true)||(revrSpeedWarn==true)|| ((throttleForward==false) && (throttleMode==true)));
-        
+        masteralarm = ((velocityNeverToExcede == true)||(revrSpeedWarn==true)|| ((throttleForward==false) && (throttleMode==false)));
+        RvsThrottleWarn = ((throttleForward==false) && (throttleMode==true))? (RvsThrottleWarn == true):(RvsThrottleWarn == true);
         revrSpeedWarn = ((throttle3>=85.00) && (throttleForward == false) ? (revrSpeedWarn= true) : (revrSpeedWarn = false));
         SmartDashboard.putBoolean("status/RvsOverSpeed", revrSpeedWarn);
         SmartDashboard.putBoolean("status/masteralarm", masteralarm);     
@@ -120,7 +125,6 @@ public class DriveTrain {
         SmartDashboard.putNumber("status/thrust", ((thrust1)));
         SmartDashboard.putBoolean("status/VNE",velocityNeverToExcede);
         SmartDashboard.putBoolean("status/V1",velocityOne);
-        SmartDashboard.putNumber("status/throttle1",(throttle1));
       
         
         scaledX = scaledX * 0.5 * (throttleMode ? (throttle2) : 0.40 ); 
@@ -151,12 +155,14 @@ public class DriveTrain {
         // SmartDashboard.putNumber("diagnostics/gryo/z", getAdjustedAngle('z'));
     }
  // A bunch of Ishan's crazy code to display PDP that will either help everyone or cre everything up is here. best not to touch it   
-    NetworkTableEntry gyroExample = Shuffleboard.getTab("My Tab2")
+    
+ 
+ NetworkTableEntry gyroExample = Shuffleboard.getTab("My Tab2")
         .add("My Gyro Number", getGyro().getAngleY())
         .withWidget(BuiltInWidgets.kGyro)
         //.withProperties(Map.of("min", 0, "max", 360))
         .getEntry();
-    NetworkTableEntry example1 = Shuffleboard.getTab("My Tab2") //(test of number display)
+    NetworkTableEntry example1 = Shuffleboard.getTab("Tab 4") //(test of number display)
         .add("My Number2", 7)
         .withWidget(BuiltInWidgets.kNumberSlider)
         .getEntry();

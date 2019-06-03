@@ -19,29 +19,34 @@ import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.GyroBase;
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.MotorSafety;
+import edu.wpi.first.wpilibj.drive.RobotDriveBase;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.SpeedControllerGroup.*;
 
 public class PowerDistributionPanel {
 
     public final PowerDistributionPanel voltage = new PowerDistributionPanel();
     public final PowerDistributionPanel power = new PowerDistributionPanel();
     
-    public PowerDistributionPanel getTotalPower() {
-        return power;
+     public PowerDistributionPanel getTotalPower() {
+         return power;
     }
-    public PowerDistributionPanel getVoltage() {
-        return voltage;
+     public PowerDistributionPanel getVoltage() {
+     return voltage;
     
-    }
+     }
      NetworkTableEntry testVolts = Shuffleboard.getTab("My Tab2")
         .add("Volts", getVoltage())
         .withWidget(BuiltInWidgets.kPowerDistributionPanel)
         .getEntry();
     NetworkTableEntry test = Shuffleboard.getTab("My Tab2")
-        .add("Power", power)
+        .add("Power", getTotalPower())
         .withWidget(BuiltInWidgets.kPowerDistributionPanel)
         .getEntry();
 
-}
+    }
 //    // .withProperties(Map.of("min", 0, "max", 360))
     
 
