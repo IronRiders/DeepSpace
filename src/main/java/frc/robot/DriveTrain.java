@@ -71,7 +71,7 @@ public class DriveTrain {
         drivingOffSpeed = false;
         SmartDashboard.putBoolean("status/throttleModeEnabled", throttleMode);
         SmartDashboard.putBoolean("status/foward", throttleForward);
-        SmartDashboard.putNumber("status/throttle", 0);
+        //SmartDashboard.putNumber("status/throttle", 0);
         // gyroPortNumber should be analong 0 or 1
 
     }
@@ -114,14 +114,13 @@ public class DriveTrain {
         
         velocityNeverToExcede = (thrust1 > 70.00)? true:false;
         velocityOne = (thrust1 > 35.00)? true:false;
-        masteralarm = ((velocityNeverToExcede == true)||(revrSpeedWarn==true)|| ((throttleForward==false) && (throttleMode==false)));
-        RvsThrottleWarn = ((throttleForward==false) && (throttleMode==true))? (RvsThrottleWarn == true):(RvsThrottleWarn == true);
+        masteralarm = ((velocityNeverToExcede == true)||(revrSpeedWarn==true)|| (RvsThrottleWarn==true));
+        RvsThrottleWarn = ((throttleForward==false) && (throttleMode==true))? (true):(false);
         revrSpeedWarn = ((throttle3>=85.00) && (throttleForward == false) ? (revrSpeedWarn= true) : (revrSpeedWarn = false));
         SmartDashboard.putBoolean("status/RvsOverSpeed", revrSpeedWarn);
         SmartDashboard.putBoolean("status/masteralarm", masteralarm);     
         SmartDashboard.putNumber("status/throttlePrime", (throttle3));
-        SmartDashboard.putNumber("status/throttle1",(throttle1));
-        SmartDashboard.putNumber("status/throttle2",(throttle2));
+        //SmartDashboard.putNumberBoolean("status/RvsThrottleWarn",(RvsThrottleMode));
         SmartDashboard.putNumber("status/thrust", ((thrust1)));
         SmartDashboard.putBoolean("status/VNE",velocityNeverToExcede);
         SmartDashboard.putBoolean("status/V1",velocityOne);

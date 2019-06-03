@@ -38,11 +38,11 @@ public class PowerDistributionPanel {
     
      }
      NetworkTableEntry testVolts = Shuffleboard.getTab("My Tab2")
-        .add("Volts", getVoltage())
+        .add("Volts", voltage)
         .withWidget(BuiltInWidgets.kPowerDistributionPanel)
         .getEntry();
     NetworkTableEntry test = Shuffleboard.getTab("My Tab2")
-        .add("Power", getTotalPower())
+        .add("Power", power)
         .withWidget(BuiltInWidgets.kPowerDistributionPanel)
         .getEntry();
 

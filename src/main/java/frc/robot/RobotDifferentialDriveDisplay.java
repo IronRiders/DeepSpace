@@ -30,7 +30,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent.*;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
-import edu.wpi.first.wpilibj.ShuffleboardTab;
+//import edu.wpi.first.wpilibj.ShuffleboardTab;
 import java.util.Map;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.networktables.NetworkTable;
@@ -57,7 +57,8 @@ public class RobotDifferentialDriveDisplay {
         */
     //Check out https://wpilib.screenstepslive.com/s/currentCS/m/shuffleboard/I/1021942-sending-data
     public void init() {
-        ShuffleboardTab my_tab2 = Shuffleboard.getTab("My Tab2");
-        my_tab2.add("Main Differential Drive",m_drive);
+        ShuffleboardTab my_tab3 = Shuffleboard.getTab("My Tab3");
+        my_tab3.add("Main Differential Drive",m_drive).withWidget(BuiltInWidgets.kDifferentialDrive);
+       
     }
 }
