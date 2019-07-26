@@ -17,8 +17,32 @@ import static frc.robot.Ports.*;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.buttons.Button;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import com.analog.adis16448.frc.ADIS16448_IMU;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.hal.sim.mockdata.PDPDataJNI;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.ctre.phoenix.motorcontrol.can.*;
+import frc.robot.LambdaJoystick.ThrottlePosition;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.SendableBase;
+import edu.wpi.first.wpilibj.shuffleboard.*;
+import edu.wpi.first.wpilibj.GyroBase;
+import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.MotorSafety;
+import edu.wpi.first.wpilibj.drive.RobotDriveBase;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.SpeedControllerGroup.*;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -45,90 +69,98 @@ public class Robot extends TimedRobot {
   private final LambdaJoystick joystick2 = new LambdaJoystick(1, grabber::updateSpeed);
 
   private String filePath = "path%s";
-  //private TalonSRX leftMotor = driveTrain.getLeftMotor(), rightMotor = driveTrain.getRightMotor();
+  private TalonSRX leftMotor = driveTrain.getLeftMotor(), rightMotor = driveTrain.getRightMotor();
   //private final ImageRecognition imageRec = new ImageRecognition(driveTrain, rightMotor, leftMotor, elevatorArm);
 
-  SendableChooser autoChooser1 = new SendableChooser();
-  SendableChooser autoChooser2 = new SendableChooser();
-  SendableChooser autoChooser3 = new SendableChooser();
+  // SendableChooser autoChooser1 = new SendableChooser();
+  // SendableChooser autoChooser2 = new SendableChooser();
+  // SendableChooser autoChooser3 = new SendableChooser();
+
+  // PowerDistributionPanel panel = new PowerDistributionPanel();
+  // RobotDifferentialDriveDisplay diffDrive = new RobotDifferentialDriveDisplay();
+  // NetworkTableEntry example = Shuffleboard.getTab("My Tab").add("My Number", 0)
+  //   .withWidget(BuiltInWidgets.kPowerDistributionPanel).withPosition(0, 0).getEntry();
 
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
    */
-  @Override
-  public void robotInit() {
+   @Override
+   public void robotInit() {
+     //diffDrive.init();
     CameraServer.getInstance().startAutomaticCapture();
     CameraServer.getInstance().startAutomaticCapture();
 
     //updateSmartDB();
     //normallry for J1 Button 1 changes toogles what the front of the robot is defiend as, in this version we're trying to see if we can set cruise contorl to buton one and exchae the buttons for cruiuse control and toggle direction
    
-    joystick1.addButton(1, driveTrain::cruiseControl , driveTrain::stopDriveMotors);//Hold Line
-    joystick1.addButton(2, driveTrain::setThrottleDirectionConstant);//flips heading
-    joystick1.addButton(3, driveTrain::togglethrottleMode);//Switches Max Speed
-    joystick1.addButton(4, driveTrain::setDrivingOffSpeed);//I also have no idea what this does
-   // joystick1.addButton(5, driveTrain::);
+     joystick1.addButton(1, driveTrain::cruiseControl , driveTrain::stopDriveMotors);//Hold Line
+     joystick1.addButton(2, driveTrain::setThrottleDirectionConstant);//flips heading
+     joystick1.addButton(3, driveTrain::togglethrottleMode);//Switches Max Speed
+     joystick1.addButton(4, driveTrain::setDrivingOffSpeed);//I also have no idea what this does
+     //joystick1.addButton(5, driveTrain::);
     joystick1.addButton(11, this::changeDriverControl);//Toggles Auto?
 
-    //joystick1.addButton(12, imageRec::triggerImageRec);
-    joystick2.addButton(1, driveTrain::setThrottleDirectionConstant);//flips heading//flips heading
+      //joystick1.addButton(12, imageRec::triggerImageRec);
+    joystick2.addButton(3, driveTrain::setThrottleDirectionConstant);//flips heading//flips heading
+    //joystick2.addButton(1, driveTrain::ToggleBrakesEngager);//Switches Max Speed
     joystick2.addButton(4, grabber::closeClaw);//each press cycles through to states to make it closes
     joystick2.addButton(5, grabber::openClaw);//
     joystick2.addButton(6, elevatorArm::distanceHigh);
     joystick2.addButton(7, elevatorArm::cargoRocket);
     joystick2.addButton(8, elevatorArm::lowHatch);
-  
     joystick2.addButton(10, driveTrain::leftControl); 
     joystick2.addButton(11, driveTrain::rightControl);
+    driveTrain.gyro.calibrate();
+   }
     
     
-    
-    autoChooser1.addDefault("path 1", "1");
-    autoChooser1.addOption("path 2", "2");
-    autoChooser1.addOption("path 3", "3");
-    autoChooser1.addOption("path 4", "4");
-    autoChooser1.addOption("path 5", "5");
-    autoChooser1.addOption("path 6", "6");
-    autoChooser1.addOption("path 7", "7");
-    autoChooser1.addOption("path 8", "8");
-    autoChooser1.addOption("path 9", "9");
-    autoChooser1.addOption("path 10", "10");
-    autoChooser1.addOption("path 11", "11");
-    autoChooser1.addOption("path 12", "12");
+  //RobotDrive  
+  //   autoChooser1.addDefault("path 1", "1");
+  //   autoChooser1.addOption("path 2", "2");
+  //   autoChooser1.addOption("path 3", "3");
+  //   autoChooser1.addOption("path 4", "4");
+  //   autoChooser1.addOption("path 5", "5");
+  //   autoChooser1.addOption("path 6", "6");
+  //   autoChooser1.addOption("path 7", "7");
+  //   autoChooser1.addOption("path 8", "8");
+  //   autoChooser1.addOption("path 9", "9");
+  //   autoChooser1.addOption("path 10", "10");
+  //   autoChooser1.addOption("path 11", "11");
+  //   autoChooser1.addOption("path 12", "12");
 
-    autoChooser2.addOption("path 1", "1");
-    autoChooser2.addDefault("path 2", "2");
-    autoChooser2.addOption("path 3", "3");
-    autoChooser2.addOption("path 4", "4");
-    autoChooser2.addOption("path 5", "5");
-    autoChooser2.addOption("path 6", "6");
-    autoChooser2.addOption("path 7", "7");
-    autoChooser2.addOption("path 8", "8");
-    autoChooser2.addOption("path 9", "9");
-    autoChooser2.addOption("path 10", "10");
-    autoChooser2.addOption("path 11", "11");
-    autoChooser2.addOption("path 12", "12");
+  //   autoChooser2.addOption("path 1", "1");
+  //   autoChooser2.addDefault("path 2", "2");
+  //   autoChooser2.addOption("path 3", "3");
+  //   autoChooser2.addOption("path 4", "4");
+  //   autoChooser2.addOption("path 5", "5");
+  //   autoChooser2.addOption("path 6", "6");
+  //   autoChooser2.addOption("path 7", "7");
+  //   autoChooser2.addOption("path 8", "8");
+  //   autoChooser2.addOption("path 9", "9");
+  //   autoChooser2.addOption("path 10", "10");
+  //   autoChooser2.addOption("path 11", "11");
+  //   autoChooser2.addOption("path 12", "12");
 
-    autoChooser3.addOption("path 1", "1");
-    autoChooser3.addOption("path 2", "2");
-    autoChooser3.addDefault("path 3", "3");
-    autoChooser3.addOption("path 4", "4");
-    autoChooser3.addOption("path 5", "5");
-    autoChooser3.addOption("path 6", "6");
-    autoChooser3.addOption("path 7", "7");
-    autoChooser3.addOption("path 8", "8");
-    autoChooser3.addOption("path 9", "9");
-    autoChooser3.addOption("path 10", "10");
-    autoChooser3.addOption("path 11", "11");
-    autoChooser3.addOption("path 12", "12");
+  //   autoChooser3.addOption("path 1", "1");
+  //   autoChooser3.addOption("path 2", "2");
+  //   autoChooser3.addDefault("path 3", "3");
+  //   autoChooser3.addOption("path 4", "4");
+  //   autoChooser3.addOption("path 5", "5");
+  //   autoChooser3.addOption("path 6", "6");
+  //   autoChooser3.addOption("path 7", "7");
+  //   autoChooser3.addOption("path 8", "8");
+  //   autoChooser3.addOption("path 9", "9");
+  //   autoChooser3.addOption("path 10", "10");
+    // autoChooser3.addOption("path 11", "11");
+    // autoChooser3.addOption("path 12", "12");
 
-    SmartDashboard.putData("autoChooser/path1", autoChooser1);
-    SmartDashboard.putData("autoChooser/path2", autoChooser2);
-    SmartDashboard.putData("autoChooser/path3", autoChooser3);
+    // SmartDashboard.putData("autoChooser/path1", autoChooser1);
+    // SmartDashboard.putData("autoChooser/path2", autoChooser2);
+    // SmartDashboard.putData("autoChooser/path3", autoChooser3);
 
-    driveTrain.getGyroValues();
-  }
+  //   driveTrain.getGyroValues();
+   //}
 
   /**
    * This function is called every robot packet, no matter the mode. Use this for
@@ -175,6 +207,7 @@ public class Robot extends TimedRobot {
     thirdPath = Integer.parseInt((String) autoChooser3.getSelected());
     String thirdString = String.format(filePath, thirdPath);
 
+   
     //firstPath = Integer.valueOf(SmartDashboard.getString("DB/String 7", "1")) - 1;
     //secondPath = Integer.valueOf(SmartDashboard.getString("DB/String 8", "2")) - 1;
     //thirdPath = Integer.valueOf(SmartDashboard.getString("DB/String 9", "3")) - 1;
@@ -194,6 +227,8 @@ public class Robot extends TimedRobot {
     //elevatorArm.updateSmartDB();
     isDriverControlling = true;
   }
+  
+
 
   /**
    * This function is called periodically during autonomous.

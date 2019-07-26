@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.wpilibj.GyroBase;
 import edu.wpi.first.wpilibj.AnalogGyro;
+import java.util.Map;
+import java.util.Timer;
 
 //import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets.kGyro;
 
@@ -33,9 +35,9 @@ public class DriveTrain {
     private final int rightPort2;
     public final ADIS16448_IMU gyro = new ADIS16448_IMU();
     private boolean throttleMode = true;//formally slowSpeed, side not we're calling the default spped baby mode, outreach mode, or rookie mode
-    private int counter = 0;
+    private int counter = 0;//the hell does this do?
     private boolean drivingOffSpeed;
-    private int throttleDirectionConstant = 1;
+    public int throttleDirectionConstant = 1;
     private boolean throttleForward = true;
     public boolean masteralarm = false;
     public boolean velocityNeverToExcede = false;
@@ -43,6 +45,9 @@ public class DriveTrain {
     public double throttleInput;
     public boolean RvsThrottleWarn;
     public boolean velocityOne;
+    public boolean Brakes;
+    public double VelocityCheck;
+    public double speedbrake;
 
 //Check Number
     
@@ -69,6 +74,7 @@ public class DriveTrain {
         leftMotor2.setNeutralMode(NeutralMode.Brake);
         gyro.reset();
         drivingOffSpeed = false;
+        //SmartDashboard.putNumber("status/gyroprime", gyro);
         SmartDashboard.putBoolean("status/throttleModeEnabled", throttleMode);
         SmartDashboard.putBoolean("status/foward", throttleForward);
         //SmartDashboard.putNumber("status/throttle", 0);
@@ -104,7 +110,8 @@ public class DriveTrain {
             scaledY = -scaledY;
         }
 
-        double throttle1 = throttlePosition.z * -1.00; //isaac helped fix the broken code (ishan messed up the sig figs)
+       // (add this back later) double throttle1 = throttlePosition.z * -1.00; //isaac helped fix the broken code (ishan messed up the sig figs)
+        double throttle1 = 1.00; 
         double throttle2 = (throttleMode == true)?((throttle1+1.00)/2.00):0.40; //Throttle as a value between 1 and 2
         double throttle3 =  throttle2*100.00;
         double thrust1 = (java.lang.Math.abs((throttlePosition.y*1.00)*throttle3)); //Thrust as a value between 1 and 100
@@ -113,19 +120,21 @@ public class DriveTrain {
         for the y input and should Give proportion thrust out put when throtle is enabled)*/
         
         velocityNeverToExcede = (thrust1 > 70.00)? true:false;
-        velocityOne = (thrust1 > 35.00)? true:false;
+        velocityOne = (thrust1 > 20.00)? true:false;
         masteralarm = ((velocityNeverToExcede == true)||(revrSpeedWarn==true)|| (RvsThrottleWarn==true));
         RvsThrottleWarn = ((throttleForward==false) && (throttleMode==true))? (true):(false);
         revrSpeedWarn = ((throttle3>=85.00) && (throttleForward == false) ? (revrSpeedWarn= true) : (revrSpeedWarn = false));
-        SmartDashboard.putBoolean("status/RvsOverSpeed", revrSpeedWarn);
-        SmartDashboard.putBoolean("status/masteralarm", masteralarm);     
-        SmartDashboard.putNumber("status/throttlePrime", (throttle3));
-        //SmartDashboard.putNumberBoolean("status/RvsThrottleWarn",(RvsThrottleMode));
-        SmartDashboard.putNumber("status/thrust", ((thrust1)));
-        SmartDashboard.putBoolean("status/VNE",velocityNeverToExcede);
-        SmartDashboard.putBoolean("status/V1",velocityOne);
-      
-        
+            SmartDashboard.putBoolean("status/RvsOverSpeed", revrSpeedWarn);
+            SmartDashboard.putBoolean("status/masteralarm", masteralarm);     
+            SmartDashboard.putNumber("status/throttlePrime", (throttle3));
+            SmartDashboard.putBoolean("status/RvsThrottleWarn",(RvsThrottleWarn));
+            SmartDashboard.putNumber("status/thrust", ((thrust1)));
+            SmartDashboard.putBoolean("status/VNE",velocityNeverToExcede);
+            SmartDashboard.putBoolean("status/V1",velocityOne);
+            //SmartDashboard.putBoolean("BrakesIndicator",Brakes);
+            //SmartDashboard.putNumber
+        //VelocityCheck = (Brakes == true)?(speedbrake):throttle2;
+        //(throttleMode ? (throttle2) : 0.40 );
         scaledX = scaledX * 0.5 * (throttleMode ? (throttle2) : 0.40 ); 
         scaledY = scaledY * throttleDirectionConstant * (throttleMode ?(throttle2) : 0.40 );
 
@@ -142,28 +151,45 @@ public class DriveTrain {
         rightMotor1.set(ControlMode.PercentOutput, right);
         rightMotor2.follow(rightMotor1);
     }
+   /* public void ToggleBrakesEngager() {
+        speedbrake = -1.00*throttleDirectionConstant ;
+        Brakes = true;
+        try{
+            Thread.sleep(400);
+        }catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+        speedbrake = 0;
+        try{
+            Thread.sleep(200);
+        }catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+        Brakes = false;
+    }
+        
+ */   
 
     public void getGyroValues() {
         SmartDashboard.putNumber("/diagnostics/gryo/x", getGyro().getAngleX());
         SmartDashboard.putNumber("/diagnostics/gryo/y", getGyro().getAngleY());
         SmartDashboard.putNumber("/diagnostics/gryo/z", getGyro().getAngleZ()%360);
-       // SmartDashboard.putData(Sendable Gyro);//sends gyro data
+        //SmartDashboard.putData(Sendable gyro);//sends gyro data
 
         // SmartDashboard.putNumber("diagnostics/gryo/x", getAdjustedAngle('x'));
         // SmartDashboard.putNumber("diagnostics/gryo/y", getAdjustedAngle('y'));
         // SmartDashboard.putNumber("diagnostics/gryo/z", getAdjustedAngle('z'));
     }
- // A bunch of Ishan's crazy code to display PDP that will either help everyone or cre everything up is here. best not to touch it   
-    
- 
- NetworkTableEntry gyroExample = Shuffleboard.getTab("My Tab2")
+
+    NetworkTableEntry gyroExample = Shuffleboard.getTab("My Tab2")
         .add("My Gyro Number", getGyro().getAngleY())
         .withWidget(BuiltInWidgets.kGyro)
-        //.withProperties(Map.of("min", 0, "max", 360))
+        .withProperties(Map.of("min", 0, "max", 360))
         .getEntry();
-    NetworkTableEntry example1 = Shuffleboard.getTab("Tab 4") //(test of number display)
+    NetworkTableEntry example1 = Shuffleboard.getTab("My Tab2") //(test of number display)
         .add("My Number2", 7)
         .withWidget(BuiltInWidgets.kNumberSlider)
+        .withProperties(Map.of("min", 0, "max", 16))
         .getEntry();
 
     // void	clearStickyFaults();	//Clear all PDP sticky faults.
@@ -214,28 +240,28 @@ public class DriveTrain {
         autoUpdateSpeed(0.4, -0.4);
     }
 
-    public double getAdjustedAngle(char c) { // Could easily not work at all
-        double x = Math.toRadians(gyro.getAngleX());
-        double y = Math.toRadians(gyro.getAngleY());
-        double z = Math.toRadians(gyro.getAngleZ());
-        double angle = 70; // Random filler number . offset from vertical/horizontal?
+    // public double getAdjustedAngle(char c) { // Could easily not work at all
+    //     double x = Math.toRadians(gyro.getAngleX());
+    //     double y = Math.toRadians(gyro.getAngleY());
+    //     double z = Math.toRadians(gyro.getAngleZ());
+    //     double angle = 70; // Random filler number . offset from vertical/horizontal?
 
         // had to do lots of converting Radians to degrees bc Math.cos takes radians
         // z = z*cos(angle) - x*sin(angle)
         // x = z*sin(angle) + x*cos(angle)
-        // y = y
-        z = Math.toDegrees(z * Math.cos(Math.toRadians(angle)) - (x * Math.sin(Math.toRadians(angle))));
-        x = Math.toDegrees(z * Math.sin(Math.toRadians(angle)) + (x * Math.cos(Math.toRadians(angle))));
-        y = Math.toDegrees(y);
+    //     // y = y
+    //     z = Math.toDegrees(z * Math.cos(Math.toRadians(angle)) - (x * Math.sin(Math.toRadians(angle))));
+    //     x = Math.toDegrees(z * Math.sin(Math.toRadians(angle)) + (x * Math.cos(Math.toRadians(angle))));
+    //     y = Math.toDegrees(y);
 
-        if (c == 'x') {
-            return x;
-        } else if (c == 'y') {
-            return y;
-        } else {
-            return z;
-        }
-    }
+    //     if (c == 'x') {
+    //         return x;
+    //     } else if (c == 'y') {
+    //         return y;
+    //     } else {
+    //         return z;
+    //     }
+    // }
 
     public void setThrottleDirectionConstant() {
         throttleDirectionConstant *= -1;
