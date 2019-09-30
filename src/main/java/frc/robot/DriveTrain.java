@@ -44,7 +44,7 @@ public class DriveTrain {
     public boolean revrSpeedWarn = false;
     public double throttleInput;
     public boolean RvsThrottleWarn;
-    public boolean velocityOne;
+    public boolean velocityToTurn;
     public boolean Brakes;
     public double VelocityCheck;
     public double speedbrake;
@@ -120,7 +120,7 @@ public class DriveTrain {
         for the y input and should Give proportion thrust out put when throtle is enabled)*/
         
         velocityNeverToExcede = (thrust1 > 70.00)? true:false;
-        velocityOne = (thrust1 > 20.00)? true:false;
+        velocityToTurn = (thrust1 > 20.00)? true:false;
         masteralarm = ((velocityNeverToExcede == true)||(revrSpeedWarn==true)|| (RvsThrottleWarn==true));
         RvsThrottleWarn = ((throttleForward==false) && (throttleMode==true))? (true):(false);
         revrSpeedWarn = ((throttle3>=85.00) && (throttleForward == false) ? (revrSpeedWarn= true) : (revrSpeedWarn = false));
@@ -130,7 +130,7 @@ public class DriveTrain {
             SmartDashboard.putBoolean("status/RvsThrottleWarn",(RvsThrottleWarn));
             SmartDashboard.putNumber("status/thrust", ((thrust1)));
             SmartDashboard.putBoolean("status/VNE",velocityNeverToExcede);
-            SmartDashboard.putBoolean("status/V1",velocityOne);
+            SmartDashboard.putBoolean("status/V1",velocityToTurn);
             //SmartDashboard.putBoolean("BrakesIndicator",Brakes);
             //SmartDashboard.putNumber
         //VelocityCheck = (Brakes == true)?(speedbrake):throttle2;
