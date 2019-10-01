@@ -11,6 +11,9 @@ public class Ports{
     public static final int CLAW_RIGHT = 8;
     public static final int CLAW_LEFT = 6;
 
+    public static final int SOLENIOD_2 = 0;
+    public static final int SOLENIOD_1 = 1;
+
     //sensor ports - need to be set
     public static final int GYRO_PORT = 0;
     public static final int ELEVATOR_ZERO_PORT = 9;
@@ -23,8 +26,8 @@ public class Ports{
     public static final int LINE_SENSOR_RIGHT = 16;
 
     //pwm ports
-    public static final int LEFT_FLYWHEEL_PORT = 0; 
-    public static final int RIGHT_FLYWHEEL_PORT = 1; 
+    public static final int LEFT_FLYWHEEL_PORT = 0; //Check Nummber
+    public static final int RIGHT_FLYWHEEL_PORT = 1;//Check Number
 }
 
 

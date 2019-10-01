@@ -41,6 +41,7 @@ import edu.wpi.first.wpilibj.MotorSafety;
 import edu.wpi.first.wpilibj.drive.RobotDriveBase;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.SpeedControllerGroup.*;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -57,16 +58,17 @@ public class Robot extends TimedRobot {
   private MotionProfiling path;
 
   private boolean isDriverControlling;
+  public final CargoPusher cargoPusher = new CargoPusher(SOLENIOD_1, SOLENIOD_2);
   public final DriveTrain driveTrain = new DriveTrain(LEFT_DRIVETRAIN_1, LEFT_DRIVETRAIN_2, RIGHT_DRIVETAIN_1,
       RIGHT_DRIVETAIN_2, GYRO_PORT);
   private final ElevatorArm elevatorArm = new ElevatorArm(ELEVATOR_PORT, ELEVATOR_ZERO_PORT, ARM_PORT,
       ARM_LIMIT_SWITCH_PORT);
-  private final Grabber grabber = new Grabber(LEFT_FLYWHEEL_PORT, RIGHT_FLYWHEEL_PORT, CLAW_LEFT, CLAW_RIGHT,
-      CLAW_LEFT_LIMIT_SWITCH, CLAW_RIGHT_LIMIT_SWITCH);
+  //private final Grabber grabber = new Grabber(LEFT_FLYWHEEL_PORT, RIGHT_FLYWHEEL_PORT, CLAW_LEFT, CLAW_RIGHT,
+     // CLAW_LEFT_LIMIT_SWITCH, CLAW_RIGHT_LIMIT_SWITCH);
   // private final Arm arm = new Arm(ARM_PORT , ARM_LIMIT_SWITCH_PORT);
 
   private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
-  private final LambdaJoystick joystick2 = new LambdaJoystick(1, grabber::updateSpeed);
+  private final LambdaJoystick joystick2 = new LambdaJoystick(1, driveTrain::updateSpeed);
 
   private String filePath = "path%s";
   private TalonSRX leftMotor = driveTrain.getLeftMotor(), rightMotor = driveTrain.getRightMotor();
@@ -104,8 +106,9 @@ public class Robot extends TimedRobot {
       //joystick1.addButton(12, imageRec::triggerImageRec);
     joystick2.addButton(3, driveTrain::setThrottleDirectionConstant);//flips heading//flips heading
     //joystick2.addButton(1, driveTrain::ToggleBrakesEngager);//Switches Max Speed
-    joystick2.addButton(4, grabber::closeClaw);//each press cycles through to states to make it closes
-    joystick2.addButton(5, grabber::openClaw);//
+   // joystick2.addButton(4, CargoPusher::CargoPusher);//each press cycles through to states to make it closes
+    //joystick2.addButton(5, grabber::openClaw);//
+    joystick2.addButton(1, cargoPusher::extend, cargoPusher::reset);
     joystick2.addButton(6, elevatorArm::distanceHigh);
     joystick2.addButton(7, elevatorArm::cargoRocket);
     joystick2.addButton(8, elevatorArm::lowHatch);
@@ -191,7 +194,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     //elevatorArm.updateSmartDB();
-    grabber.openClaw();
+   // grabber.openClaw();
 
     //elevatorArm.configurePID();
     //grabber.configurePID();
@@ -287,7 +290,7 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     elevatorArm.getPosition();
-    grabber.testEncoderPosition();
+   // grabber.testEncoderPosition();
 
   }
 }
