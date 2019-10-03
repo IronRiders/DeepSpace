@@ -33,7 +33,7 @@ public class ElevatorArm {
     private final double distanceCargoRocket = 8.5;
    // private final int distanceBottom = 0;
     private final double[] elevatorDistances = {distanceLowHatch, distanceCargoRocket , distanceHigh};
-    private int position;
+    public int position;
 
     public ElevatorArm(int elevatorPort , int elevatorlimitSwitchPort , int armPort , int armLimitSwitchPort){
         //SmartDashboard.putNumber("pid/elevator/p", 0.0);
@@ -119,8 +119,8 @@ public class ElevatorArm {
         talon.set(ControlMode.PercentOutput , 0.5);
     }
 
-    public void getPosition(){
-     int position = talon.getSelectedSensorPosition();
+    public int getPosition(){
+        return position;
     }
 
    /* public void elevatorUp(){

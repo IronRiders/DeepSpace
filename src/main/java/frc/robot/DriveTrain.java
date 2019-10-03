@@ -29,11 +29,14 @@ public class DriveTrain {
     private final TalonSRX rightMotor1;
     private final VictorSPX leftMotor2;
     private final VictorSPX rightMotor2;
+    //private final SpeedController leftMotor1, leftMotor2, rightMotor1, rightMotor2;
+    private final Encoder enco;
+    public ADIS16448_IMU gyro;
     private final int leftPort1;
     private final int rightPort1;
     private final int leftPort2;
     private final int rightPort2;
-    public final ADIS16448_IMU gyro = new ADIS16448_IMU();
+   // public final ADIS16448_IMU gyro = new ADIS16448_IMU();
     private boolean throttleMode = true;//formally slowSpeed, side not we're calling the default spped baby mode, outreach mode, or rookie mode
     private int counter = 0;//the hell does this do?
     private boolean drivingOffSpeed;
@@ -48,13 +51,17 @@ public class DriveTrain {
     public boolean Brakes;
     public double VelocityCheck;
     public double speedbrake;
+    public boolean braketoggler=true;
+    boolean rushing = false;
+    
+
 
 //Check Number
     
 
 
     // private double scaledZ = throttlePosition.z;
-    // private double throttle1 = joystick2.scaledZ
+    //public double throttleof2 = //
 
     public DriveTrain(final int leftPort1, final int leftPort2, final int rightPort1, final int rightPort2,
             final int gyroPortNumber) {
@@ -64,23 +71,47 @@ public class DriveTrain {
         rightMotor2 = new VictorSPX(rightPort2);
         leftMotor1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
         rightMotor1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+        enco = new Encoder(8,9);
+        enco.setDistancePerPulse(2.0943/4);
         this.leftPort1 = leftPort1;
         this.leftPort2 = leftPort2;
         this.rightPort1 = rightPort1;
         this.rightPort2 = rightPort2;
+        
+        if (braketoggler = true) {
         rightMotor1.setNeutralMode(NeutralMode.Brake);
         rightMotor2.setNeutralMode(NeutralMode.Brake);
         leftMotor1.setNeutralMode(NeutralMode.Brake);
         leftMotor2.setNeutralMode(NeutralMode.Brake);
-        gyro.reset();
+        }else{ 
+        rightMotor1.setNeutralMode(NeutralMode.Coast);
+        rightMotor2.setNeutralMode(NeutralMode.Coast);
+        leftMotor1.setNeutralMode(NeutralMode.Coast);
+        leftMotor2.setNeutralMode(NeutralMode.Coast);
+        }
+       // gyro.reset();
         drivingOffSpeed = false;
         //SmartDashboard.putNumber("status/gyroprime", gyro);
-        SmartDashboard.putBoolean("status/throttleModeEnabled", throttleMode);
+       // SmartDashboard.putBoolean("status/throttleModeEnabled", throttleMode);
         SmartDashboard.putBoolean("status/foward", throttleForward);
         //SmartDashboard.putNumber("status/throttle", 0);
         // gyroPortNumber should be analong 0 or 1
 
     }
+//Code from here till next commment is setting up for lame drive imitiation, but does nothin aon
+    public double getDistance() {
+        return enco.getRaw()*-0.0002661;
+    }
+
+    public void toggleBrakesMode(){
+        braketoggler=!braketoggler;
+    }
+
+    public void reset() {
+        enco.reset();
+
+    }
+//Normal code resummes after this
 
     public void makeVictorsFollowers() {
         leftMotor2.set(ControlMode.Follower, leftMotor1.getDeviceID());
@@ -88,6 +119,8 @@ public class DriveTrain {
         rightMotor2.set(ControlMode.Follower, rightMotor2.getDeviceID());
         rightMotor2.setInverted(InvertType.FollowMaster);
     }
+
+    
 
     public void updateSpeed(final ThrottlePosition throttlePosition) {
         double scaledX = throttlePosition.x;
@@ -110,8 +143,8 @@ public class DriveTrain {
             scaledY = -scaledY;
         }
 
-       // (add this back later) double throttle1 = throttlePosition.z * -1.00; //isaac helped fix the broken code (ishan messed up the sig figs)
-        double throttle1 = 1.00; 
+        double throttle1 = throttlePosition.z * -1.00; //isaac helped fix the broken code (ishan messed up the sig figs)
+        //double throttle1 = 1.00; 
         double throttle2 = (throttleMode == true)?((throttle1+1.00)/2.00):0.40; //Throttle as a value between 1 and 2
         double throttle3 =  throttle2*100.00;
         double thrust1 = (java.lang.Math.abs((throttlePosition.y*1.00)*throttle3)); //Thrust as a value between 1 and 100
@@ -119,11 +152,11 @@ public class DriveTrain {
         /*in theory creates a value double trust which gives a value between 0 and 1 
         for the y input and should Give proportion thrust out put when throtle is enabled)*/
         
-        velocityNeverToExcede = (thrust1 > 70.00)? true:false;
+        velocityNeverToExcede = (thrust1 >= 85.00)? true:false;
         velocityToTurn = (thrust1 > 20.00)? true:false;
-        masteralarm = ((velocityNeverToExcede == true)||(revrSpeedWarn==true)|| (RvsThrottleWarn==true));
-        RvsThrottleWarn = ((throttleForward==false) && (throttleMode==true))? (true):(false);
-        revrSpeedWarn = ((throttle3>=85.00) && (throttleForward == false) ? (revrSpeedWarn= true) : (revrSpeedWarn = false));
+        masteralarm = (throttle3<=20.00)||((velocityNeverToExcede == true)||((revrSpeedWarn==true)&&(RvsThrottleWarn==true)));
+        RvsThrottleWarn = ((throttleForward==false) && (throttleMode==true))? /*(thrust1 >= 60.00)?*/ (true):(false);
+        revrSpeedWarn = ((throttle3>=55.00) && (throttleForward == false) ? (revrSpeedWarn= true) : (revrSpeedWarn = false));
             SmartDashboard.putBoolean("status/RvsOverSpeed", revrSpeedWarn);
             SmartDashboard.putBoolean("status/masteralarm", masteralarm);     
             SmartDashboard.putNumber("status/throttlePrime", (throttle3));
@@ -170,27 +203,27 @@ public class DriveTrain {
         
  */   
 
-    public void getGyroValues() {
-        SmartDashboard.putNumber("/diagnostics/gryo/x", getGyro().getAngleX());
-        SmartDashboard.putNumber("/diagnostics/gryo/y", getGyro().getAngleY());
-        SmartDashboard.putNumber("/diagnostics/gryo/z", getGyro().getAngleZ()%360);
+    // public void getGyroValues() {
+    //     SmartDashboard.putNumber("/diagnostics/gryo/x", getGyro().getAngleX());
+    //     SmartDashboard.putNumber("/diagnostics/gryo/y", getGyro().getAngleY());
+    //     SmartDashboard.putNumber("/diagnostics/gryo/z", getGyro().getAngleZ()%360);
         //SmartDashboard.putData(Sendable gyro);//sends gyro data
 
         // SmartDashboard.putNumber("diagnostics/gryo/x", getAdjustedAngle('x'));
         // SmartDashboard.putNumber("diagnostics/gryo/y", getAdjustedAngle('y'));
         // SmartDashboard.putNumber("diagnostics/gryo/z", getAdjustedAngle('z'));
-    }
+    //}
 
-    NetworkTableEntry gyroExample = Shuffleboard.getTab("My Tab2")
-        .add("My Gyro Number", getGyro().getAngleY())
-        .withWidget(BuiltInWidgets.kGyro)
-        .withProperties(Map.of("min", 0, "max", 360))
-        .getEntry();
-    NetworkTableEntry example1 = Shuffleboard.getTab("My Tab2") //(test of number display)
-        .add("My Number2", 7)
-        .withWidget(BuiltInWidgets.kNumberSlider)
-        .withProperties(Map.of("min", 0, "max", 16))
-        .getEntry();
+    // NetworkTableEntry gyroExample = Shuffleboard.getTab("My Tab2")
+    //     .add("My Gyro Number", getGyro().getAngleY())
+    //     .withWidget(BuiltInWidgets.kGyro)
+    //     .withProperties(Map.of("min", 0, "max", 360))
+    //     .getEntry();
+    // NetworkTableEntry example1 = Shuffleboard.getTab("My Tab2") //(test of number display)
+    //     .add("My Number2", 7)
+    //     .withWidget(BuiltInWidgets.kNumberSlider)
+    //     .withProperties(Map.of("min", 0, "max", 16))
+    //     .getEntry();
 
     // void	clearStickyFaults();	//Clear all PDP sticky faults.
     // double	getCurrent​(int channel);	//Query the current of a single channel of the PDP.
@@ -220,9 +253,9 @@ public class DriveTrain {
         return rightMotor1;
     }
 
-    public ADIS16448_IMU getGyro() {
-        return gyro;
-    }
+    // public ADIS16448_IMU getGyro() {
+    //     return gyro;
+    // }
 
     public void getEncoderPosition() {
         int encoderPositionLeft = leftMotor1.getSelectedSensorPosition();
@@ -233,7 +266,7 @@ public class DriveTrain {
 
     public void togglethrottleMode() {
         throttleMode = !throttleMode;
-        SmartDashboard.putBoolean("status/throttleModeEnabled", throttleMode);
+        SmartDashboard.putBoolean("status/BabyModeDisabled", throttleMode);
     }
 
     public void cruiseControl() {
@@ -328,8 +361,19 @@ public class DriveTrain {
         } else if (rightControlCount%3==1) {
             stopRightSpeed();
         } else {
-
         }
+        }
+        public void startRush(){
+            reset();
+            rushing = true;
+        }
+    
+        public void endRush(){
+            rushing = false;
+        }
+    {
         leftControlCount++;
     }
+
+    
 }

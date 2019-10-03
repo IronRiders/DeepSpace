@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+//import com.sun.media.sound.SoftLanczosResampler; //suddenly gave an error. Dunno why, or what this does
 
 import static frc.robot.Ports.*;
 
@@ -23,26 +24,29 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import edu.wpi.first.hal.sim.mockdata.PDPDataJNI;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.hal.sim.mockdata.PDPDataJNI;
+// import edu.wpi.first.networktables.NetworkTableEntry;
+// import edu.wpi.first.wpilibj.*;
+// import edu.wpi.first.wpilibj.interfaces.Gyro;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.can.*;
 import frc.robot.LambdaJoystick.ThrottlePosition;
-import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.SendableBase;
-import edu.wpi.first.wpilibj.shuffleboard.*;
-import edu.wpi.first.wpilibj.GyroBase;
-import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.MotorSafety;
-import edu.wpi.first.wpilibj.drive.RobotDriveBase;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.SpeedControllerGroup.*;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
+// All Implemented Interfaces:
+// import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+// import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+// import edu.wpi.first.wpilibj.SendableBase;
+// import edu.wpi.first.wpilibj.shuffleboard.*;
+// import edu.wpi.first.wpilibj.GyroBase;
+// import edu.wpi.first.wpilibj.AnalogGyro;
+// import edu.wpi.first.wpilibj.SpeedControllerGroup;
+// import edu.wpi.first.wpilibj.MotorSafety;
+// import edu.wpi.first.wpilibj.drive.RobotDriveBase;
+// import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+// import edu.wpi.first.wpilibj.SpeedControllerGroup.*;
+// import edu.wpi.first.wpilibj.DoubleSolenoid;
+// import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -54,17 +58,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
  * project.
  */
 public class Robot extends TimedRobot {
-  //private String pathFiles[] = new String[12];
+  //private StrinclawpathFiles[] = new String[12];
   private MotionProfiling path;
 
   private boolean isDriverControlling;
   public final CargoPusher cargoPusher = new CargoPusher(SOLENIOD_1, SOLENIOD_2);
+  public final HatchGrabbyThingy hatchGrabbyThingy = new HatchGrabbyThingy(SOLENIOD_3, SOLENIOD_4, SOLENIOD_5, SOLENIOD_6);
   public final DriveTrain driveTrain = new DriveTrain(LEFT_DRIVETRAIN_1, LEFT_DRIVETRAIN_2, RIGHT_DRIVETAIN_1,
       RIGHT_DRIVETAIN_2, GYRO_PORT);
   private final ElevatorArm elevatorArm = new ElevatorArm(ELEVATOR_PORT, ELEVATOR_ZERO_PORT, ARM_PORT,
       ARM_LIMIT_SWITCH_PORT);
-  //private final Grabber grabber = new Grabber(LEFT_FLYWHEEL_PORT, RIGHT_FLYWHEEL_PORT, CLAW_LEFT, CLAW_RIGHT,
-     // CLAW_LEFT_LIMIT_SWITCH, CLAW_RIGHT_LIMIT_SWITCH);
+  
   // private final Arm arm = new Arm(ARM_PORT , ARM_LIMIT_SWITCH_PORT);
 
   private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
@@ -92,29 +96,30 @@ public class Robot extends TimedRobot {
      //diffDrive.init();
     CameraServer.getInstance().startAutomaticCapture();
     CameraServer.getInstance().startAutomaticCapture();
+   
 
     //updateSmartDB();
     //normallry for J1 Button 1 changes toogles what the front of the robot is defiend as, in this version we're trying to see if we can set cruise contorl to buton one and exchae the buttons for cruiuse control and toggle direction
-   
-     joystick1.addButton(1, driveTrain::cruiseControl , driveTrain::stopDriveMotors);//Hold Line
+      joystick1.addButton(1, driveTrain::startRush, driveTrain::endRush);
+     joystick1.addButton(5, driveTrain::cruiseControl , driveTrain::stopDriveMotors);//Hold Line
+     //above line doesnt seem to work...
      joystick1.addButton(2, driveTrain::setThrottleDirectionConstant);//flips heading
      joystick1.addButton(3, driveTrain::togglethrottleMode);//Switches Max Speed
-     joystick1.addButton(4, driveTrain::setDrivingOffSpeed);//I also have no idea what this does
-     //joystick1.addButton(5, driveTrain::);
-    joystick1.addButton(11, this::changeDriverControl);//Toggles Auto?
+     joystick1.addButton(4, driveTrain::toggleBrakesMode);//swutches motrs from brake to coast. default is brake
+     joystick1.addButton(11, this::changeDriverControl);//Toggles Auto?
 
       //joystick1.addButton(12, imageRec::triggerImageRec);
-    joystick2.addButton(3, driveTrain::setThrottleDirectionConstant);//flips heading//flips heading
     //joystick2.addButton(1, driveTrain::ToggleBrakesEngager);//Switches Max Speed
-   // joystick2.addButton(4, CargoPusher::CargoPusher);//each press cycles through to states to make it closes
-    //joystick2.addButton(5, grabber::openClaw);//
-    joystick2.addButton(1, cargoPusher::extend, cargoPusher::reset);
+
+    joystick2.addButton(1, cargoPusher::drop, cargoPusher::lock);;
+    joystick2.addButton(2, driveTrain::setThrottleDirectionConstant);//flips heading//flips heading
+    joystick2.addButton(3, hatchGrabbyThingy::grabHatch,hatchGrabbyThingy::releaseHatch);;
     joystick2.addButton(6, elevatorArm::distanceHigh);
     joystick2.addButton(7, elevatorArm::cargoRocket);
     joystick2.addButton(8, elevatorArm::lowHatch);
     joystick2.addButton(10, driveTrain::leftControl); 
     joystick2.addButton(11, driveTrain::rightControl);
-    driveTrain.gyro.calibrate();
+    // driveTrain.gyro.calibrate();
    }
     
     
@@ -194,10 +199,10 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     //elevatorArm.updateSmartDB();
-   // grabber.openClaw();
+   
 
     //elevatorArm.configurePID();
-    //grabber.configurePID();
+    
     /*
     isDriverControlling = false;
 
@@ -226,7 +231,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    //grabber.configurePID();
+    
     //elevatorArm.updateSmartDB();
     isDriverControlling = true;
   }
@@ -247,11 +252,7 @@ public class Robot extends TimedRobot {
     } else if (path.isFinished()) {
       path.increasePathIndex();
       elevatorArm.lowHatch();
-     // if (path.getPathIndex() % 2 == 0) {
-       // grabber.closed();
-      //} else {
-       // grabber.hatch();
-      //}
+    
       try {
         path.initializePath();
       } catch (IOException e) {
@@ -271,7 +272,7 @@ public class Robot extends TimedRobot {
    // elevatorArm.updateSmartDB();
     joystick1.listen();
     joystick2.listen();
-    driveTrain.getGyroValues();
+   // driveTrain.getGyroValues();
   }
 
   public void changeDriverControl() {
@@ -290,7 +291,11 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     elevatorArm.getPosition();
-   // grabber.testEncoderPosition();
 
+
+  }
+
+  public int getPosition() {
+    return elevatorArm.getPosition();
   }
 }

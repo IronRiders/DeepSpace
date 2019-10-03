@@ -13,6 +13,10 @@ public class Ports{
 
     public static final int SOLENIOD_2 = 0;
     public static final int SOLENIOD_1 = 1;
+    public static final int SOLENIOD_3 = 2;
+    public static final int SOLENIOD_4 = 3;
+    public static final int SOLENIOD_5 = 4;
+    public static final int SOLENIOD_6 = 5;
 
     //sensor ports - need to be set
     public static final int GYRO_PORT = 0;

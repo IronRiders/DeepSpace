@@ -64,4 +64,4 @@
 // //     public double getVoltage()	//Query the input voltage of the PDP.
 // //     public void	initSendable​(SendableBuilder builder)	//Initializes this Sendable object.
 // //     public void	resetTotalEnergy()	//Reset the total energy to 0.
-// //     public void	clearStickyFaults()	//Clear all PDP sticky faults.
+// //     
