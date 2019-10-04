@@ -10,7 +10,8 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.can.*;
-import frc.robot.LambdaJoystick.ThrottlePosition;
+//import frc.robot.LambdaJoystick.ThrottlePosition;
+import frc.robot.LambdaJoystick4axis.ThrottlePosition;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.SendableBase;
@@ -125,7 +126,7 @@ public class DriveTrain {
     public void updateSpeed(final ThrottlePosition throttlePosition) {
         double scaledX = throttlePosition.x;
         double scaledY = throttlePosition.y;
-        double scaledZ = throttlePosition.z;
+        double scaledZ = throttlePosition.w;
         double scaleFactorA = 0.3;
         double scaleFactorB = 0.7;
         // Top is X scale bottem is Y
@@ -143,7 +144,7 @@ public class DriveTrain {
             scaledY = -scaledY;
         }
 
-        double throttle1 = throttlePosition.z * -1.00; //isaac helped fix the broken code (ishan messed up the sig figs)
+        double throttle1 = throttlePosition.w * -1.00; //isaac helped fix the broken code (ishan messed up the sig figs)
         //double throttle1 = 1.00; 
         double throttle2 = (throttleMode == true)?((throttle1+1.00)/2.00):0.40; //Throttle as a value between 1 and 2
         double throttle3 =  throttle2*100.00;

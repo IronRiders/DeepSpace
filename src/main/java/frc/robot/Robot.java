@@ -30,7 +30,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 // import edu.wpi.first.wpilibj.interfaces.Gyro;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.can.*;
-import frc.robot.LambdaJoystick.ThrottlePosition;
+import frc.robot.LambdaJoystick4axis.ThrottlePosition;
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 // All Implemented Interfaces:
@@ -71,8 +71,8 @@ public class Robot extends TimedRobot {
   
   // private final Arm arm = new Arm(ARM_PORT , ARM_LIMIT_SWITCH_PORT);
 
-  private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
-  private final LambdaJoystick joystick2 = new LambdaJoystick(1, driveTrain::updateSpeed);
+  private final LambdaJoystick4axis joystick1 = new LambdaJoystick4axis(0, driveTrain::updateSpeed);
+  private final LambdaJoystick4axis joystick2 = new LambdaJoystick4axis(1, driveTrain::updateSpeed);
 
   private String filePath = "path%s";
   private TalonSRX leftMotor = driveTrain.getLeftMotor(), rightMotor = driveTrain.getRightMotor();
