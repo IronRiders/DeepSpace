@@ -144,7 +144,7 @@ public class DriveTrain {
             scaledY = -scaledY;
         }
 
-        double throttle1 = throttlePosition.w * -1.00; //isaac helped fix the broken code (ishan messed up the sig figs)
+        double throttle1 = 1.00 * -1.00; //isaac helped fix the broken code (ishan messed up the sig figs)
         //double throttle1 = 1.00; 
         double throttle2 = (throttleMode == true)?((throttle1+1.00)/2.00):0.40; //Throttle as a value between 1 and 2
         double throttle3 =  throttle2*100.00;
@@ -167,7 +167,8 @@ public class DriveTrain {
             SmartDashboard.putBoolean("status/V1",velocityToTurn);
             //SmartDashboard.putBoolean("BrakesIndicator",Brakes);
             //SmartDashboard.putNumber
-        //VelocityCheck = (Brakes == true)?(speedbrake):throttle2;
+
+            //VelocityCheck = (Brakes == true)?(speedbrake):throttle2;
         //(throttleMode ? (throttle2) : 0.40 );
         scaledX = scaledX * 0.5 * (throttleMode ? (throttle2) : 0.40 ); 
         scaledY = scaledY * throttleDirectionConstant * (throttleMode ?(throttle2) : 0.40 );
