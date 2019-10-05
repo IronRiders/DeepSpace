@@ -176,10 +176,11 @@ public class DriveTrain {
         //     scaledY = scaledY * (drivingOffSpeed ? 0.40 : (throttle1+1.00));
         // }
 
-        final double right = (-scaledX - scaledY) * -1;
+        final double right =((-scaledX - scaledY) * -1)+throttlePosition.z;
         final double left = (scaledY - scaledX) * -1;
+        
+       
         leftMotor1.set(ControlMode.PercentOutput, left);
-
         leftMotor2.follow(leftMotor1);
         rightMotor1.set(ControlMode.PercentOutput, right);
         rightMotor2.follow(rightMotor1);
