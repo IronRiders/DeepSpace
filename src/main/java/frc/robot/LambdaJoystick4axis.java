@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Joystick;
 
 public class LambdaJoystick4axis extends Joystick {
     private Button[] buttons = new Button[11];
+
     private Consumer<ThrottlePosition> joystickListener;
 
     /**

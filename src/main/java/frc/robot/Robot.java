@@ -33,6 +33,7 @@ import com.ctre.phoenix.motorcontrol.can.*;
 import frc.robot.LambdaJoystick4axis.ThrottlePosition;
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+//import frc.robot.POVListener;
 // All Implemented Interfaces:
 // import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 // import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -61,6 +62,8 @@ public class Robot extends TimedRobot {
   //private StrinclawpathFiles[] = new String[12];
   private MotionProfiling path;
 
+  public boolean testvalue = true;
+  
   private boolean isDriverControlling;
   public final CargoPusher cargoPusher = new CargoPusher(SOLENIOD_1, SOLENIOD_2);
   public final HatchGrabbyThingy hatchGrabbyThingy = new HatchGrabbyThingy(SOLENIOD_3, SOLENIOD_4, SOLENIOD_5, SOLENIOD_6);
@@ -119,6 +122,7 @@ public class Robot extends TimedRobot {
     joystick2.addButton(8, elevatorArm::lowHatch);
     joystick2.addButton(10, driveTrain::leftControl); 
     joystick2.addButton(11, driveTrain::rightControl);
+  
     // driveTrain.gyro.calibrate();
    }
     
@@ -270,8 +274,17 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
    // elevatorArm.updateSmartDB();
+   
     joystick1.listen();
     joystick2.listen();
+    int direction = joystick1.getPOV(0);
+
+ if (direction == 0) { 
+   testvalue = !testvalue;
+} else if (direction == 180) { 
+  driveTrain.togglethrottleMode();
+}
+
    // driveTrain.getGyroValues();
   }
 
