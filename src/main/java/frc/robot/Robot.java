@@ -97,6 +97,8 @@ public class Robot extends TimedRobot {
    @Override
    public void robotInit() {
      //diffDrive.init();
+     joystick1.listen();
+     joystick2.listen();
     CameraServer.getInstance().startAutomaticCapture();
     CameraServer.getInstance().startAutomaticCapture();
    
@@ -238,6 +240,8 @@ public class Robot extends TimedRobot {
     
     //elevatorArm.updateSmartDB();
     isDriverControlling = true;
+    joystick1.listen();
+    joystick2.listen();
   }
   
 
