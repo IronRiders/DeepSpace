@@ -129,7 +129,9 @@ public class Robot extends TimedRobot {
 
     joystick2.addButton(1, cargoPusher::drop, cargoPusher::lock);;
     joystick2.addButton(2, driveTrain::setThrottleDirectionConstant);//flips heading//flips heading
-    joystick2.addButton(3, hatchGrabbyThingy::grabHatch,hatchGrabbyThingy::releaseHatch);;
+    //joystick2.addButton(3, hatchGrabbyThingy::grab,hatchGrabbyThingy::release);
+    joystick2.addButton(3, hatchGrabbyThingy::grab, hatchGrabbyThingy::release);
+    joystick2.addButton(4, hatchGrabbyThingy::extend, hatchGrabbyThingy::reteract);
     joystick2.addButton(6, elevatorArm::distanceHigh);
     joystick2.addButton(7, elevatorArm::cargoRocket);
     joystick2.addButton(8, elevatorArm::lowHatch);
