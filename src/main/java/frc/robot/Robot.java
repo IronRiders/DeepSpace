@@ -72,9 +72,10 @@ public class Robot extends TimedRobot {
     joystick1.addButton(1 , driveTrain::setThrottleDirectionConstant);
     //joystick1.addButton(12, imageRec::triggerImageRec);
 
-    joystick2.addButton(9, elevatorArm::lowHatch);
-    joystick2.addButton(8, elevatorArm::cargoRocket);
-    joystick2.addButton(7, elevatorArm::distanceHigh);
+    // joystick2.addButton(9, elevatorArm::lowHatch);
+    // joystick2.addButton(8, elevatorArm::cargoRocket);
+    // joystick2.addButton(7, elevatorArm::distanceHigh);
+    //Elevator restiriced not in use for GG
  
     autoChooser1.addDefault("path 1", "1");
     autoChooser1.addOption("path 2", "2");
@@ -153,7 +154,7 @@ public class Robot extends TimedRobot {
 
     //elevatorArm.configurePID();
     //grabber.configurePID();
-    /*
+    
     isDriverControlling = false;
 
     int firstPath, secondPath, thirdPath;
@@ -175,7 +176,7 @@ public class Robot extends TimedRobot {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    */
+    
   }
 
   @Override
@@ -192,7 +193,7 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     joystick1.listen();
     joystick2.listen();
- /*   elevatorArm.updateSmartDB();
+    elevatorArm.updateSmartDB();
     if (isDriverControlling) {
       joystick1.listen();
       joystick2.listen();
@@ -212,7 +213,6 @@ public class Robot extends TimedRobot {
     } else {
       path.update();
     }
-    */
   }
 
   /**

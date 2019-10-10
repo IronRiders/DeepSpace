@@ -31,26 +31,26 @@ public class DriveTrain {
     private boolean throttleForward = true;
 
     public DriveTrain(final int leftPort1, final int leftPort2, final int rightPort1, final int rightPort2, final int gyroPortNumber) {
-            leftMotor1 = new TalonSRX(leftPort1);
-            leftMotor2 = new VictorSPX(leftPort2);
-            rightMotor1 = new TalonSRX(rightPort1);
-            rightMotor2 = new VictorSPX(rightPort2);
-            leftMotor1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-            rightMotor1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-            this.leftPort1 = leftPort1;
-            this.leftPort2 = leftPort2;
-            this.rightPort1 = rightPort1;
-            this.rightPort2 = rightPort2;
-            rightMotor1.setNeutralMode(NeutralMode.Brake);
-            rightMotor2.setNeutralMode(NeutralMode.Brake);
-            leftMotor1.setNeutralMode(NeutralMode.Brake);
-            leftMotor2.setNeutralMode(NeutralMode.Brake);
-            gyro.reset();
-            slowSpeed = true;
-            drivingOffSpeed = false;
-            SmartDashboard.putBoolean("status/slowSpeedEnabled", slowSpeed);
-            SmartDashboard.putBoolean("status/foward", throttleForward);
-            //gyroPortNumber should be analong 0 or 1
+        leftMotor1 = new TalonSRX(leftPort1);
+        leftMotor2 = new VictorSPX(leftPort2);
+        rightMotor1 = new TalonSRX(rightPort1);
+        rightMotor2 = new VictorSPX(rightPort2);
+        leftMotor1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+        rightMotor1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+        this.leftPort1 = leftPort1;
+        this.leftPort2 = leftPort2;
+        this.rightPort1 = rightPort1;
+        this.rightPort2 = rightPort2;
+        rightMotor1.setNeutralMode(NeutralMode.Brake);
+        rightMotor2.setNeutralMode(NeutralMode.Brake);
+        leftMotor1.setNeutralMode(NeutralMode.Brake);
+        leftMotor2.setNeutralMode(NeutralMode.Brake);
+        gyro.reset();
+        slowSpeed = true;
+        drivingOffSpeed = false;
+        SmartDashboard.putBoolean("status/slowSpeedEnabled", slowSpeed);
+        SmartDashboard.putBoolean("status/foward", throttleForward);
+        //gyroPortNumber should be analong 0 or 1
 
     }
 
