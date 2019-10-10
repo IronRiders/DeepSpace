@@ -53,6 +53,7 @@ public class DriveTrain {
     public double speedbrake;
     public boolean braketoggler=true;
     boolean rushing = false;
+    public boolean masterSafteyOff =true;
     
 
 
@@ -89,6 +90,10 @@ public class DriveTrain {
         leftMotor1.setNeutralMode(NeutralMode.Coast);
         leftMotor2.setNeutralMode(NeutralMode.Coast);
         }
+
+
+
+
        // gyro.reset();
         drivingOffSpeed = false;
         //SmartDashboard.putNumber("status/gyroprime", gyro);
@@ -107,6 +112,12 @@ public class DriveTrain {
         braketoggler=!braketoggler;
     }
 
+    public void armMasterSaftey(){
+        masterSafteyOff=true;
+    }
+    public void disarmMasterSaftey(){
+        masterSafteyOff=false;
+    }
     public void reset() {
         enco.reset();
 
@@ -157,26 +168,30 @@ public class DriveTrain {
         masteralarm = (throttle3<=20.00)||((velocityNeverToExcede == true)||((revrSpeedWarn==true)&&(RvsThrottleWarn==true)));
         RvsThrottleWarn = ((throttleForward==false) && (throttleMode==true))? /*(thrust1 >= 60.00)?*/ (true):(false);
         revrSpeedWarn = ((throttle3>=55.00) && (throttleForward == false) ? (revrSpeedWarn= true) : (revrSpeedWarn = false));
-            SmartDashboard.putBoolean("status/RvsOverSpeed", revrSpeedWarn);
-            SmartDashboard.putBoolean("status/masteralarm", masteralarm);     
+            SmartDashboard.putBoolean("Alarms/RvsOverSpeed", revrSpeedWarn);
+            SmartDashboard.putBoolean("Alarms/masteralarm", masteralarm);     
             SmartDashboard.putNumber("status/throttlePrime", (throttle3));
-            SmartDashboard.putBoolean("status/RvsThrottleWarn",(RvsThrottleWarn));
+            SmartDashboard.putBoolean("Alarms/RvsThrottleWarn",(RvsThrottleWarn));
             SmartDashboard.putNumber("status/thrust", ((thrust1)));
-            SmartDashboard.putBoolean("status/VNE",velocityNeverToExcede);
-            SmartDashboard.putBoolean("status/V1",velocityToTurn);
+            SmartDashboard.putNumber("raw data/Xraw", throttlePosition.x);
+            SmartDashboard.putNumber("raw data/Yraw", throttlePosition.y);
+            SmartDashboard.putNumber("raw data/Zraw", throttlePosition.z);
+            SmartDashboard.putBoolean("Alarms/VNE",velocityNeverToExcede);
+            SmartDashboard.putBoolean("Alarms/V1",velocityToTurn);
+            SmartDashboard.putBoolean("status/RobotArmed",masterSafteyOff);
             //SmartDashboard.putBoolean("BrakesIndicator",Brakes);
             //SmartDashboard.putNumber
         //VelocityCheck = (Brakes == true)?(speedbrake):throttle2;
         //(throttleMode ? (throttle2) : 0.40 );
-        scaledX = scaledX * 0.5 * (throttleMode ? (throttle2) : 0.40 ); 
-        scaledY = scaledY * throttleDirectionConstant * (throttleMode ?(throttle2) : 0.40 );
+        scaledX = (scaledX * 0.5 * (throttleMode ? (throttle2) : 0.70 )); 
+        scaledY = scaledY * throttleDirectionConstant * (throttleMode ?(throttle2) : 0.70 );
 
         // if (throttleMode == false) {
         //     scaledX = scaledX * (drivingOffSpeed ? 0.27 : (throttle1+1.00));//note to self: default is .5 , .75 I assumed the they were proportinal so sclaed it by a factor of 40/7
         //     scaledY = scaledY * (drivingOffSpeed ? 0.40 : (throttle1+1.00));
         // }
 
-        final double right =((-scaledX - scaledY) * -1)+throttlePosition.z;
+        final double right =((-scaledX - scaledY) * -1)+throttlePosition.z; //why plus throttle z?
         final double left = (scaledY - scaledX) * -1;
         
        

@@ -66,8 +66,10 @@ public class Robot extends TimedRobot {
   public final HatchGrabbyThingy hatchGrabbyThingy = new HatchGrabbyThingy(SOLENIOD_3, SOLENIOD_4, SOLENIOD_5, SOLENIOD_6);
   public final DriveTrain driveTrain = new DriveTrain(LEFT_DRIVETRAIN_1, LEFT_DRIVETRAIN_2, RIGHT_DRIVETAIN_1,
       RIGHT_DRIVETAIN_2, GYRO_PORT);
+      boolean masterSafteyOff;
   private final ElevatorArm elevatorArm = new ElevatorArm(ELEVATOR_PORT, ELEVATOR_ZERO_PORT, ARM_PORT,
       ARM_LIMIT_SWITCH_PORT);
+ 
   
   // private final Arm arm = new Arm(ARM_PORT , ARM_LIMIT_SWITCH_PORT);
 
@@ -76,6 +78,10 @@ public class Robot extends TimedRobot {
 
   private String filePath = "path%s";
   private TalonSRX leftMotor = driveTrain.getLeftMotor(), rightMotor = driveTrain.getRightMotor();
+ 
+
+
+ 
   //private final ImageRecognition imageRec = new ImageRecognition(driveTrain, rightMotor, leftMotor, elevatorArm);
 
   // SendableChooser autoChooser1 = new SendableChooser();
@@ -91,16 +97,26 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
    */
+  /**
+   * @return the masterSafteyOff
+   */
+  public boolean isMasterSafteyOff() {
+    return masterSafteyOff;}
+    
+  
    @Override
    public void robotInit() {
      //diffDrive.init();
+     joystick1.addButton(1, driveTrain::armMasterSaftey);
+     joystick1.addButton(12, driveTrain::disarmMasterSaftey);
+     if (masterSafteyOff == true){
     CameraServer.getInstance().startAutomaticCapture();
     CameraServer.getInstance().startAutomaticCapture();
    
-
+   
     //updateSmartDB();
-    //normallry for J1 Button 1 changes toogles what the front of the robot is defiend as, in this version we're trying to see if we can set cruise contorl to buton one and exchae the buttons for cruiuse control and toggle direction
-      joystick1.addButton(1, driveTrain::startRush, driveTrain::endRush);
+    //normally for J1 Button 1 changes toogles what the front of the robot is defiend as, in this version we're trying to see if we can set cruise contorl to buton one and exchae the buttons for cruiuse control and toggle direction
+    
      joystick1.addButton(5, driveTrain::cruiseControl , driveTrain::stopDriveMotors);//Hold Line
      //above line doesnt seem to work...
      joystick1.addButton(2, driveTrain::setThrottleDirectionConstant);//flips heading
@@ -178,7 +194,9 @@ public class Robot extends TimedRobot {
    * <p>
    * This runs after the mode specific periodic functions, but before LiveWindow
    * and SmartDashboard integrated updating.
+   *
    */
+  }
   @Override
   public void robotPeriodic() {
 
@@ -243,8 +261,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    joystick1.listen();
-    joystick2.listen();
+    if (masterSafteyOff == true){
+      joystick1.listen();
+      joystick2.listen();
+    }
+  }
  /*   elevatorArm.updateSmartDB();
     if (isDriverControlling) {
       joystick1.listen();
@@ -262,19 +283,22 @@ public class Robot extends TimedRobot {
       path.update();
     }
     */
-  }
+  
 
   /**
    * This function is called periodically during operator control.
    */
   @Override
+  
   public void teleopPeriodic() {
+    if (masterSafteyOff == true){
    // elevatorArm.updateSmartDB();
     joystick1.listen();
     joystick2.listen();
    // driveTrain.getGyroValues();
+    }
   }
-
+ 
   public void changeDriverControl() {
     this.isDriverControlling = !isDriverControlling;
   }
@@ -298,4 +322,5 @@ public class Robot extends TimedRobot {
   public int getPosition() {
     return elevatorArm.getPosition();
   }
-}
+ }
+
