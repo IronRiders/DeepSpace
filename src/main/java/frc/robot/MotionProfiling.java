@@ -1,21 +1,21 @@
 package frc.robot;
 
-import java.io.File;
+// import java.io.File;
 import java.io.IOException;
 
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import jaci.pathfinder.*;
 import jaci.pathfinder.followers.EncoderFollower;
-import jaci.pathfinder.modifiers.TankModifier;
+// import jaci.pathfinder.modifiers.TankModifier;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
+// import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 
 public class MotionProfiling {
-    private DriveTrain driveTrain;
-    private final double wheelBaseWidth = 2.25; // Width in feet  
+    // private DriveTrain driveTrain;
+    // private final double wheelBaseWidth = 2.25; // Width in feet  
     private final double wheelDiameter = 0.5; //ft
     private final TalonSRX leftMotor;
     private final TalonSRX rightMotor;
@@ -28,7 +28,7 @@ public class MotionProfiling {
 
 
     public MotionProfiling(DriveTrain driveTrain, String setup1 , String setup2 , String setup3) throws IOException {
-        this.driveTrain = driveTrain;
+        // this.driveTrain = driveTrain;
         leftMotor = driveTrain.getLeftMotor();
         rightMotor = driveTrain.getRightMotor();
         pathFiles = new String[] {setup1, setup2 , setup3};
@@ -52,11 +52,11 @@ public class MotionProfiling {
         right.configurePIDVA(0.9, 0.0, 0.0, 1 / maxVelocity, 0);
     }
     public void update() { 
-            double l = left.calculate(leftMotor.getSelectedSensorPosition());
-            double r = right.calculate(rightMotor.getSelectedSensorPosition());
+            // double l = left.calculate(leftMotor.getSelectedSensorPosition());
+            // double r = right.calculate(rightMotor.getSelectedSensorPosition());
            // double gyroHeading = driveTrain.getGyro().getAngleX();
          //   double gyroHeading = driveTrain.getAdjustedAngle('x');   // Assuming the gyro is giving a value in degrees
-            double desiredHeading = -Pathfinder.r2d(left.getHeading());  // Should also be in degrees
+            // double desiredHeading = -Pathfinder.r2d(left.getHeading());  // Should also be in degrees
     
            // double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
            // double turn = 0.8 * (-1.0/80.0) * angleDifference;

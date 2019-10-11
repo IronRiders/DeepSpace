@@ -5,13 +5,13 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.revrobotics.CANEncoder;
-import com.revrobotics.CANPIDController;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+// import com.revrobotics.CANEncoder;
+// import com.revrobotics.CANPIDController;
+// import com.revrobotics.CANSparkMax;
+// import com.revrobotics.ControlType;
+// import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.DigitalInput;
+// import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ElevatorArm {
@@ -25,14 +25,14 @@ public class ElevatorArm {
     private final int pulsesPerRevolution = 4096;
     private final double multiplier = 1.3;
 
-    private final int distancePickUp = 0; 
+    // private final int distancePickUp = 0; 
  
     //elevator
     private final double distanceLowHatch = 0;
     private final double distanceHigh = 18;
     private final double distanceCargoRocket = 8.5;
    // private final int distanceBottom = 0;
-    private final double[] elevatorDistances = {distanceLowHatch, distanceCargoRocket , distanceHigh};
+    // private final double[] elevatorDistances = {distanceLowHatch, distanceCargoRocket , distanceHigh};
     public int position;
 
     public ElevatorArm(int elevatorPort , int elevatorlimitSwitchPort , int armPort , int armLimitSwitchPort){
@@ -73,10 +73,10 @@ public class ElevatorArm {
     //@param distance is in inches
     public void moveElevator(double distance){
         talon.setIntegralAccumulator(0);
-        int talonPosition =  talon.getSelectedSensorPosition();
+        // int talonPosition =  talon.getSelectedSensorPosition();
         double totalPulses = (distance/(diameter*Math.PI)) * pulsesPerRevolution * multiplier;
         talon.set(ControlMode.MotionMagic, totalPulses);
-        double pulsesAfter = talon.getSelectedSensorPosition();
+        // double pulsesAfter = talon.getSelectedSensorPosition();
         updateSmartDB();
     }
 
@@ -104,15 +104,15 @@ public class ElevatorArm {
     public void test(){
         talon.setSelectedSensorPosition(0);
         talon.setIntegralAccumulator(0);
-        int initialPosition = talon.getSelectedSensorPosition();
+        // int initialPosition = talon.getSelectedSensorPosition();
         talon.set(ControlMode.Position, 1000);
         Faults fault = new Faults();
         talon.getFaults(fault);
-        double motorVoltage = talon.getMotorOutputVoltage();
+        // double motorVoltage = talon.getMotorOutputVoltage();
         
-        double pulsesAfter = talon.getSelectedSensorPosition();
-        int closedLoopError = talon.getClosedLoopError();
-        double motorOutput = talon.getMotorOutputPercent();
+        // double pulsesAfter = talon.getSelectedSensorPosition();
+        // int closedLoopError = talon.getClosedLoopError();
+        // double motorOutput = talon.getMotorOutputPercent();
     }
 
     public void testPower(){

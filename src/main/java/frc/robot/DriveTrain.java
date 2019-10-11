@@ -5,20 +5,20 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import edu.wpi.first.networktables.NetworkTableEntry;
+// import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
+// import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.can.*;
 import frc.robot.LambdaJoystick.ThrottlePosition;
-import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.SendableBase;
-import edu.wpi.first.wpilibj.shuffleboard.*;
-import edu.wpi.first.wpilibj.GyroBase;
-import edu.wpi.first.wpilibj.AnalogGyro;
-import java.util.Map;
-import java.util.Timer;
+// import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+// import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+// import edu.wpi.first.wpilibj.SendableBase;
+// import edu.wpi.first.wpilibj.shuffleboard.*;
+// import edu.wpi.first.wpilibj.GyroBase;
+// import edu.wpi.first.wpilibj.AnalogGyro;
+// import java.util.Map;
+// import java.util.Timer;
 
 //import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets.kGyro;
 
@@ -32,13 +32,14 @@ public class DriveTrain {
     //private final SpeedController leftMotor1, leftMotor2, rightMotor1, rightMotor2;
     private final Encoder enco;
     public ADIS16448_IMU gyro;
-    private final int leftPort1;
-    private final int rightPort1;
-    private final int leftPort2;
-    private final int rightPort2;
+    // private final int leftPort1;
+    // private final int rightPort1;
+    // private final int leftPort2;
+    // private final int rightPort2;
    // public final ADIS16448_IMU gyro = new ADIS16448_IMU();
-    private boolean throttleMode = true;//formally slowSpeed, side not we're calling the default spped baby mode, outreach mode, or rookie mode
-    private int counter = 0;//the hell does this do?
+    
+   private boolean throttleMode = true;//formally slowSpeed, side not we're calling the default spped baby mode, outreach mode, or rookie mode
+    //private int counter = 0;//the hell does this do?
     private boolean drivingOffSpeed;
     public int throttleDirectionConstant = 1;
     private boolean throttleForward = true;
@@ -51,7 +52,7 @@ public class DriveTrain {
     public boolean Brakes;
     public double VelocityCheck;
     public double speedbrake;
-    public boolean braketoggler=true;
+    public boolean braketoggler = true;
     boolean rushing = false;
     public boolean masterSafteyOff =true;
     
@@ -74,12 +75,12 @@ public class DriveTrain {
         rightMotor1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
         enco = new Encoder(8,9);
         enco.setDistancePerPulse(2.0943/4);
-        this.leftPort1 = leftPort1;
-        this.leftPort2 = leftPort2;
-        this.rightPort1 = rightPort1;
-        this.rightPort2 = rightPort2;
+        // this.leftPort1 = leftPort1;
+        // this.leftPort2 = leftPort2;
+        // this.rightPort1 = rightPort1;
+        // this.rightPort2 = rightPort2;
         
-        if (braketoggler = true) {
+        if (braketoggler == true) {
         rightMotor1.setNeutralMode(NeutralMode.Brake);
         rightMotor2.setNeutralMode(NeutralMode.Brake);
         leftMotor1.setNeutralMode(NeutralMode.Brake);
@@ -122,7 +123,7 @@ public class DriveTrain {
         enco.reset();
 
     }
-//Normal code resummes after this
+//Normal code resumes after this
 
     public void makeVictorsFollowers() {
         leftMotor2.set(ControlMode.Follower, leftMotor1.getDeviceID());
@@ -154,7 +155,7 @@ public class DriveTrain {
             scaledY = -scaledY;
         }
 
-        double throttle1 = throttlePosition.z * -1.00; //isaac helped fix the broken code (ishan messed up the sig figs)
+        double throttle1 = scaledZ * -1.00; //isaac helped fix the broken code (ishan messed up the sig figs)
         //double throttle1 = 1.00; 
         double throttle2 = (throttleMode == true)?((throttle1+1.00)/2.00):0.40; //Throttle as a value between 1 and 2
         double throttle3 =  throttle2*100.00;
@@ -191,7 +192,7 @@ public class DriveTrain {
         //     scaledY = scaledY * (drivingOffSpeed ? 0.40 : (throttle1+1.00));
         // }
 
-        final double right =((-scaledX - scaledY) * -1)+throttlePosition.z; //why plus throttle z?
+        final double right =((-scaledX - scaledY) * -1);//+throttlePosition.z; //why plus throttle z?
         final double left = (scaledY - scaledX) * -1;
         
        
