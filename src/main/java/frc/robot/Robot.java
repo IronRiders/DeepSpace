@@ -70,12 +70,15 @@ public class Robot extends TimedRobot {
     joystick1.addButton(1, driveTrain::setThrottleDirectionConstant);// flips heading
     joystick1.addButton(4, driveTrain::togglethrottleMode);// Switches baby mode
 
-    joystick2.addButton(6, cargoPusher::drop);
-    joystick2.addButton(7, cargoPusher::lock);
+    // yes Jacob I know, this is just for testing dammit
+    joystick2.addButton(1, cargoPusher::drop);
+    joystick2.addButton(3, cargoPusher::lock);
     joystick2.addButton(2, hatchGrabbyThingy::extend);
-    joystick2.addButton(3, hatchGrabbyThingy::reteract);
-    joystick2.addButton(4, hatchGrabbyThingy::grab);
-    joystick2.addButton(5, hatchGrabbyThingy::release);
+    joystick2.addButton(11, hatchGrabbyThingy::reteract);
+    joystick2.addButton(10, hatchGrabbyThingy::reteract);
+    joystick2.addButton(6, hatchGrabbyThingy::reteract);
+    joystick2.addButton(5, hatchGrabbyThingy::grab);
+    joystick2.addButton(4, hatchGrabbyThingy::release);
 
     // driveTrain.gyro.calibrate();
 
@@ -172,6 +175,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     isDriverControlling = true;
+    cargoPusher.lock();
   }
 
   /**
@@ -181,7 +185,8 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     joystick1.listen();
     joystick2.listen();
-
+  }
+ 
     /*
      * elevatorArm.updateSmartDB(); if (isDriverControlling) { joystick1.listen();
      * joystick2.listen(); } else if (path.isFinished()) { path.increasePathIndex();
@@ -190,7 +195,7 @@ public class Robot extends TimedRobot {
      * try { path.initializePath(); } catch (IOException e) { e.printStackTrace(); }
      * } else { path.update(); }
      */
-  }
+  
 
   /**
    * This function is called periodically during operator control.
