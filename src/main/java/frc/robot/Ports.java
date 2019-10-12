@@ -6,8 +6,8 @@ public class Ports{
     public static final int LEFT_DRIVETRAIN_2 = 3;
     public static final int RIGHT_DRIVETAIN_1 = 5;
     public static final int RIGHT_DRIVETAIN_2 = 4;
-    public static final int ELEVATOR_PORT = 6; 
-    public static final int ARM_PORT = 9; //needs to be set
+    //public static final int ELEVATOR_PORT = 6; 
+    //public static final int ARM_PORT = 9; //needs to be set
     public static final int CLAW_RIGHT = 8;
     public static final int CLAW_LEFT = 6;
 

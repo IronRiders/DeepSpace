@@ -15,7 +15,7 @@ public class CargoPusher {
 
     public void drop() {
         upperPiston.set(DoubleSolenoid.Value.kForward);
-        BoxTipped=true;
+        //BoxTipped=true;
     }
 
     public void lock() {
