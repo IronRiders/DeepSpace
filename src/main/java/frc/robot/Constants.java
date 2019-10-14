@@ -9,10 +9,10 @@ public class Constants {
     public static final double FINAL_DISTANCE_FROM_ROCKET_INCHES = 16;
 
     // Maximum Speeds
-    public static final double MAX_VELOCITY_FEET_SECONDS = 13;
-    public static final double MAX_VELOCITY_METERS = 13 * 12 * 2.54; // randome value
-    public static final double MAX_ACCELERATION_METERS = 4.0; // random value
-    public static final double MAX_JERK_METERS = 1; // random value
+    public static final double MAX_VELOCITY_FEET_SECONDS = 20;
+    public static final double MAX_VELOCITY_METERS = 20 * 12 * 2.54; // randome value
+    public static final double MAX_ACCELERATION_METERS = 10.0; // random value
+    public static final double MAX_JERK_METERS = 10; // random value
 
     // Camera
     public static final double DISTANCE_OFF_GROUND_CAMERA_INCHES = 1;
