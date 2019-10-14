@@ -51,14 +51,14 @@ public class DriveTrain {
     boolean rushing = false;
     public boolean masterSafteyOff = true;
 
-    public DriveTrain(final int leftPort1, final int leftPort2, final int rightPort1, final int rightPort2,
-            final int gyroPortNumber) {
+    public DriveTrain(final int leftPort1, final int leftPort2, final int rightPort1, final int rightPort2, final int gyroPortNumber) {
         leftMotor1 = new TalonSRX(leftPort1);
         leftMotor2 = new VictorSPX(leftPort2);
         rightMotor1 = new TalonSRX(rightPort1);
         rightMotor2 = new VictorSPX(rightPort2);
         leftMotor1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
         rightMotor1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+  
         enco = new Encoder(8, 9);
         enco.setDistancePerPulse(2.0943 / 4);
 
