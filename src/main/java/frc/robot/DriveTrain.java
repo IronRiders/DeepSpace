@@ -6,7 +6,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.LambdaJoystick.ThrottlePosition;
 
 public class DriveTrain {
     private final TalonSRX leftMotor1;
@@ -32,26 +31,24 @@ public class DriveTrain {
         leftMotor2.setNeutralMode(NeutralMode.Brake);
     }
 
-    public void updateSpeed(final ThrottlePosition throttlePosition) {
-        double scaledX = throttlePosition.x;
-        double scaledY = throttlePosition.y;
-        double scaledZ = throttlePosition.z;
+    public void updateSpeed(final double x, final double y, final double z) {
+        double scaledX = x;
+        double scaledY = y;
 
         // Top is X scale bottom is Y
         double scaleFactorA = 0.3;
         double scaleFactorB = 0.7;
         double scaleFactorC = 0.3;
         double scaleFactorD = 0.7;
-        scaledY = (scaleFactorC * Math.abs(throttlePosition.y))
-                + (scaleFactorD * throttlePosition.y * throttlePosition.y);
-        scaledX = (scaleFactorA * Math.abs(throttlePosition.x))
-                + (scaleFactorB * throttlePosition.x * throttlePosition.x);
+        scaledY = (scaleFactorC * Math.abs(y))
+                + (scaleFactorD * y * y);
+        scaledX = (scaleFactorA * Math.abs(x))
+                + (scaleFactorB * x * x);
         
-        scaledX *= throttlePosition.x < 0 ? -1 : 1;
-        scaledY *= throttlePosition.y < 0 ? -1 : 1;
-        scaledZ *= -1;
+        scaledX *= x < 0 ? -1 : 1;
+        scaledY *= y < 0 ? -1 : 1;
 
-        final double throttle = throttleMode ? ((scaledZ + 1.00) / 2.00) : 0.40;
+        final double throttle = throttleMode ? ((1 - z) / 2) : 0.4;
 
         scaledX *= 0.5;
         scaledX *= throttleMode ? throttle : 0.70;
