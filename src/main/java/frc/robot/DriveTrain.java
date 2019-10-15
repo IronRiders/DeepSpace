@@ -44,7 +44,7 @@ public class DriveTrain {
     public double throttleInput;
     public boolean RvsThrottleWarn;
     public boolean velocityToTurn;
-    public boolean Brakes;
+    public boolean stopDriveMotors;
     public double VelocityCheck;
     public double speedbrake;
     public boolean braketoggler = true;
@@ -77,10 +77,11 @@ public class DriveTrain {
         // gyro.reset();
         drivingOffSpeed = false;
         // SmartDashboard.putNumber("status/gyroprime", gyro);
-        SmartDashboard.putBoolean("status/throttleMode", throttleMode);
+      //  SmartDashboard.putBoolean("status/throttleMode", throttleMode);
         SmartDashboard.putBoolean("status/foward", throttleForward);
         SmartDashboard.putNumber("status/throttle", 0);
         // gyroPortNumber should be analong 0 or 1
+
 
     }
 
@@ -138,7 +139,7 @@ public class DriveTrain {
 
         double throttle1 = scaledZ * -1.00; // isaac helped fix the broken code (ishan messed up the sig figs)
         // double throttle1 = 1.00;
-        double throttle2 = (throttleMode == true) ? ((throttle1 + 1.00) / 2.00) : 0.40; // Throttle as a value between 1
+        double throttle2 = throttleMode ? ((throttle1 + 1.00) / 2.00) : 0.70; // Throttle as a value between 1
                                                                                         // and 2
         double throttle3 = throttle2 * 100.00;
         double thrust1 = (java.lang.Math.abs((throttlePosition.y * 1.00) * throttle3)); // Thrust as a value between 1
@@ -160,21 +161,21 @@ public class DriveTrain {
                 : (revrSpeedWarn = false));
         SmartDashboard.putBoolean("Alarms/RvsOverSpeed", revrSpeedWarn);
         SmartDashboard.putBoolean("Alarms/masteralarm", masteralarm);
-        SmartDashboard.putNumber("status/throttlePrime", (throttle3));
-        SmartDashboard.putBoolean("Alarms/RvsThrottleWarn", (RvsThrottleWarn));
-        SmartDashboard.putNumber("status/thrust", ((thrust1)));
+        SmartDashboard.putNumber("status/throttlePrime", throttle3);
+        SmartDashboard.putBoolean("Alarms/RvsThrottleWarn",RvsThrottleWarn);
+        SmartDashboard.putNumber("status/thrust", thrust1);
         SmartDashboard.putNumber("raw data/Xraw", throttlePosition.x);
         SmartDashboard.putNumber("raw data/Yraw", throttlePosition.y);
         SmartDashboard.putNumber("raw data/Zraw", throttlePosition.z);
         SmartDashboard.putBoolean("Alarms/VNE", velocityNeverToExcede);
         SmartDashboard.putBoolean("Alarms/V1", velocityToTurn);
-        SmartDashboard.putBoolean("status/RobotArmed", masterSafteyOff);
+        //SmartDashboard.putBoolean("status/RobotArmed", masterSafteyOff);
         // SmartDashboard.putBoolean("BrakesIndicator",Brakes);
         // SmartDashboard.putNumber
         // VelocityCheck = (Brakes == true)?(speedbrake):throttle2;
-        // (throttleMode ? (throttle2) : 0.40 );
-        scaledX = (scaledX * 0.5 * (throttleMode ? (throttle2) : 0.70));
-        scaledY = scaledY * throttleDirectionConstant * (throttleMode ? (throttle2) : 0.70);
+
+        scaledX = (scaledX * 0.5 * (stopDriveMotors==false ? (throttle2) : 0.00));
+        scaledY = scaledY * throttleDirectionConstant * (stopDriveMotors ==false ? (throttle2) : 0.00);
 
         // if (throttleMode == false) {
         // scaledX = scaledX * (drivingOffSpeed ? 0.27 : (throttle1+1.00));//note to
@@ -222,7 +223,7 @@ public class DriveTrain {
 
     public void togglethrottleMode() {
         throttleMode = !throttleMode;
-        SmartDashboard.putBoolean("status/BabyModeDisabled", throttleMode);
+        SmartDashboard.putBoolean("status/LowSpeed", throttleMode);
     }
 
     public void cruiseControl() {
@@ -236,10 +237,10 @@ public class DriveTrain {
     }
 
     public void stopDriveMotors() {
-        leftMotor1.set(ControlMode.PercentOutput, 0);
-        leftMotor2.set(ControlMode.PercentOutput, 0);
-        rightMotor1.set(ControlMode.PercentOutput, 0);
-        rightMotor2.set(ControlMode.PercentOutput, 0);
+      stopDriveMotors=true;
+    }
+    public void restartDriveMotors(){
+      stopDriveMotors=false;
     }
 
     public void setDrivingOffSpeed() {

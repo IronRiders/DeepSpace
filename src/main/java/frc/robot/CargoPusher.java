@@ -2,6 +2,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CargoPusher {
     public boolean BoxTipped;
@@ -15,10 +16,14 @@ public class CargoPusher {
 
     public void drop() {
         upperPiston.set(DoubleSolenoid.Value.kForward);
-        //BoxTipped=true;
+        BoxTipped=true;
+        SmartDashboard.putBoolean("Manipulators/Cargo/Cargodropped?", BoxTipped);
+
     }
 
     public void lock() {
         upperPiston.set(DoubleSolenoid.Value.kReverse);
+        BoxTipped=false;
+        SmartDashboard.putBoolean("Manipulators/Cargo/Cargodropped?", BoxTipped);
     }
 }

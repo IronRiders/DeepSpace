@@ -29,8 +29,14 @@ public class Robot extends TimedRobot {
   public final DriveTrain driveTrain = new DriveTrain(LEFT_DRIVETRAIN_1, LEFT_DRIVETRAIN_2, RIGHT_DRIVETAIN_1,
       RIGHT_DRIVETAIN_2, GYRO_PORT);
 
-  private final LambdaJoystick joystick1 = new LambdaJoystick(0, driveTrain::updateSpeed);
-  private final LambdaJoystick joystick2 = new LambdaJoystick(1);
+  public boolean driverOneControlling=true;
+
+  public void toggleDriverOneControlling(){
+    driverOneControlling=!driverOneControlling;
+  }
+ 
+  private final LambdaJoystick joystick1 = driverOneControlling ? (new LambdaJoystick(0, driveTrain::updateSpeed)):new LambdaJoystick(1);
+  private final LambdaJoystick joystick2 =  driverOneControlling ? (new LambdaJoystick(1)):new LambdaJoystick(0, driveTrain::updateSpeed);
 
   // PowerDistributionPanel panel = new PowerDistributionPanel();
   // RobotDifferentialDriveDisplay diffDrive = new
@@ -47,18 +53,19 @@ public class Robot extends TimedRobot {
     // updateSmartDB();
 
     joystick1.addButton(1, driveTrain::setThrottleDirectionConstant);// flips heading
-    joystick1.addButton(4, driveTrain::togglethrottleMode);// Switches baby mode
+    joystick1.addButton(3, driveTrain::togglethrottleMode);// Switches throttlemode
+    joystick1.addButton(4, driveTrain::stopDriveMotors, driveTrain::restartDriveMotors);;
+    joystick1.addButton(8, this::toggleDriverOneControlling);
 
     joystick2.addButton(1, cargoPusher::drop);
     joystick2.addButton(3, cargoPusher::lock);
-    joystick2.addButton(2, hatchGrabbyThingy::extend);
-    joystick2.addButton(11, hatchGrabbyThingy::reteract);
-    joystick2.addButton(10, hatchGrabbyThingy::reteract);
-    joystick2.addButton(6, hatchGrabbyThingy::reteract);
-    joystick2.addButton(5, hatchGrabbyThingy::grab);
-    joystick2.addButton(4, hatchGrabbyThingy::release);
+    //joystick2.addButton(2, hatchGrabbyThingy::extend);
+    //joystick2.addButton(11, hatchGrabbyThingy::reteract);
+    //joystick2.addButton(10, hatchGrabbyThingy::reteract);
+    //joystick2.addButton(6, hatchGrabbyThingy::reteract);
+    //joystick2.addButton(5, hatchGrabbyThingy::grab);
+    //joystick2.addButton(4, hatchGrabbyThingy::release);
 
-    cargoPusher.lock();
   }
 
   /**
