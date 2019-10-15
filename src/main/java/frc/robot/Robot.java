@@ -14,7 +14,7 @@ public class Robot extends TimedRobot {
     private final Controller pusher = new Controller(1);
 
     private void update() {
-        driveTrain.updateSpeed(driver.getAxis(0), driver.getAxis(1), driver.getAxis(2));
+        driveTrain.updateSpeed(driver.getAxis(0), driver.getAxis(1), driver.getAxis(3));
 
         if (driver.getRawButtonPressed(1)) {
             driveTrain.setThrottleDirectionConstant();
