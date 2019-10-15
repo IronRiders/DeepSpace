@@ -46,7 +46,7 @@ public class DriveTrain {
                 + (scaleFactorB * x * x);
         
         scaledX *= x < 0 ? -1 : 1;
-        scaledY *= y < 0 ? -1 : 1;
+        scaledY *= y < 0 ? 1 : -1;
 
         final double throttle = throttleMode ? ((1 - z) / 2) : 0.4;
 
