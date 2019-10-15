@@ -51,9 +51,9 @@ public class DriveTrain {
         final double throttle = slow ? ((1 - z) / 2) : 0.4;
 
         scaledX *= 0.5;
-        scaledX *= slow ? throttle : 0.70;
+        scaledX *= slow ? throttle : 0.7;
         scaledY *= forwards ? 1 : -1;
-        scaledY *= slow ? throttle : 0.70;
+        scaledY *= slow ? throttle : 0.7;
 
         final double right = scaledX + scaledY;
         final double left = scaledX - scaledY;
