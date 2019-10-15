@@ -3,10 +3,11 @@ package frc.robot;
 import frc.robot.Ports;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
 
 public class Robot extends TimedRobot {
-    private final CargoPusher cargoPusher = new CargoPusher(Ports.SOLENIOD_1, Ports.SOLENIOD_2);
+    private final DoubleSolenoid manipulator = new DoubleSolenoid(Ports.SOLENIOD_1, Ports.SOLENIOD_2);
     private final DriveTrain driveTrain = new DriveTrain(Ports.LEFT_DRIVETRAIN_1, Ports.LEFT_DRIVETRAIN_2,
             Ports.RIGHT_DRIVETAIN_1, Ports.RIGHT_DRIVETAIN_2);
 
@@ -24,10 +25,10 @@ public class Robot extends TimedRobot {
         }
 
         if (pusher.getRawButtonPressed(1)) {
-            cargoPusher.drop();
+            manipulator.set(DoubleSolenoid.Value.kForward);
         }
         if (pusher.getRawButtonPressed(3)) {
-            cargoPusher.lock();
+            manipulator.set(DoubleSolenoid.Value.kReverse);
         }
     }
 
