@@ -13,8 +13,8 @@ public class DriveTrain {
     private final VictorSPX leftMotor2;
     private final VictorSPX rightMotor2;
 
-    private boolean throttleMode = true;
-    private boolean throttleForward = true;
+    private boolean slow = true;
+    private boolean forwards = true;
 
     public DriveTrain(final int leftPort1, final int leftPort2, final int rightPort1, final int rightPort2) {
         leftMotor1 = new TalonSRX(leftPort1);
@@ -48,12 +48,12 @@ public class DriveTrain {
         scaledX *= x < 0 ? -1 : 1;
         scaledY *= y < 0 ? 1 : -1;
 
-        final double throttle = throttleMode ? ((1 - z) / 2) : 0.4;
+        final double throttle = slow ? ((1 - z) / 2) : 0.4;
 
         scaledX *= 0.5;
-        scaledX *= throttleMode ? throttle : 0.70;
-        scaledY *= throttleForward ? 1 : -1;
-        scaledY *= throttleMode ? throttle : 0.70;
+        scaledX *= slow ? throttle : 0.70;
+        scaledY *= forwards ? 1 : -1;
+        scaledY *= slow ? throttle : 0.70;
 
         final double right = scaledX + scaledY;
         final double left = scaledX - scaledY;
@@ -63,16 +63,16 @@ public class DriveTrain {
         rightMotor1.set(ControlMode.PercentOutput, right);
         rightMotor2.follow(rightMotor1);
 
-        SmartDashboard.putBoolean("status/forward", throttleForward);
-        SmartDashboard.putBoolean("status/slow", throttleMode);
+        SmartDashboard.putBoolean("status/forward", forwards);
+        SmartDashboard.putBoolean("status/slow", slow);
         SmartDashboard.putNumber("status/throttle", throttle);
     }
 
-    public void togglethrottleMode() {
-        throttleMode = !throttleMode;
+    public void toggleSlowMode() {
+        slow = !slow;
     }
 
-    public void setThrottleDirectionConstant() {
-        throttleForward = !throttleForward;
+    public void toggleForwardsMode() {
+        forwards = !forwards;
     }
 }

@@ -18,16 +18,16 @@ public class Robot extends TimedRobot {
         driveTrain.updateSpeed(driver.getAxis(0), driver.getAxis(1), driver.getAxis(3));
 
         if (driver.getRawButtonPressed(1)) {
-            driveTrain.setThrottleDirectionConstant();
+            driveTrain.toggleForwardsMode();
         }
         if (driver.getRawButtonPressed(4)) {
-            driveTrain.togglethrottleMode();
+            driveTrain.toggleSlowMode();
         }
 
         if (pusher.getRawButtonPressed(1)) {
             manipulator.set(DoubleSolenoid.Value.kForward);
         }
-        if (pusher.getRawButtonPressed(3)) {
+        if (pusher.getRawButtonPressed(2)) {
             manipulator.set(DoubleSolenoid.Value.kReverse);
         }
     }
