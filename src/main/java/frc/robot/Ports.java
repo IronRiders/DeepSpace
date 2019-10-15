@@ -6,5 +6,6 @@ public class Ports {
     public static final int RIGHT_DRIVETAIN_1 = 5;
     public static final int RIGHT_DRIVETAIN_2 = 4;
 
-    public static final int SOLENIOD = 1;
+    public static final int SOLENIOD_1 = 1;
+    public static final int SOLENIOD_2 = 0;
 }

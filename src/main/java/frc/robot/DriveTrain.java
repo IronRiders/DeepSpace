@@ -63,9 +63,9 @@ public class DriveTrain {
         rightMotor1.set(ControlMode.PercentOutput, right);
         rightMotor2.follow(rightMotor1);
 
-        SmartDashboard.putBoolean("forward", throttleForward);
-        SmartDashboard.putBoolean("slow", throttleMode);
-        SmartDashboard.putNumber("throttle", throttle);
+        SmartDashboard.putBoolean("status/forward", throttleForward);
+        SmartDashboard.putBoolean("status/slow", throttleMode);
+        SmartDashboard.putNumber("status/throttle", throttle);
     }
 
     public void togglethrottleMode() {

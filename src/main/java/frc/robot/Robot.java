@@ -6,7 +6,7 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 
 public class Robot extends TimedRobot {
-    private final CargoPusher cargoPusher = new CargoPusher(Ports.SOLENIOD);
+    private final CargoPusher cargoPusher = new CargoPusher(Ports.SOLENIOD_1, Ports.SOLENIOD_2);
     private final DriveTrain driveTrain = new DriveTrain(Ports.LEFT_DRIVETRAIN_1, Ports.LEFT_DRIVETRAIN_2,
             Ports.RIGHT_DRIVETAIN_1, Ports.RIGHT_DRIVETAIN_2);
 

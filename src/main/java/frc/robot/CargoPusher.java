@@ -1,19 +1,19 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 public class CargoPusher {
-    private final Solenoid piston;
+    private final DoubleSolenoid piston;
 
-    CargoPusher(final int port) {
-        piston = new Solenoid(port);
+    CargoPusher(final int port1, final int port2) {
+        piston = new DoubleSolenoid(port1, port2);
     }
 
     public void drop() {
-        piston.set(true);
+        piston.set(DoubleSolenoid.Value.kForward);
     }
 
     public void lock() {
-        piston.set(false);
+        piston.set(DoubleSolenoid.Value.kReverse);
     }
 }
