@@ -46,9 +46,6 @@ public class Robot extends TimedRobot {
 
     // updateSmartDB();
 
-    joystick1.addButton(1, driveTrain::setThrottleDirectionConstant);// flips heading
-    joystick1.addButton(4, driveTrain::togglethrottleMode);// Switches baby mode
-
     joystick2.addButton(1, cargoPusher::drop);
     joystick2.addButton(3, cargoPusher::lock);
     joystick2.addButton(2, hatchGrabbyThingy::extend);
