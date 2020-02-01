@@ -8,10 +8,13 @@
 package frc.robot;
 
 import static frc.robot.Ports.*;
-
+import frc.robot.DriveTrain;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 // import com.analog.adis16448.frc.ADIS16448_IMU; // Gyro import, leave in
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DriverStation;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -30,6 +33,21 @@ public class Robot extends TimedRobot {
       RIGHT_DRIVETAIN_2, GYRO_PORT);
 
   public boolean driverOneControlling=true;
+  private double matchTime;
+  private Boolean endgameInit;
+  private DriverStation driverStation;
+  
+  public Robot() {
+    driverStation = DriverStation.getInstance();
+    driverStation.getMatchTime();
+     
+
+  }
+
+
+  
+
+
 
   public void toggleDriverOneControlling(){
     driverOneControlling=!driverOneControlling;
@@ -67,7 +85,12 @@ public class Robot extends TimedRobot {
     //joystick2.addButton(4, hatchGrabbyThingy::release);
 
   }
-
+ @Override
+public void robotPeriodic() {
+  
+  super.robotPeriodic();
+  SmartDashboard.putNumber("MatchTime/matchtime", driverStation.getMatchTime());
+}
   /**
    * This autonomous (along with the chooser code above) shows how to select
    * between different autonomous modes using the dashboard. The sendable chooser
@@ -81,11 +104,14 @@ public class Robot extends TimedRobot {
    * make sure to add them to the chooser code above as well.
    */
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
 
+  }
   @Override
   public void teleopInit() {
     isDriverControlling = true;
+    driveTrain.stopRightSpeed();
+    driveTrain.stopLeftSpeed();
   }
 
   /**
@@ -93,8 +119,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    joystick1.listen();
-    joystick2.listen();
+
+   
+    if (driverStation.getMatchTime() == 7){
+    driveTrain.updateRightSpeed();
+    driveTrain.updateLeftSpeed();
+    }
+ 
   }
  
   /**

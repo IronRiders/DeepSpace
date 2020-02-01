@@ -34,7 +34,7 @@ public class DriveTrain {
 
     private boolean throttleMode = true;// formally slowSpeed, side not we're calling the default spped baby mode,
                                         // outreach mode, or rookie mode
-    // private int counter = 0;//the hell does this do?
+    public double autoValue;//the hell does this do?
     private boolean drivingOffSpeed;
     public int throttleDirectionConstant = 1;
     private boolean throttleForward = true;
@@ -119,7 +119,7 @@ public class DriveTrain {
     public void updateSpeed(final ThrottlePosition throttlePosition) {
         double scaledX = throttlePosition.x;
         double scaledY = throttlePosition.y;
-        double scaledZ = throttlePosition.z;
+        double scaledZ = throttlePosition.w;
         double scaleFactorA = 0.3;
         double scaleFactorB = 0.7;
         // Top is X scale bottem is Y
@@ -129,6 +129,7 @@ public class DriveTrain {
                 + (scaleFactorD * throttlePosition.y * throttlePosition.y);
         scaledX = (scaleFactorA * Math.abs(throttlePosition.x))
                 + (scaleFactorB * throttlePosition.x * throttlePosition.x);
+        autoValue = scaledY;
         if (throttlePosition.x < 0) {
             scaledX = -scaledX;
         }
@@ -176,7 +177,7 @@ public class DriveTrain {
 
         scaledX = (scaledX * 0.5 * (stopDriveMotors==false ? (throttle2) : 0.00));
         scaledY = scaledY * throttleDirectionConstant * (stopDriveMotors ==false ? (throttle2) : 0.00);
-
+        
         // if (throttleMode == false) {
         // scaledX = scaledX * (drivingOffSpeed ? 0.27 : (throttle1+1.00));//note to
         // self: default is .5 , .75 I assumed the they were proportinal so sclaed it by

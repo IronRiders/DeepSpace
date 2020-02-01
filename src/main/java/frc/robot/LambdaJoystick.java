@@ -53,7 +53,7 @@ public class LambdaJoystick extends Joystick {
                 buttons[i].listen(this.getRawButton(i + 1));
             }
         }
-        joystickListener.accept(new ThrottlePosition(buffer(getX()), buffer(getY()), buffer(getZ())));
+        joystickListener.accept(new ThrottlePosition(buffer(getX()), buffer(getY()), buffer(getZ()), buffer(getThrottle())));
     }
 
     /**
@@ -103,18 +103,22 @@ public class LambdaJoystick extends Joystick {
      * Throttle Position holds doubles x, y, and z representing the location of the throttle and dial.
      */
     public static class ThrottlePosition {
-        public final double x, y, z;
+        public final double x, y, z, w;
 
         /**
-         * Create a Throttle position given a (x, y) position of the throttle and the position of the dial (z).
+         * Create a Throttle position given a (x, y) position of the throttle and the
+         * position of the dial (z).
+         * 
          * @param x The right left position of the joystick (1 to -1).
-         * @param y The vertical position of the joystick, 1 forwards, -1 is backwards (1 to -1).
+         * @param y The vertical position of the joystick, 1 forwards, -1 is backwards
+         *          (1 to -1).
          * @param z Position of the dial on the joystick (1 to -1).
          */
-        public ThrottlePosition(final double x, final double y, final double z) {
+        public ThrottlePosition(final double x, final double y, final double z, final double w) {
             this.x = x;
             this.y = y;
             this.z = z;
+            this.w = w;
         }
 
         /**
@@ -122,8 +126,8 @@ public class LambdaJoystick extends Joystick {
          * @param x The right left position of the joystick (1 to -1).
          * @param y The vertical position of the joystick, 1 forwards, -1 is backwards (1 to -1).
          */
-        public ThrottlePosition(final double x, final double y) {
-            this(x, y, 0);
+        public ThrottlePosition(final double x, final double y, final double z) {
+            this(x, y, z, 0);
         }
     }
 }
