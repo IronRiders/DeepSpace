@@ -1,6 +1,6 @@
 package frc.robot;
 
-import com.analog.adis16448.frc.ADIS16448_IMU;
+//import com.analog.adis16448.frc.ADIS16448_IMU;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
@@ -30,7 +30,7 @@ public class DriveTrain {
     private final VictorSPX leftMotor2;
     private final VictorSPX rightMotor2;
     private final Encoder enco;
-    public ADIS16448_IMU gyro;
+    //public ADIS16448_IMU gyro;
 
     private boolean throttleMode = true;// formally slowSpeed, side not we're calling the default spped baby mode,
                                         // outreach mode, or rookie mode
