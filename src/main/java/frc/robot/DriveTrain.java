@@ -60,22 +60,22 @@ public class DriveTrain {
         rightMotor1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
         gyro = new AnalogGyro(gyroPortNumber);
         
-        angleGoal = 0.0;
+        angleGoal = gyro.getAngle();
   
         enco = new Encoder(8, 9);
         enco.setDistancePerPulse(2.0943 / 4);
 
-        if (braketoggler == true) {
-            rightMotor1.setNeutralMode(NeutralMode.Brake);
-            rightMotor2.setNeutralMode(NeutralMode.Brake);
-            leftMotor1.setNeutralMode(NeutralMode.Brake);
-            leftMotor2.setNeutralMode(NeutralMode.Brake);
-        } else {
-            rightMotor1.setNeutralMode(NeutralMode.Coast);
-            rightMotor2.setNeutralMode(NeutralMode.Coast);
-            leftMotor1.setNeutralMode(NeutralMode.Coast);
-            leftMotor2.setNeutralMode(NeutralMode.Coast);
-        }
+        // if (braketoggler == true) {
+        //     rightMotor1.setNeutralMode(NeutralMode.Brake);
+        //     rightMotor2.setNeutralMode(NeutralMode.Brake);
+        //     leftMotor1.setNeutralMode(NeutralMode.Brake);
+        //     leftMotor2.setNeutralMode(NeutralMode.Brake);
+        // } else {
+        //     rightMotor1.setNeutralMode(NeutralMode.Coast);
+        //     rightMotor2.setNeutralMode(NeutralMode.Coast);
+        //     leftMotor1.setNeutralMode(NeutralMode.Coast);
+        //     leftMotor2.setNeutralMode(NeutralMode.Coast);
+        // }
 
         // gyro.reset();
         drivingOffSpeed = false;
@@ -318,12 +318,16 @@ public class DriveTrain {
         double currentAngle = gyro.getAngle();
         if (Math.abs(currentAngle - angleGoal) > 10) {
             double turnVelocity = (currentAngle - angleGoal) / 180.0;
-            leftMotor1.set(ControlMode.PercentOutput, turnVelocity);
-            rightMotor1.set(ControlMode.PercentOutput, -turnVelocity);
+            leftMotor1.set(ControlMode.PercentOutput, 0.5);
+            rightMotor1.set(ControlMode.PercentOutput, 0.5);
         } else {
             leftMotor1.set(ControlMode.PercentOutput, 0);
             rightMotor1.set(ControlMode.PercentOutput, 0);
         }
+    }
+
+    public void stopRotation() {
+        setAngleGoal(gyro.getAngle());
     }
 
     public void startRush() {

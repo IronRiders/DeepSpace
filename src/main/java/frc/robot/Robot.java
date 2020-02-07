@@ -77,6 +77,7 @@ public class Robot extends TimedRobot {
     joystick1.addButton(4, driveTrain::stopDriveMotors, driveTrain::restartDriveMotors);;
     joystick1.addButton(8, this::toggleDriverOneControlling);
     joystick1.addButton(2, driveTrain::turnAround);
+    joystick1.addButton(5, driveTrain::stopRotation);
 
     joystick2.addButton(1, cargoPusher::drop);
     joystick2.addButton(3, cargoPusher::lock);
@@ -138,6 +139,8 @@ public void robotPeriodic() {
   public void teleopPeriodic() {
     joystick1.listen();
     joystick2.listen();
+  
+  driveTrain.approachAngle();
   }
 @Override
 public void testInit(){
