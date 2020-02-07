@@ -1,6 +1,5 @@
 package frc.robot;
 
-//import com.analog.adis16448.frc.ADIS16448_IMU;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
@@ -17,7 +16,7 @@ import frc.robot.LambdaJoystick.ThrottlePosition;
 // import edu.wpi.first.wpilibj.SendableBase;
 // import edu.wpi.first.wpilibj.shuffleboard.*;
 // import edu.wpi.first.wpilibj.GyroBase;
-// import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.AnalogGyro;
 // import java.util.Map;
 // import java.util.Timer;
 
@@ -30,7 +29,7 @@ public class DriveTrain {
     private final VictorSPX leftMotor2;
     private final VictorSPX rightMotor2;
     private final Encoder enco;
-    //public ADIS16448_IMU gyro;
+    public AnalogGyro gyro;
 
     private boolean throttleMode = true;// formally slowSpeed, side not we're calling the default spped baby mode,
                                         // outreach mode, or rookie mode
@@ -50,6 +49,7 @@ public class DriveTrain {
     public boolean braketoggler = true;
     boolean rushing = false;
     public boolean masterSafteyOff = true;
+    public double angleGoal;
 
     public DriveTrain(final int leftPort1, final int leftPort2, final int rightPort1, final int rightPort2, final int gyroPortNumber) {
         leftMotor1 = new TalonSRX(leftPort1);
@@ -58,6 +58,9 @@ public class DriveTrain {
         rightMotor2 = new VictorSPX(rightPort2);
         leftMotor1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
         rightMotor1.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+        gyro = new AnalogGyro(gyroPortNumber);
+        
+        angleGoal = 0.0;
   
         enco = new Encoder(8, 9);
         enco.setDistancePerPulse(2.0943 / 4);
@@ -76,7 +79,7 @@ public class DriveTrain {
 
         // gyro.reset();
         drivingOffSpeed = false;
-        // SmartDashboard.putNumber("status/gyroprime", gyro);
+        SmartDashboard.putNumber("status/gyroprime", gyro.getAngle());
       //  SmartDashboard.putBoolean("status/throttleMode", throttleMode);
         SmartDashboard.putBoolean("status/foward", throttleForward);
         SmartDashboard.putNumber("status/throttle", 0);
@@ -250,7 +253,7 @@ public class DriveTrain {
     }
 
     public void updateRightSpeed() {
-        rightMotor1.set(ControlMode.PercentOutput, -0.5);
+        rightMotor1.set(ControlMode.PercentOutput, 0.5);
         rightMotor2.follow(rightMotor1);
     }
 
@@ -286,6 +289,40 @@ public class DriveTrain {
         } else if (rightControlCount % 3 == 1) {
             stopRightSpeed();
         } else {
+        }
+    }
+
+    /*public void turnAround(){
+        double currentGyro = gyro.getAngle();
+        double finalGyro = (currentGyro + 180) % 360;
+        double turnVelocity;
+        while(!(currentGyro <= (finalGyro + 5) && currentGyro >= (finalGyro - 5))) {
+            currentGyro = gyro.getAngle();
+            turnVelocity = (currentGyro - finalGyro) / 180.0;
+            leftMotor1.set(ControlMode.PercentOutput, turnVelocity);
+            rightMotor1.set(ControlMode.PercentOutput, -turnVelocity);
+        }
+        leftMotor1.set(ControlMode.PercentOutput, 0);
+        rightMotor1.set(ControlMode.PercentOutput, 0);
+    }*/
+
+    public void setAngleGoal(double goal) {
+        angleGoal = goal;
+    }
+
+    public void turnAround() {
+        setAngleGoal((gyro.getAngle() + 180) % 360);
+    }
+
+    public void approachAngle() {
+        double currentAngle = gyro.getAngle();
+        if (Math.abs(currentAngle - angleGoal) > 10) {
+            double turnVelocity = (currentAngle - angleGoal) / 180.0;
+            leftMotor1.set(ControlMode.PercentOutput, turnVelocity);
+            rightMotor1.set(ControlMode.PercentOutput, -turnVelocity);
+        } else {
+            leftMotor1.set(ControlMode.PercentOutput, 0);
+            rightMotor1.set(ControlMode.PercentOutput, 0);
         }
     }
 

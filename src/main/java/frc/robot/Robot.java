@@ -11,7 +11,7 @@ import static frc.robot.Ports.*;
 import frc.robot.DriveTrain;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
-// import com.analog.adis16448.frc.ADIS16448_IMU; // Gyro import, leave in
+//import com.analog.adis16448.frc.ADIS16448_IMU; // Gyro import, leave in
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
 
@@ -36,6 +36,8 @@ public class Robot extends TimedRobot {
   private double matchTime;
   private Boolean endgameInit;
   private DriverStation driverStation;
+ // public ADIS16448_IMU gyroMaster;
+  public double gyroStatic;
   
   public Robot() {
     driverStation = DriverStation.getInstance();
@@ -74,6 +76,7 @@ public class Robot extends TimedRobot {
     joystick1.addButton(3, driveTrain::togglethrottleMode);// Switches throttlemode
     joystick1.addButton(4, driveTrain::stopDriveMotors, driveTrain::restartDriveMotors);;
     joystick1.addButton(8, this::toggleDriverOneControlling);
+    joystick1.addButton(2, driveTrain::turnAround);
 
     joystick2.addButton(1, cargoPusher::drop);
     joystick2.addButton(3, cargoPusher::lock);
@@ -136,8 +139,18 @@ public void robotPeriodic() {
     joystick1.listen();
     joystick2.listen();
   }
+@Override
+public void testInit(){
 
-  public void changeDriverControl() {
-    this.isDriverControlling = !isDriverControlling;
-  }
 }
+
+@Override
+public void testPeriodic(){
+  joystick1.listen();
+  driveTrain.approachAngle();
+  // public void changeDriverControl() {
+  //   this.isDriverControlling = !isDriverControlling;
+  }
+
+}
+
