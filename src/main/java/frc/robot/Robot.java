@@ -123,9 +123,10 @@ public void robotPeriodic() {
    */
   @Override
   public void autonomousPeriodic() {
+    // this is for testing
 
    
-    if (driverStation.getMatchTime() == 7){
+    if (driverStation.getMatchTime() == 5){
     driveTrain.updateRightSpeed();
     driveTrain.updateLeftSpeed();
     }
